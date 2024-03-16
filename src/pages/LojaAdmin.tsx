@@ -67,8 +67,9 @@ const LojaAdmin = () => {
       return
     }
     try {
+      const IMAGE_FOLDER = "products/"
       const filename = new Date().getTime() + "-" + file.name
-      const imageRef = ref(storage, filename)
+      const imageRef = ref(storage, IMAGE_FOLDER + filename)
       const uploadTask = uploadBytesResumable(imageRef, file)
 
       await new Promise((resolve: (value?: unknown) => void, reject) => {

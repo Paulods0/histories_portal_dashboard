@@ -3,12 +3,18 @@ import ReactQuill from "react-quill"
 import "react-quill/dist/quill.snow.css"
 
 import { getAllCategories, getSinglePost, url } from "../api/apiCalls"
-import { ICategoryData } from "../types"
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
+import { ICategoryData, IPostData } from "../types"
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage"
 import { storage } from "../config/firebase"
-import { BarLoader } from "react-spinners"
+import { ClipLoader } from "react-spinners"
 import { toast } from "react-toastify"
 import { useParams } from "react-router-dom"
+import { getImagePathFromFirebaseURL } from "../utils"
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -46,11 +52,9 @@ const PostDetail = () => {
   const [isHighlighted, setIsHighlighted] = useState(false)
   const [category, setCategory] = useState("")
   const [downloadURLImage, setDownloadURLImage] = useState("")
+  const [data, setData] = useState<IPostData>()
 
   //HELPER VARIABLES
-  // const [imgProgress, setImgProgress] = useState(0)
-  const [hasImage, setHasImage] = useState(false)
-  const [uploadingImage, setUploadingImage] = useState(false)
   const [categories, setCategories] = useState<ICategoryData[]>([])
   const [isCreatingPost, setIsCreatingPost] = useState(false)
 
@@ -59,66 +63,56 @@ const PostDetail = () => {
     if (e.target.files) {
       const file = e.target.files[0]
       setImage(file)
-      setHasImage(true)
-    }
-  }
-  const uploadImageToFirestore = async (file: File | undefined) => {
-    if (!file) {
-      return
-    }
-    const filename = new Date().getTime() + "-" + file.name
-    const imageRef = ref(storage, "images/" + filename)
-    const uploadTask = uploadBytesResumable(imageRef, file)
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        setUploadingImage(true)
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-
-        switch (snapshot.state) {
-          case "paused":
-            console.log("upload is paused")
-            break
-          case "running":
-            console.log("upload is running")
-            break
-          default:
-            break
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        if (file) {
+          setImageToShow(e.target?.result)
         }
-      },
-      (error) => {
-        console.log(error)
-        switch (error.code) {
-          case "storage/unauthorized":
-            console.log(error)
-            break
-          case "storage/canceled":
-            //user canceled
-            break
-          case "storage/unknown":
-            //unknown error occurred, inspect error,server response
-            break
-          default:
-            break
-        }
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          // console.log("downloadURL: ", downloadURL)
-          setUploadingImage(false)
-          setDownloadURLImage(downloadURL)
-          toast.success("A Imagem foi adicionada com sucesse ", {
-            autoClose: 100,
-            position: "top-right",
-          })
-        })
       }
-    )
+      reader.readAsDataURL(file)
+    }
   }
+
   const updatePost = async (e: FormEvent) => {
+    const IMAGE_FOLDER = "images/"
     e.preventDefault()
     setIsCreatingPost(true)
+    if (!image) {
+      setDownloadURLImage(data!!.mainImage)
+    } else {
+      const imageName = getImagePathFromFirebaseURL(downloadURLImage)
+      const imageToDeleteRef = ref(storage, `${IMAGE_FOLDER}/${imageName}`)
+
+      deleteObject(imageToDeleteRef)
+        .then(() => {
+          console.log("Imagem deletada")
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+
+    const filename = new Date().getTime() + "-" + image!!.name
+    const imageRef = ref(storage, IMAGE_FOLDER + filename)
+    const uploadTask = uploadBytesResumable(imageRef, image!!)
+
+    await new Promise((resolve: (value?: unknown) => void, reject) => {
+      uploadTask.on(
+        "state_changed",
+        () => {},
+        (error) => {
+          reject(error)
+          toast.error(error.message)
+        },
+        () => {
+          resolve()
+        }
+      )
+    })
+    getDownloadURL(uploadTask.snapshot.ref).then((downloadurl) => {
+      setDownloadURLImage(downloadurl)
+    })
+
     try {
       const response = await fetch(url + `post/${id}`, {
         method: "PUT",
@@ -136,6 +130,7 @@ const PostDetail = () => {
       })
 
       const { message } = await response.json()
+
       if (!response.ok) {
         console.log(message)
         toast.error(message, {
@@ -153,9 +148,10 @@ const PostDetail = () => {
     } catch (error) {
       console.log(error)
     }
-
     setIsCreatingPost(false)
   }
+  
+  
 
   //USE EFFECTS
   useEffect(() => {
@@ -169,16 +165,11 @@ const PostDetail = () => {
     }
     fetchData()
   }, [])
-  useEffect(() => {
-    const uploadImaga = async () => {
-      await uploadImageToFirestore(image)
-    }
-    uploadImaga()
-  }, [image])
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await getSinglePost(id)
-
+      setData(data)
       setTitle(data!!.title)
       setSubtitle(data!!.subtitle)
       setIsHighlighted(data!!.isHighlighted)
@@ -211,45 +202,52 @@ const PostDetail = () => {
           className="w-[250px] gap-4 rounded-lg px-4 flex-col flex-[1.5] flex items-center justify-between "
         >
           <div className="w-full flex-col flex items-center justify-center">
-            {uploadingImage ? (
+            {imageToShow ? (
               <>
-                <label htmlFor="image" className="cursor-pointer">
-                  <div className="flex flex-col items-center w-full">
-                    <BarLoader color="#1A101F" />
-                  </div>
-
-                  <input
-                    id="image"
-                    accept="image/*"
-                    name="image"
-                    type="file"
-                    onChange={(e) => handleFileInputChange(e)}
-                    placeholder="Adicione a imagem principal"
-                    className="hidden bg-transparent border-none outline-none "
-                  />
-                </label>
-              </>
-            ) : (
-              <div className=" text-[#9D9D9D] outline-dotted  text-center p-2 rounded-lg">
-                <label htmlFor="image" className="cursor-pointer">
-                  <div className="relative w-[200px] h-[150px]">
+                <label
+                  htmlFor="image"
+                  className="cursor-pointer w-full h-[150px] text-[#9D9D9D] outline-dotted flex items-center text-center p-2 rounded-lg"
+                >
+                  <div className="relative w-full h-full">
                     <img
-                      src={downloadURLImage}
+                      src={imageToShow}
                       alt=""
                       className="absolute w-full h-full object-contain"
                     />
+                    <input
+                      id="image"
+                      accept="image/*"
+                      name="image"
+                      type="file"
+                      onChange={(e) => handleFileInputChange(e)}
+                      placeholder="Adicione a imagem principal"
+                      className="hidden bg-transparent border-none outline-none "
+                    />
                   </div>
-                  <input
-                    id="image"
-                    accept="image/*"
-                    name="image"
-                    type="file"
-                    onChange={(e) => handleFileInputChange(e)}
-                    placeholder="Adicione a imagem principal"
-                    className="hidden border-none bg-transparent outline-none "
-                  />
                 </label>
-              </div>
+              </>
+            ) : (
+              <label
+                htmlFor="image"
+                className="cursor-pointer w-full h-[150px] text-[#9D9D9D] outline-dotted flex items-center text-center p-2 rounded-lg"
+              >
+                <div className="relative w-full h-full">
+                  <img
+                    src={downloadURLImage}
+                    alt=""
+                    className="absolute w-full h-full object-contain"
+                  />
+                </div>
+                <input
+                  id="image"
+                  accept="image/*"
+                  name="image"
+                  type="file"
+                  onChange={(e) => handleFileInputChange(e)}
+                  placeholder="Adicione a imagem principal"
+                  className="hidden border-none bg-transparent outline-none "
+                />
+              </label>
             )}
           </div>
 
@@ -309,13 +307,22 @@ const PostDetail = () => {
           </div>
           <div className="w-full flex justify-between gap-2  mt-4">
             <button
-              className={`w-full hover:bg-[#382A3F]/80 duration-200 transition-all ease-in p-2 rounded-lg  text-white uppercase font-semibold ${
-                isCreatingPost ? "bg-[#382A3F]/80" : "bg-[#382A3F]"
+              disabled={isCreatingPost}
+              className={`w-full hover:bg-[#382A3F]/80 flex items-center justify-center duration-200 transition-all ease-in p-2 rounded-lg  text-white uppercase font-semibold ${
+                isCreatingPost ? "bg-[#382A3F]/80" : "bg-[#1F101A]"
               }`}
             >
-              {isCreatingPost ? "Loading..." : " Atualizar"}
+              {isCreatingPost ? (
+                <ClipLoader size={20} color="#FFF" />
+              ) : (
+                " Atualizar"
+              )}
             </button>
-            <button className="bg-red-700 w-full duration-200 transition-all ease-in p-2 rounded-lg  text-white uppercase font-semibold">
+            <button
+            onClick={handleDeletePost}
+              disabled={isCreatingPost}
+              className="bg-red-700 w-full duration-200 transition-all ease-in p-2 rounded-lg  text-white uppercase font-semibold"
+            >
               Eliminar
             </button>
           </div>

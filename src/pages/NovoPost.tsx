@@ -115,8 +115,9 @@ const NovoPost = () => {
       return
     }
     try {
+      const IMAGE_FOLDER = "images/"
       const filename = new Date().getTime() + "-" + image?.name
-      const imageRef = ref(storage, filename)
+      const imageRef = ref(storage, IMAGE_FOLDER + filename)
       const uploadTask = uploadBytesResumable(imageRef, image)
 
       await new Promise((resolve: (value?: unknown) => void, reject) => {
