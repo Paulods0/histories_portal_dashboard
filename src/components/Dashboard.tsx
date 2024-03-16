@@ -9,8 +9,7 @@ const Dashboard = () => {
         <SidebarNavigation />
         <div className="flex  w-full flex-col items-center justify-center">
           {/* <Header /> */}
-
-          <main className="pt-5 h-screen w-full flex items-center justify-center px-4 pr-8">
+          <main className="py-5 h-screen w-full flex items-center justify-between px-4 pr-8">
             <Outlet />
           </main>
         </div>

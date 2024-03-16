@@ -1,4 +1,3 @@
-import { IPostData } from "../types"
 import RecentPostsDetails from "./RecentPostsDetails"
 
 export interface PostProps {
@@ -41,7 +40,7 @@ const RecentPostCard = ({
           {/* <RecentPostsDetails icon="likes" label="Likes" title="120" /> */}
           <RecentPostsDetails
             icon="createdAt"
-            label="Criado em"
+            label="Criado a"
             title={createdAt.split("T")[0]}
           />
         </div>

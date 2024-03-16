@@ -1,5 +1,5 @@
 import { API_URL } from "../utils"
-import { ICategoryData, IPostData } from "../types"
+import { ICategoryData, IPostData, IProduct } from "../types"
 
 export const url = "http://localhost:8080/api/"
 
@@ -14,7 +14,6 @@ export async function getAllCategories(): Promise<ICategoryData[] | []> {
     return []
   }
 }
-
 export const getAllPosts = async (): Promise<IPostData[] | []> => {
   try {
     const response = await fetch(url + API_URL.GET_ALL_POSTS)
@@ -25,7 +24,6 @@ export const getAllPosts = async (): Promise<IPostData[] | []> => {
     return []
   }
 }
-
 export const getSinglePost = async (
   id: string | undefined
 ): Promise<IPostData | undefined> => {
@@ -37,3 +35,9 @@ export const getSinglePost = async (
 }
 
 export const createCategories = async () => {}
+
+// export const createProduct = async (): Promise<IProduct> => {
+
+//   const 
+
+// }

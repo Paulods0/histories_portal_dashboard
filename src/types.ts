@@ -14,3 +14,13 @@ export interface IPostData {
   }
   createdAt: string
 }
+
+export interface IProduct {
+  image: string
+  name: string
+  price: string
+  category: {
+    name: string
+  }
+  createdAt: string
+}

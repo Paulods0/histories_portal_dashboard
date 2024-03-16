@@ -3,7 +3,11 @@ import { ADMIN_DASHBOARD_NAV_LINKS } from "../constants"
 import { FiLogOut } from "react-icons/fi"
 
 const SidebarNavigation = () => {
-  const path = useLocation().pathname.split("/")[1]
+  const HOME_LINK_PATH = "home"
+  const path =
+    useLocation().pathname.split("/")[1] === ""
+      ? HOME_LINK_PATH
+      : useLocation().pathname.split("/")[1]
 
   return (
     <aside className="rounded-[20px] w-[70px] ml-6 h-[550px] items-center justify-between shadow-2xl bg-[#ffffff] backdrop-blur-lg flex flex-col">
