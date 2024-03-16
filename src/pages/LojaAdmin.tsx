@@ -13,11 +13,8 @@ const LojaAdmin = () => {
   const [price, setPrice] = useState("")
   const [category, setCategory] = useState("other")
   const [file, setFile] = useState<File | undefined>()
-  // const [downloadURL, setDownloadURL] = useState("")
   const [imageToShow, setImageToShow] = useState<any>()
   const [isUploadingProduct, setIsUploadingProduct] = useState(false)
-
-  console.log(category)
 
   const resetInputFields = () => {
     setName("")
@@ -38,8 +35,8 @@ const LojaAdmin = () => {
   }
 
   const handleSubmit = async (e: FormEvent) => {
-    setIsUploadingProduct(true)
     e.preventDefault()
+    setIsUploadingProduct(true)
     if (!name) {
       toast.error("O nome é obrigatório", {
         autoClose: 1000,
@@ -73,24 +70,6 @@ const LojaAdmin = () => {
       const filename = new Date().getTime() + "-" + file.name
       const imageRef = ref(storage, filename)
       const uploadTask = uploadBytesResumable(imageRef, file)
-
-      // uploadTask.on(
-      //   "state_changed",
-      //   () => {},
-      //   (error) => {
-      //     setIsUploadingProduct(false)
-      //     console.error("Erro durante o upload da imagem:", error)
-      //     toast.error("Erro ao enviar a imagem", {
-      //       position: "top-right",
-      //       autoClose: 1000,
-      //     })
-      //   },
-      //   () => {
-      //     getDownloadURL(uploadTask.ref).then((downloadURL) => {
-      //       setDownloadURL(downloadURL)
-      //     })
-      //   }
-      // )
 
       await new Promise((resolve: (value?: unknown) => void, reject) => {
         uploadTask.on(
@@ -181,23 +160,22 @@ const LojaAdmin = () => {
       >
         <div className="w-full flex flex-col items-center justify-center rounded-xl h-[300px] border border-dashed border-zinc-800">
           {imageToShow ? (
-            <>
-              <div className="w-full h-full flex flex-col">
-                <label htmlFor="file" className="cursor-pointer w-full h-full">
-                  <img
-                    src={imageToShow}
-                    alt="imagem do produto"
-                    className="inset-0 w-full h-full object-contain"
-                  />
-                </label>
-                <input
-                  id="file"
-                  onChange={handleInputFileChange}
-                  type="file"
-                  className="opacity-0"
+            <div className="w-full h-full flex flex-col">
+              <label htmlFor="file" className="cursor-pointer w-full h-full">
+                <img
+                  src={imageToShow}
+                  alt="imagem do produto"
+                  className="inset-0 w-full h-full object-contain"
                 />
-              </div>
-            </>
+              </label>
+
+              <input
+                id="file"
+                onChange={handleInputFileChange}
+                type="file"
+                className="opacity-0"
+              />
+            </div>
           ) : (
             <>
               <label htmlFor="file" className="cursor-pointer">

@@ -41,6 +41,7 @@ const PostDetail = () => {
   const [title, setTitle] = useState("")
   const [subtitle, setSubtitle] = useState("")
   const [image, setImage] = useState<File | undefined>()
+  const [imageToShow, setImageToShow] = useState<any>("")
   const [content, setContent] = useState("")
   const [isHighlighted, setIsHighlighted] = useState(false)
   const [category, setCategory] = useState("")
@@ -207,9 +208,9 @@ const PostDetail = () => {
         <form
           encType="multipart/form-data"
           onSubmit={(e: FormEvent) => updatePost(e)}
-          className="w-[250px] rounded-lg px-4 h-[430px] flex-col flex-[1.5] border border-[1px_solid_#382A3F] shadow-md flex items-center justify-between py-4"
+          className="w-[250px] gap-4 rounded-lg px-4 flex-col flex-[1.5] flex items-center justify-between "
         >
-          <div className="flex-1 flex-col flex h-full justify-around">
+          <div className="w-full flex-col flex items-center justify-center">
             {uploadingImage ? (
               <>
                 <label htmlFor="image" className="cursor-pointer">
@@ -231,21 +232,29 @@ const PostDetail = () => {
             ) : (
               <div className=" text-[#9D9D9D] outline-dotted  text-center p-2 rounded-lg">
                 <label htmlFor="image" className="cursor-pointer">
-                  Adicionar imagem principal
+                  <div className="relative w-[200px] h-[150px]">
+                    <img
+                      src={downloadURLImage}
+                      alt=""
+                      className="absolute w-full h-full object-contain"
+                    />
+                  </div>
+                  <input
+                    id="image"
+                    accept="image/*"
+                    name="image"
+                    type="file"
+                    onChange={(e) => handleFileInputChange(e)}
+                    placeholder="Adicione a imagem principal"
+                    className="hidden border-none bg-transparent outline-none "
+                  />
                 </label>
-                <input
-                  id="image"
-                  accept="image/*"
-                  name="image"
-                  type="file"
-                  onChange={(e) => handleFileInputChange(e)}
-                  placeholder="Adicione a imagem principal"
-                  className="hidden border-none bg-transparent outline-none "
-                />
               </div>
             )}
+          </div>
 
-            <div className="border-[#9D9D9D] border py-2 px-4 rounded-lg">
+          <div className="rounded-lg mt-2 flex flex-col gap-2 border border-[1px_solid_#382A3F] p-4 shadow-md w-full">
+            <div className="border-[#9D9D9D] border py-2 px-4  rounded-lg">
               <input
                 type="text"
                 value={title}
@@ -298,13 +307,18 @@ const PostDetail = () => {
               </div>
             </div>
           </div>
-          <button
-            className={`w-full hover:bg-[#382A3F]/80 duration-200 transition-all ease-in p-2 rounded-lg mt-8  text-white uppercase font-semibold mx-6 ${
-              isCreatingPost ? "bg-[#382A3F]/80" : "bg-[#382A3F]"
-            }`}
-          >
-            {isCreatingPost ? "Loading..." : " Atualizar"}
-          </button>
+          <div className="w-full flex justify-between gap-2  mt-4">
+            <button
+              className={`w-full hover:bg-[#382A3F]/80 duration-200 transition-all ease-in p-2 rounded-lg  text-white uppercase font-semibold ${
+                isCreatingPost ? "bg-[#382A3F]/80" : "bg-[#382A3F]"
+              }`}
+            >
+              {isCreatingPost ? "Loading..." : " Atualizar"}
+            </button>
+            <button className="bg-red-700 w-full duration-200 transition-all ease-in p-2 rounded-lg  text-white uppercase font-semibold">
+              Eliminar
+            </button>
+          </div>
         </form>
       </div>
     </main>

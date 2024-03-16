@@ -8,6 +8,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
 import { storage } from "../config/firebase"
 import { BarLoader } from "react-spinners"
 import { toast } from "react-toastify"
+import { IoIosAddCircleOutline } from "react-icons/io"
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -35,17 +36,17 @@ const modules = {
 
 const NovoPost = () => {
   //STATES
+  const [categories, setCategories] = useState<ICategoryData[]>([])
+
   const [title, setTitle] = useState("")
   const [subtitle, setSubtitle] = useState("")
-  const [image, setImage] = useState<File | undefined>()
-  const [imgProgress, setImgProgress] = useState(0)
-  const [hasImage, setHasImage] = useState(false)
-  const [uploadingImage, setUploadingImage] = useState(false)
-  const [downloadURLImage, setDownloadURLImage] = useState("")
   const [content, setContent] = useState("")
   const [isHighlighted, setIsHighlighted] = useState(false)
-  const [categories, setCategories] = useState<ICategoryData[]>([])
   const [category, setCategory] = useState("")
+
+  const [image, setImage] = useState<File | undefined>()
+  const [imageToShow, setImageToShow] = useState<any>()
+
   const [isCreatingPost, setIsCreatingPost] = useState(false)
 
   //FUNCTIONS
@@ -53,63 +54,90 @@ const NovoPost = () => {
     if (e.target.files) {
       const file = e.target.files[0]
       setImage(file)
-      setHasImage(true)
-    }
-  }
-  const uploadImageToFirestore = async (file: File | undefined) => {
-    if (!file) {
-      return
-    }
-    const filename = new Date().getTime() + "-" + file.name
-    const imageRef = ref(storage, "images/" + filename)
-    const uploadTask = uploadBytesResumable(imageRef, file)
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        setUploadingImage(true)
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-
-        switch (snapshot.state) {
-          case "paused":
-            console.log("upload is paused")
-            break
-          case "running":
-            console.log("upload is running")
-            break
-          default:
-            break
-        }
-      },
-      (error) => {
-        console.log(error)
-        switch (error.code) {
-          case "storage/unauthorized":
-            console.log(error)
-            break
-          case "storage/canceled":
-            //user canceled
-            break
-          case "storage/unknown":
-            //unknown error occurred, inspect error,server response
-            break
-          default:
-            break
-        }
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log("downloadURL: ", downloadURL)
-          setUploadingImage(false)
-          setDownloadURLImage(downloadURL)
-        })
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setImageToShow(e.target!!.result)
       }
-    )
+      reader.readAsDataURL(file)
+    }
   }
+
+  const resetInputs = () => {
+    setTitle("")
+    setSubtitle("")
+    setContent("")
+    setCategory("")
+    setIsHighlighted(false)
+    setIsCreatingPost(false)
+  }
+
   const createPost = async (e: FormEvent) => {
     e.preventDefault()
     setIsCreatingPost(true)
+    if (!title) {
+      toast.error("O título é obrigatório", {
+        autoClose: 1000,
+        hideProgressBar: true,
+      })
+      setIsCreatingPost(false)
+      return
+    }
+    if (!subtitle) {
+      toast.error("O subtítulo é obrigatório", {
+        autoClose: 1000,
+        hideProgressBar: true,
+      })
+      setIsCreatingPost(false)
+      return
+    }
+    if (!content) {
+      toast.error("O contéudo é obrigatório", {
+        autoClose: 1000,
+        hideProgressBar: true,
+      })
+      setIsCreatingPost(false)
+      return
+    }
+    if (!category) {
+      toast.error("A categoria é obrigatória", {
+        autoClose: 1000,
+        hideProgressBar: true,
+      })
+      setIsCreatingPost(false)
+      return
+    }
+    if (!image) {
+      toast.error("A imagem é obrigatória", {
+        autoClose: 1000,
+        hideProgressBar: true,
+      })
+      setIsCreatingPost(false)
+      return
+    }
     try {
+      const filename = new Date().getTime() + "-" + image?.name
+      const imageRef = ref(storage, filename)
+      const uploadTask = uploadBytesResumable(imageRef, image)
+
+      await new Promise((resolve: (value?: unknown) => void, reject) => {
+        uploadTask.on(
+          "state_changed",
+          () => {},
+          (error) => {
+            toast.error(error.message, {
+              autoClose: 1000,
+              hideProgressBar: true,
+            })
+            reject()
+          },
+          () => {
+            resolve()
+          }
+        )
+      })
+
+      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
+
       const response = await fetch(url + "post/create-post", {
         method: "POST",
         headers: {
@@ -121,7 +149,7 @@ const NovoPost = () => {
           content: content,
           isHighlighted: isHighlighted,
           category: category,
-          mainImage: downloadURLImage,
+          mainImage: downloadURL,
         }),
       })
 
@@ -141,14 +169,12 @@ const NovoPost = () => {
         })
       }
     } catch (error) {
-      toast.error("", {})
+      console.log(error)
+    } finally {
+      resetInputs()
     }
-    setTitle("")
-    setSubtitle("")
-    setContent("")
-    setIsHighlighted(false)
-    setCategory("")
-    setIsCreatingPost(false)
+
+    // isCreatingPost
   }
 
   //USE EFFECTS
@@ -164,43 +190,37 @@ const NovoPost = () => {
     fetchData()
   }, [])
 
-  useEffect(() => {
-    const uploadImaga = async () => {
-      await uploadImageToFirestore(image)
-    }
-    uploadImaga()
-  }, [image])
-
   return (
-    <main className="p-4">
-      <h1 className="text-[20px] font-semibold uppercase text-[#382A3F] mb-4">
-        Crie um novo post
-      </h1>
-      <div className="w-full flex gap-6">
-        {/** QUILL EDITOR */}
+    <main className="w-full h-full md:grid md:grid-cols-1 grid-cols-1 place-items-center lg:flex lg:items-center lg:justify-center lg:p-20 gap-8">
+      {/** QUILL EDITOR */}
 
-        <ReactQuill
-          modules={modules}
-          className=" flex-[4] h-[360px]"
-          value={content}
-          onChange={(value) => setContent(value)}
-        />
+      <ReactQuill
+        modules={modules}
+        className="h-[450px] w-full "
+        value={content}
+        theme="snow"
+        onChange={(value) => setContent(value)}
+      />
 
-        {/** FORM */}
-        <form
-          encType="multipart/form-data"
-          onSubmit={(e: FormEvent) => createPost(e)}
-          className="w-[250px] rounded-lg px-4 h-[430px] flex-col flex-[1.5] border border-[1px_solid_#382A3F] shadow-md flex items-center justify-between py-4"
-        >
-          <div className="flex-1 flex-col flex h-full justify-around">
-            {uploadingImage ? (
-              <>
-                <label htmlFor="image" className="cursor-pointer">
-                  <h1>
-                    <div className="flex flex-col items-center w-full">
-                      <BarLoader color="#56b5e4" />
-                    </div>
-                  </h1>
+      {/** FORM */}
+      <form
+        encType="multipart/form-data"
+        onSubmit={(e: FormEvent) => createPost(e)}
+        className="p-4 flex flex-col  items-center justify-between"
+      >
+        <div className="w-full flex flex-col items-center  justify-center rounded-xl h-[150px] border border-dashed border-zinc-800">
+          {imageToShow ? (
+            <>
+              <div className="w-full h-full flex flex-col">
+                <label
+                  htmlFor="image"
+                  className="cursor-pointer relative  w-full h-full "
+                >
+                  <img
+                    src={imageToShow}
+                    alt="Imagem do post"
+                    className="absolute inset-0 w-full h-full object-contain"
+                  />
                   <input
                     id="image"
                     accept="image/*"
@@ -208,14 +228,20 @@ const NovoPost = () => {
                     type="file"
                     onChange={(e) => handleFileInputChange(e)}
                     placeholder="Adicione a imagem principal"
-                    className="hidden bg-transparent border-none outline-none "
+                    className="opacity-0"
                   />
                 </label>
-              </>
-            ) : (
-              <div className=" text-[#9D9D9D] outline-dotted  text-center p-2 rounded-lg">
-                <label htmlFor="image" className="cursor-pointer">
-                  Adicionar imagem principal
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <label
+                  htmlFor="image"
+                  className="cursor-pointer flex flex-col items-center justify-center"
+                >
+                  <IoIosAddCircleOutline size={50} color="#9D9D9D" />
+                  <span>Adicionar imagem</span>
                 </label>
                 <input
                   id="image"
@@ -224,73 +250,76 @@ const NovoPost = () => {
                   type="file"
                   onChange={(e) => handleFileInputChange(e)}
                   placeholder="Adicione a imagem principal"
-                  className="hidden border-none bg-transparent outline-none "
+                  className="h-0 w-0"
                 />
               </div>
-            )}
+            </>
+          )}
+        </div>
 
-            <div className="border-[#9D9D9D] border py-2 px-4 rounded-lg">
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Adicione o título principal"
-                className="text-[14px] bg-transparent border-none w-full text-center outline-none"
-              />
-            </div>
-            <div className="border-[#9D9D9D] border py-2 px-4 rounded-lg">
-              <input
-                type="text"
-                value={subtitle}
-                onChange={(e) => setSubtitle(e.target.value)}
-                placeholder="Adicione o subtítulo"
-                className="text-[14px] bg-transparent border-none w-full text-center outline-none"
-              />
-            </div>
+        <div className="p-12 bg-white rounded-lg flex-col flex h-full gap-4 mt-6 justify-center w-full shadow-md">
+          <div className="border-[#9D9D9D] border py-2 px-4 rounded-lg">
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Adicione o título principal"
+              className="text-[14px] bg-transparent border-none w-full text-center outline-none"
+            />
+          </div>
+          <div className="border-[#9D9D9D] border py-2 px-4 rounded-lg">
+            <input
+              type="text"
+              value={subtitle}
+              onChange={(e) => setSubtitle(e.target.value)}
+              placeholder="Adicione o subtítulo"
+              className="text-[14px] bg-transparent border-none w-full text-center outline-none"
+            />
+          </div>
 
-            <div className="flex gap-2 items-center ">
-              <div className="py-2 px-4 border border-[#9D9D9D] rounded-lg ">
-                <select
-                  onChange={(e) => {
-                    setCategory(e.target.value)
-                  }}
-                  value={category}
-                  className="text-[14px] bg-transparent cursor-pointer border-none outline-none h-full text-[#9D9D9D] text-center "
-                >
-                  <option disabled value="" className=" text-[#9D9D9D]">
-                    Adicione o tópico
+          <div className="flex gap-2 items-center ">
+            <div className="py-2 px-4 border border-[#9D9D9D] rounded-lg ">
+              <select
+                onChange={(e) => {
+                  setCategory(e.target.value)
+                }}
+                value={category}
+                className="text-[14px] bg-transparent cursor-pointer border-none outline-none h-full text-[#9D9D9D] text-center "
+              >
+                <option disabled value="" className=" text-[#9D9D9D]">
+                  Adicione o tópico
+                </option>
+                {categories.map((category) => (
+                  <option id="option" value={category._id} key={category._id}>
+                    {category.name}
                   </option>
-                  {categories.map((category) => (
-                    <option id="option" value={category._id} key={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                ))}
+              </select>
+            </div>
 
-              <div className="flex gap-2 items-center justify-center text-[#9D9D9D]">
-                <label htmlFor="destaque" className="cursor-pointer">
-                  Destacar
-                </label>
-                <input
-                  id="destaque"
-                  type="checkbox"
-                  checked={isHighlighted}
-                  onChange={(e) => setIsHighlighted(e.target.checked)}
-                  className="text-[14px] border-none outline-none"
-                />
-              </div>
+            <div className="flex gap-2 items-center justify-center text-[#9D9D9D]">
+              <label htmlFor="destaque" className="cursor-pointer">
+                Destacar
+              </label>
+              <input
+                id="destaque"
+                type="checkbox"
+                checked={isHighlighted}
+                onChange={(e) => setIsHighlighted(e.target.checked)}
+                className="text-[14px] border-none outline-none"
+              />
             </div>
           </div>
-          <button
-            className={`w-full hover:bg-[#382A3F]/80 duration-200 transition-all ease-in p-2 rounded-lg mt-8  text-white uppercase font-semibold mx-6 ${
-              isCreatingPost ? "bg-[#382A3F]/80" : "bg-[#382A3F]"
-            }`}
-          >
-            {isCreatingPost ? "Loading." : " publicar"}
-          </button>
-        </form>
-      </div>
+        </div>
+
+        <button
+          className={`w-full hover:bg-[#382A3F]/80 duration-200 transition-all ease-in p-2 rounded-lg mt-8  text-white uppercase font-semibold mx-6 ${
+            isCreatingPost ? "bg-[#382A3F]/80" : "bg-[#382A3F]"
+          }`}
+        >
+          {isCreatingPost ? "Loading..." : " publicar"}
+        </button>
+      </form>
     </main>
   )
 }
