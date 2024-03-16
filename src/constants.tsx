@@ -43,3 +43,5 @@ export const ADMIN_DASHBOARD_NAV_LINKS = [
     link: "/adicionargestor",
   },
 ]
+
+export const STORE_PRODUCT_HEADERS = ["Imagem", "Nome", "Categoria", "Preço"]

@@ -33,11 +33,9 @@ export const getSinglePost = async (
   const data = await response.json()
   return data
 }
-
-export const createCategories = async () => {}
-
-// export const createProduct = async (): Promise<IProduct> => {
-
-//   const 
-
+// export const getAllProducts = async (): Promise<IProduct> => {
+//   try {
+//   } catch (error) {
+//     console.log(error)
+//   }
 // }
