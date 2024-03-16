@@ -9,9 +9,7 @@ export interface IPostData {
   mainImage: string
   content: string
   isHighlighted: boolean
-  category: {
-    name: string
-  }
+  category: ICategoryData
   createdAt: string
 }
 

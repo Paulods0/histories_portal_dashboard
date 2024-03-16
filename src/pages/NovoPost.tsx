@@ -6,9 +6,11 @@ import { getAllCategories, url } from "../api/apiCalls"
 import { ICategoryData } from "../types"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
 import { storage } from "../config/firebase"
-import { BarLoader } from "react-spinners"
+import { BarLoader, ClipLoader } from "react-spinners"
 import { toast } from "react-toastify"
 import { IoIosAddCircleOutline } from "react-icons/io"
+import { renameImageName, uploadImageToFirebaseStorage } from "../utils"
+import { useNavigate } from "react-router-dom"
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -35,18 +37,17 @@ const modules = {
 }
 
 const NovoPost = () => {
+  const navigate = useNavigate()
+
   //STATES
   const [categories, setCategories] = useState<ICategoryData[]>([])
-
   const [title, setTitle] = useState("")
   const [subtitle, setSubtitle] = useState("")
   const [content, setContent] = useState("")
   const [isHighlighted, setIsHighlighted] = useState(false)
   const [category, setCategory] = useState("")
-
   const [image, setImage] = useState<File | undefined>()
   const [imageToShow, setImageToShow] = useState<any>()
-
   const [isCreatingPost, setIsCreatingPost] = useState(false)
 
   //FUNCTIONS
@@ -116,28 +117,10 @@ const NovoPost = () => {
     }
     try {
       const IMAGE_FOLDER = "images/"
-      const filename = new Date().getTime() + "-" + image?.name
-      const imageRef = ref(storage, IMAGE_FOLDER + filename)
-      const uploadTask = uploadBytesResumable(imageRef, image)
-
-      await new Promise((resolve: (value?: unknown) => void, reject) => {
-        uploadTask.on(
-          "state_changed",
-          () => {},
-          (error) => {
-            toast.error(error.message, {
-              autoClose: 1000,
-              hideProgressBar: true,
-            })
-            reject()
-          },
-          () => {
-            resolve()
-          }
-        )
-      })
-
-      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
+      const downloadURL = await uploadImageToFirebaseStorage(
+        image,
+        IMAGE_FOLDER
+      )
 
       const response = await fetch(url + "post/create-post", {
         method: "POST",
@@ -168,14 +151,14 @@ const NovoPost = () => {
           autoClose: 1000,
           hideProgressBar: true,
         })
+        navigate("/posts")
       }
     } catch (error) {
       console.log(error)
     } finally {
+      setIsCreatingPost(false)
       resetInputs()
     }
-
-    // isCreatingPost
   }
 
   //USE EFFECTS
@@ -192,7 +175,7 @@ const NovoPost = () => {
   }, [])
 
   return (
-    <main className="w-full h-full md:grid md:grid-cols-1 grid-cols-1 place-items-center lg:flex lg:items-center lg:justify-center lg:p-20 gap-8">
+    <main className="w-full  flex p-3 gap-8">
       {/** QUILL EDITOR */}
 
       <ReactQuill
@@ -207,15 +190,15 @@ const NovoPost = () => {
       <form
         encType="multipart/form-data"
         onSubmit={(e: FormEvent) => createPost(e)}
-        className="p-4 flex flex-col  items-center justify-between"
+        className=" flex flex-col items-center justify-center"
       >
-        <div className="w-full flex flex-col items-center  justify-center rounded-xl h-[150px] border border-dashed border-zinc-800">
+        <div className="w-full flex flex-col items-center justify-center rounded-xl h-[150px] ">
           {imageToShow ? (
             <>
-              <div className="w-full h-full flex flex-col">
+              <div className="w-full h-[150px] flex flex-col">
                 <label
                   htmlFor="image"
-                  className="cursor-pointer relative  w-full h-full "
+                  className="cursor-pointer relative w-full h-full "
                 >
                   <img
                     src={imageToShow}
@@ -236,7 +219,7 @@ const NovoPost = () => {
             </>
           ) : (
             <>
-              <div>
+              <div className="border h-[150px] border-dashed border-zinc-800 w-full flex flex-col items-center justify-center rounded-xl ">
                 <label
                   htmlFor="image"
                   className="cursor-pointer flex flex-col items-center justify-center"
@@ -314,11 +297,12 @@ const NovoPost = () => {
         </div>
 
         <button
+          disabled={isCreatingPost}
           className={`w-full hover:bg-[#382A3F]/80 duration-200 transition-all ease-in p-2 rounded-lg mt-8  text-white uppercase font-semibold mx-6 ${
             isCreatingPost ? "bg-[#382A3F]/80" : "bg-[#382A3F]"
           }`}
         >
-          {isCreatingPost ? "Loading..." : " publicar"}
+          {isCreatingPost ? <ClipLoader size={18} color="#FFF" /> : " publicar"}
         </button>
       </form>
     </main>

@@ -10,6 +10,7 @@ import RecentPostCard from "../components/RecentPostCard"
 const HomeDashboard = () => {
   const [categories, setCategories] = useState<ICategoryData[]>([])
   const [posts, setPosts] = useState<IPostData[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchCategoriesData = async () => {
@@ -18,18 +19,29 @@ const HomeDashboard = () => {
     }
     fetchCategoriesData()
   }, [])
+
   useEffect(() => {
     const fetchPostsData = async () => {
       const posts = await getAllPosts()
       setPosts(posts)
+      setIsLoading(false)
     }
     fetchPostsData()
   }, [])
-  if (posts.length <= 0) {
+
+  if (isLoading) {
     return (
       <main className="relative w-full h-[80vh] flex items-center justify-center">
         <BeatLoader color="#382A3F" />
       </main>
+    )
+  }
+
+  if (posts.length === 0) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <h1>Não há nenhum post ainda</h1>
+      </div>
     )
   }
 
@@ -43,7 +55,7 @@ const HomeDashboard = () => {
           {/**HOME STATS */}
           <div className="flex gap-10 mt-8">
             <HomeStats label="Usuários" icon="users" total={3} />
-            <HomeStats label="Likes" icon="likes" total={238} />
+            <HomeStats label="Posts" icon="posts" total={posts.length} />
             <HomeStats
               label="Tópicos"
               icon="topics"

@@ -4,17 +4,15 @@ import "react-quill/dist/quill.snow.css"
 
 import { getAllCategories, getSinglePost, url } from "../api/apiCalls"
 import { ICategoryData, IPostData } from "../types"
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage"
+import { deleteObject, ref } from "firebase/storage"
 import { storage } from "../config/firebase"
 import { ClipLoader } from "react-spinners"
 import { toast } from "react-toastify"
-import { useParams } from "react-router-dom"
-import { getImagePathFromFirebaseURL } from "../utils"
+import { useNavigate, useParams } from "react-router-dom"
+import {
+  getImagePathFromFirebaseURL,
+  uploadImageToFirebaseStorage,
+} from "../utils"
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -42,8 +40,8 @@ const modules = {
 
 const PostDetail = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
 
-  //POST OBJECT VARIABLES
   const [title, setTitle] = useState("")
   const [subtitle, setSubtitle] = useState("")
   const [image, setImage] = useState<File | undefined>()
@@ -54,11 +52,11 @@ const PostDetail = () => {
   const [downloadURLImage, setDownloadURLImage] = useState("")
   const [data, setData] = useState<IPostData>()
 
-  //HELPER VARIABLES
   const [categories, setCategories] = useState<ICategoryData[]>([])
   const [isCreatingPost, setIsCreatingPost] = useState(false)
+  const [isDeletingPost, setIsDeletingPost] = useState(false)
+  const IMAGE_FOLDER = "images/"
 
-  //FUNCTIONS
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const file = e.target.files[0]
@@ -74,14 +72,14 @@ const PostDetail = () => {
   }
 
   const updatePost = async (e: FormEvent) => {
-    const IMAGE_FOLDER = "images/"
     e.preventDefault()
     setIsCreatingPost(true)
     if (!image) {
+      console.log(false + " Não tem imagem selecionada")
       setDownloadURLImage(data!!.mainImage)
     } else {
       const imageName = getImagePathFromFirebaseURL(downloadURLImage)
-      const imageToDeleteRef = ref(storage, `${IMAGE_FOLDER}/${imageName}`)
+      const imageToDeleteRef = ref(storage, `${IMAGE_FOLDER}${imageName}`)
 
       deleteObject(imageToDeleteRef)
         .then(() => {
@@ -90,28 +88,10 @@ const PostDetail = () => {
         .catch((error) => {
           console.log(error)
         })
+
+      const downloadURL = await uploadImageToFirebaseStorage(image, "images/")
+      setDownloadURLImage(downloadURL)
     }
-
-    const filename = new Date().getTime() + "-" + image!!.name
-    const imageRef = ref(storage, IMAGE_FOLDER + filename)
-    const uploadTask = uploadBytesResumable(imageRef, image!!)
-
-    await new Promise((resolve: (value?: unknown) => void, reject) => {
-      uploadTask.on(
-        "state_changed",
-        () => {},
-        (error) => {
-          reject(error)
-          toast.error(error.message)
-        },
-        () => {
-          resolve()
-        }
-      )
-    })
-    getDownloadURL(uploadTask.snapshot.ref).then((downloadurl) => {
-      setDownloadURLImage(downloadurl)
-    })
 
     try {
       const response = await fetch(url + `post/${id}`, {
@@ -124,7 +104,7 @@ const PostDetail = () => {
           subtitle: subtitle,
           content: content,
           isHighlighted: isHighlighted,
-          category: category,
+          category,
           mainImage: downloadURLImage,
         }),
       })
@@ -150,8 +130,32 @@ const PostDetail = () => {
     }
     setIsCreatingPost(false)
   }
-  
-  
+
+  const handleDeletePost = async (e: FormEvent) => {
+    e.preventDefault()
+    setIsDeletingPost(true)
+    try {
+      if (downloadURLImage != null || downloadURLImage != "") {
+        const imageName = getImagePathFromFirebaseURL(downloadURLImage)
+        const imageRef = ref(storage, `${IMAGE_FOLDER}${imageName}`)
+        await deleteObject(imageRef)
+      }
+
+      const response = await fetch(`${url}post/delete/${id}`, {
+        method: "DELETE",
+      })
+      const { message } = await response.json()
+
+      toast.success(message, {
+        autoClose: 1000,
+        hideProgressBar: true,
+      })
+      navigate("/posts")
+    } catch (error) {
+      console.log(error)
+    }
+    setIsDeletingPost(false)
+  }
 
   //USE EFFECTS
   useEffect(() => {
@@ -174,7 +178,7 @@ const PostDetail = () => {
       setSubtitle(data!!.subtitle)
       setIsHighlighted(data!!.isHighlighted)
       setContent(data!!.content)
-      setCategory(data!!.category.name)
+      setCategory(data!!.category._id)
       setDownloadURLImage(data!!.mainImage)
     }
     fetchData()
@@ -274,15 +278,12 @@ const PostDetail = () => {
             <div className="flex gap-2 items-center ">
               <div className="py-2 px-4 border border-[#9D9D9D] rounded-lg ">
                 <select
+                  value={category}
                   onChange={(e) => {
                     setCategory(e.target.value)
                   }}
-                  // value={category.}
                   className="text-[14px] bg-transparent cursor-pointer border-none outline-none h-full text-[#9D9D9D] text-center "
                 >
-                  <option disabled value="" className=" text-[#9D9D9D]">
-                    Adicione o tópico
-                  </option>
                   {categories.map((category) => (
                     <option id="option" value={category._id} key={category._id}>
                       {category.name}
@@ -307,23 +308,27 @@ const PostDetail = () => {
           </div>
           <div className="w-full flex justify-between gap-2  mt-4">
             <button
-              disabled={isCreatingPost}
+              disabled={isCreatingPost || isDeletingPost}
               className={`w-full hover:bg-[#382A3F]/80 flex items-center justify-center duration-200 transition-all ease-in p-2 rounded-lg  text-white uppercase font-semibold ${
                 isCreatingPost ? "bg-[#382A3F]/80" : "bg-[#1F101A]"
               }`}
             >
               {isCreatingPost ? (
-                <ClipLoader size={20} color="#FFF" />
+                <ClipLoader size={18} color="#FFF" />
               ) : (
                 " Atualizar"
               )}
             </button>
             <button
-            onClick={handleDeletePost}
-              disabled={isCreatingPost}
+              onClick={handleDeletePost}
+              disabled={isCreatingPost || isDeletingPost}
               className="bg-red-700 w-full duration-200 transition-all ease-in p-2 rounded-lg  text-white uppercase font-semibold"
             >
-              Eliminar
+              {isDeletingPost ? (
+                <ClipLoader color="#FFF" size={18} />
+              ) : (
+                "Eliminar"
+              )}
             </button>
           </div>
         </form>

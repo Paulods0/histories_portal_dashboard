@@ -6,21 +6,27 @@ import { BeatLoader } from "react-spinners"
 
 const Posts = () => {
   const [posts, setPosts] = useState<IPostData[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await getAllPosts()
       setPosts(data)
+      setIsLoading(false)
     }
     fetchData()
   }, [])
 
-  if (posts.length <= 0) {
+  if (isLoading) {
     return (
       <main className="relative w-full h-[80vh] flex items-center justify-center">
-        {/* <div className="absolute inset-0 w-full h-full bg-[#2391ff]"></div> */}
         <BeatLoader color="#382A3F" />
       </main>
     )
+  }
+
+  if (posts.length === 0) {
+    return <h1>Não há nada ainda.</h1>
   }
 
   return (
@@ -35,3 +41,12 @@ const Posts = () => {
 }
 
 export default Posts
+
+// ) : (
+//   !posts && (
+//     <>
+//       <main className="relative w-full h-[80vh] flex items-center justify-center">
+//         <h1>Não há nenhum post</h1>
+//       </main>
+//     </>
+//   )
