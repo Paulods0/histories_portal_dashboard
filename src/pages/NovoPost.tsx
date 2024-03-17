@@ -9,8 +9,9 @@ import { storage } from "../config/firebase"
 import { BarLoader, ClipLoader } from "react-spinners"
 import { toast } from "react-toastify"
 import { IoIosAddCircleOutline } from "react-icons/io"
-import { renameImageName, uploadImageToFirebaseStorage } from "../utils"
+import { renameImageName, uploadImageToFirebaseStorage } from "../utils/helpers"
 import { useNavigate } from "react-router-dom"
+import { API_URL } from "../utils/enums"
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -122,7 +123,7 @@ const NovoPost = () => {
         IMAGE_FOLDER
       )
 
-      const response = await fetch(url + "post/create-post", {
+      const response = await fetch(`${url}${API_URL.CREATE_POST}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

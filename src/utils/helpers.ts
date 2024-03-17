@@ -1,10 +1,6 @@
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
-import { storage } from "./config/firebase"
+import { storage } from "../config/firebase"
 import { toast } from "react-toastify"
-
-export enum API_URL {
-  GET_ALL_POSTS = "post/get",
-}
 
 export function getImagePathFromFirebaseURL(imageURL: string): string {
   const imagePathArray = imageURL.split("/o/images%2F")
@@ -25,8 +21,6 @@ export function renameImageName(image: string) {
 
   return filename
 }
-
-renameImageName("1710621781139UrosPodlogar_ProjectRhino_St.jpg")
 
 export async function uploadImageToFirebaseStorage(
   image: File,
@@ -55,3 +49,4 @@ export async function uploadImageToFirebaseStorage(
   const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
   return downloadURL
 }
+

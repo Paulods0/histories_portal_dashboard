@@ -5,16 +5,31 @@ import { toast } from "react-toastify"
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
 import { storage } from "../config/firebase"
 
-import { ClipLoader } from "react-spinners"
+import { BeatLoader, ClipLoader } from "react-spinners"
 import { STORE_PRODUCT_HEADERS } from "../constants"
+import { uploadImageToFirebaseStorage } from "../utils/helpers"
+import { getAllProducts, url } from "../api/apiCalls"
+import { API_URL } from "../utils/enums"
+import { IProduct } from "../types"
 
 const LojaAdmin = () => {
+  const [products, setProducts] = useState<IProduct[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
   const [name, setName] = useState("")
   const [price, setPrice] = useState("")
   const [category, setCategory] = useState("other")
   const [file, setFile] = useState<File | undefined>()
   const [imageToShow, setImageToShow] = useState<any>()
   const [isUploadingProduct, setIsUploadingProduct] = useState(false)
+
+  const prod = {
+    nome: name,
+    preço: price,
+    categoryId: category,
+    imagem: file?.name,
+  }
+  // console.log(prod)
 
   const resetInputFields = () => {
     setName("")
@@ -37,29 +52,8 @@ const LojaAdmin = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setIsUploadingProduct(true)
-    if (!name) {
-      toast.error("O nome é obrigatório", {
-        autoClose: 1000,
-      })
-      setIsUploadingProduct(false)
-      return
-    }
-    if (!price) {
-      toast.error("O preço é obrigatório", {
-        autoClose: 1000,
-      })
-      setIsUploadingProduct(false)
-      return
-    }
-    if (!category) {
-      toast.error("A categoria é obrigatória", {
-        autoClose: 1000,
-      })
-      setIsUploadingProduct(false)
-      return
-    }
-    if (!file) {
-      toast.error("A imagem é obrigatória", {
+    if (!name || !price || !category || !file) {
+      toast.error("Por favor, preencha todos os campos obrigatórios.", {
         autoClose: 1000,
         position: "top-right",
       })
@@ -68,30 +62,9 @@ const LojaAdmin = () => {
     }
     try {
       const IMAGE_FOLDER = "products/"
-      const filename = new Date().getTime() + "-" + file.name
-      const imageRef = ref(storage, IMAGE_FOLDER + filename)
-      const uploadTask = uploadBytesResumable(imageRef, file)
+      const downloadurl = await uploadImageToFirebaseStorage(file, IMAGE_FOLDER)
 
-      await new Promise((resolve: (value?: unknown) => void, reject) => {
-        uploadTask.on(
-          "state_changed",
-          () => {},
-          (error) => {
-            toast.error(error.message, {
-              autoClose: 1000,
-              hideProgressBar: true,
-            })
-            reject(error)
-          },
-          () => {
-            resolve()
-          }
-        )
-      })
-
-      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
-
-      const response = await fetch("http://localhost:8080/api/product", {
+      const response = await fetch(`${url}product`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -100,59 +73,82 @@ const LojaAdmin = () => {
           name: name,
           category: category,
           price: price,
-          image: downloadURL,
+          image: downloadurl,
         }),
       })
 
-      const { message } = await response.json()
+      const data = await response.json()
       if (!response.ok) {
-        toast.error(message, {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: true,
-        })
-      } else {
-        toast.success(message, {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: true,
-        })
+        throw new Error(data.message || "Erro ao adicionar produto.")
       }
+
+      toast.success(data.message, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+      })
     } catch (error) {
+      toast.error("Erro ao adicionar produto.", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+      })
       console.log(error)
     }
     resetInputFields()
     setIsUploadingProduct(false)
+    window.location.reload()
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAllProducts()
+        setProducts(data)
+        setIsLoading(false)
+      } catch (error) {
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <main className="relative w-full h-[80vh] flex items-center justify-center">
+        <BeatLoader color="#382A3F" />
+      </main>
+    )
   }
 
   return (
-    <main className="flex-1 h-full grid grid-cols-3 gap-4">
-      <div className="flex flex-col h-full items-center col-span-2 p-2 gap-4 overflow-auto scroll-bar">
-        <div className="bg-[#1A101F] rounded-lg text-white w-full p-2 ">
-          <ul className="flex justify-around px-2 text-sm">
-            {STORE_PRODUCT_HEADERS.map((label, index) => (
-              <li key={index}>
-                <h1>{label}</h1>
-              </li>
-            ))}
-          </ul>
+    <main className="flex-1 h-full grid grid-cols-3 gap-4 ">
+      {products.length === 0 ? (
+        <div className="w-full h-full flex items-center justify-center col-span-2">
+          <h1>Não há nenhum post ainda</h1>
         </div>
-        <div className="w-full flex flex-col gap-4 ">
-          <StoreProductCard image="/102.jpg" />
-          <StoreProductCard image="/103.jpg" />
-          <StoreProductCard image="/104.jpg" />
-          <StoreProductCard image="/105.jpg" />
-          <StoreProductCard image="/106.jpg" />
-          <StoreProductCard image="/107.jpg" />
-          <StoreProductCard image="/108.jpg" />
-          <StoreProductCard image="/109.jpg" />
-          <StoreProductCard image="/110.jpg" />
+      ) : (
+        <>
+          <table className="flex flex-col h-full text-center items-center col-span-2 p-2 gap-4 overflow-auto scroll-bar">
+            <thead className="w-full flex text-center">
+              <tr className="w-full items-center text-center justify-between shadow-md rounded-lg flex bg-[#1F101A] text-white px-6">
+                {STORE_PRODUCT_HEADERS.map((label, index) => (
+                  <th className="w-[150px]" key={index}>
+                    {label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
 
-          <StoreProductCard image="/112.jpg" />
-          <StoreProductCard image="/113.jpg" />
-          <StoreProductCard image="/114.jpg" />
-        </div>
-      </div>
+            <tbody className="w-full gap-2 flex flex-col">
+              {products.map((product, index) => (
+                <StoreProductCard key={index} product={product} />
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
 
       <form
         encType="multipart/form-data"
@@ -225,6 +221,8 @@ const LojaAdmin = () => {
 
             <option value="65f47ace2853088042e9e45e">T-shirt</option>
             <option value="65f4754886ddcfa4b6790584">Ténis</option>
+            <option value="65f47ae32853088042e9e460">Calça</option>
+            <option value="65f47aec2853088042e9e462">Calção</option>
             <option value="65f47c8465c4e5470fe8ac16">Óculos</option>
           </select>
         </div>

@@ -14,10 +14,12 @@ export interface IPostData {
 }
 
 export interface IProduct {
+  _id: string
   image: string
   name: string
   price: string
   category: {
+    _id: string
     name: string
   }
   createdAt: string

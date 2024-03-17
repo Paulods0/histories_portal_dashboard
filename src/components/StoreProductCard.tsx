@@ -1,19 +1,36 @@
+interface IProdutcCard {
+  product: {
+    _id: string
+    image: string
+    name: string
+    price: string
+    category: {
+      _id: string
+      name: string
+    }
+    createdAt: string
+  }
+}
 
-
-const StoreProductCard = ({ image }: { image: string }) => {
+const StoreProductCard: React.FC<IProdutcCard> = ({
+  product: { _id, category, image, name, price },
+}) => {
   return (
-    <div className="h-[90px] w-full bg-white items-center shadow-md rounded-lg flex justify-around">
-      <div className="relative w-[70px] h-[70px]">
-        <img
-          src={image}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-      </div>
-      <div>Gucci Polo</div>
-      <div>T-shirt</div>
-      <div>$19.99</div>
-    </div>
+    <tr className="h-[90px] w-full bg-white items-center shadow-md rounded-lg flex justify-between px-6">
+      <td className="w-[150px]">
+        <div className="relative w-full h-[70px]">
+          <img
+            src={image}
+            alt="Imagem do produto"
+            className="absolute w-full h-full object-contain"
+          />
+        </div>
+      </td>
+
+      <td className="w-[150px]">{name}</td>
+      <td className="w-[150px]">{category.name}</td>
+      <td className="w-[150px]">${price}</td>
+    </tr>
   )
 }
 

@@ -12,7 +12,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import {
   getImagePathFromFirebaseURL,
   uploadImageToFirebaseStorage,
-} from "../utils"
+} from "../utils/helpers"
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
