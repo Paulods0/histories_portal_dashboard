@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { ICategoryData, IPostData } from "../types"
-import { getAllCategories, getAllPosts } from "../api/apiCalls"
+import { ICategoryData, IPostData, IProductData } from "../types"
+import { getAllCategories, getAllPosts, getAllProducts } from "../api/apiCalls"
 import { BeatLoader } from "react-spinners"
 import HomeStats from "../components/HomeStats"
 import { GoPlus } from "react-icons/go"
@@ -9,6 +9,7 @@ import RecentPostCard from "../components/RecentPostCard"
 
 const HomeDashboard = () => {
   const [categories, setCategories] = useState<ICategoryData[]>([])
+  const [products, setProducts] = useState<IProductData[]>([])
   const [posts, setPosts] = useState<IPostData[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -18,6 +19,14 @@ const HomeDashboard = () => {
       setCategories(categories)
     }
     fetchCategoriesData()
+  }, [])
+
+  useEffect(() => {
+    const fetchProductsData = async () => {
+      const products = await getAllProducts()
+      setProducts(products)
+    }
+    fetchProductsData()
   }, [])
 
   useEffect(() => {
@@ -53,13 +62,18 @@ const HomeDashboard = () => {
           {/**DASHBOARD TITLE */}
           <h1 className="text-[25px] font-semibold uppercase">Dashboard</h1>
           {/**HOME STATS */}
-          <div className="flex gap-10 mt-8">
-            <HomeStats label="Usuários" icon="users" total={3} />
-            <HomeStats label="Posts" icon="posts" total={posts.length} />
+          <div className="flex bg-white shadow-md rounded-lg p-4 items-center gap-10 mt-8">
+            <HomeStats label="Usuários" icon="users" total={1} />
             <HomeStats
               label="Tópicos"
               icon="topics"
               total={categories.length}
+            />
+            <HomeStats label="Posts" icon="posts" total={posts.length} />
+            <HomeStats
+              label="Produtos"
+              icon="products"
+              total={products.length}
             />
           </div>
           <div className="w-full h-[400px] flex flex-col gap-3 mt-4">
@@ -108,9 +122,39 @@ const HomeDashboard = () => {
           </div>
         </div>
         {/**DOWN SIDE */}
-        <div className="flex mt-12 flex-col w-full">
-          <h1 className="text-2xl">Tópicos</h1>
+        <div className="flex mt-2 flex-col justify-center gap-4 w-full">
+          {/* <h1 className="text-2xl">Produtos</h1> */}
+          <table className="flex flex-col  h-[200px] p-2 gap-4 bg-white shadow-md rounded-lg">
+            <thead className="w-full flex text-center">
+              <tr className="border-b flex items-center border-gray-300 w-full text-center justify-between">
+                <th className=" w-full text-[#1A101F] font-bold">Imagem</th>
+                <th className=" w-full text-[#1A101F] font-bold">Nome</th>
+                <th className=" w-full text-[#1A101F] font-bold">Preço</th>
+              </tr>
+            </thead>
+            <tbody className="scroll-bar flex flex-col  overflow-auto text-center items-center w-full">
+              <tr className="w-full">
+                {products.map((product) => (
+                  <div
+                    key={product.name}
+                    className="w-full flex justify-between items-center"
+                  >
+                    <td className="w-full flex justify-center items-center">
+                      <img
+                        src={product.image}
+                        alt=""
+                        className="w-12 h-12 object-cover"
+                      />
+                    </td>
+                    <td className="w-full">{product.name}</td>
+                    <td className="w-full">${product.price}</td>
+                  </div>
+                ))}
+              </tr>
+            </tbody>
+          </table>
 
+          {/* <h1 className="text-2xl">Tópicos</h1> */}
           <div className="w-full flex flex-col">
             <div className="border-b flex items-center justify-between border-gray-300 text-left">
               <h1 className=" text-[#1A101F] font-bold">Nome</h1>

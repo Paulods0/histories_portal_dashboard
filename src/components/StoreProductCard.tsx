@@ -29,7 +29,7 @@ const StoreProductCard: React.FC<IProdutcCard> = ({
 
       <td className="w-[150px]">{name}</td>
       <td className="w-[150px]">{category.name}</td>
-      <td className="w-[150px]">${price}</td>
+      <td className="w-[150px]">{price} Kz</td>
     </tr>
   )
 }

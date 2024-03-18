@@ -13,7 +13,7 @@ export interface IPostData {
   createdAt: string
 }
 
-export interface IProduct {
+export interface IProductData {
   _id: string
   image: string
   name: string

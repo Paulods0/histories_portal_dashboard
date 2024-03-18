@@ -1,12 +1,14 @@
 import { CiUser } from "react-icons/ci"
-import { FaHeart } from "react-icons/fa"
-import { MdOutlineCategory } from "react-icons/md"
+import {
+  MdOutlineCategory,
+  MdOutlineProductionQuantityLimits,
+} from "react-icons/md"
 import { CiFileOn } from "react-icons/ci"
 
 const icons = {
   users: <CiUser />,
   posts: <CiFileOn />,
-  likes: <FaHeart />,
+  products: <MdOutlineProductionQuantityLimits />,
   topics: <MdOutlineCategory />,
 }
 
@@ -16,7 +18,7 @@ const HomeStats = ({
   total,
 }: {
   label: string
-  icon: "users" | "posts" | "likes" | "topics"
+  icon: "users" | "posts" | "products" | "topics"
   total: number
 }) => {
   return (

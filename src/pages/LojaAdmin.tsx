@@ -2,18 +2,16 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import StoreProductCard from "../components/StoreProductCard"
 import { IoIosAddCircleOutline } from "react-icons/io"
 import { toast } from "react-toastify"
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
-import { storage } from "../config/firebase"
 
 import { BeatLoader, ClipLoader } from "react-spinners"
 import { STORE_PRODUCT_HEADERS } from "../constants"
 import { uploadImageToFirebaseStorage } from "../utils/helpers"
 import { getAllProducts, url } from "../api/apiCalls"
 import { API_URL } from "../utils/enums"
-import { IProduct } from "../types"
+import { IProductData } from "../types"
 
 const LojaAdmin = () => {
-  const [products, setProducts] = useState<IProduct[]>([])
+  const [products, setProducts] = useState<IProductData[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   const [name, setName] = useState("")
@@ -22,14 +20,6 @@ const LojaAdmin = () => {
   const [file, setFile] = useState<File | undefined>()
   const [imageToShow, setImageToShow] = useState<any>()
   const [isUploadingProduct, setIsUploadingProduct] = useState(false)
-
-  const prod = {
-    nome: name,
-    preço: price,
-    categoryId: category,
-    imagem: file?.name,
-  }
-  // console.log(prod)
 
   const resetInputFields = () => {
     setName("")
