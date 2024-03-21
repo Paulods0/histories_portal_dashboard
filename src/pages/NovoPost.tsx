@@ -4,29 +4,25 @@ import "react-quill/dist/quill.snow.css"
 
 import { getAllCategories, url } from "../api/apiCalls"
 import { ICategoryData } from "../types"
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
-import { storage } from "../config/firebase"
-import { BarLoader, ClipLoader } from "react-spinners"
+import { ClipLoader } from "react-spinners"
 import { toast } from "react-toastify"
 import { IoIosAddCircleOutline } from "react-icons/io"
-import { renameImageName, uploadImageToFirebaseStorage } from "../utils/helpers"
+import { uploadImageToFirebaseStorage } from "../utils/helpers"
 import { useNavigate } from "react-router-dom"
 import { API_URL } from "../utils/enums"
 
 const toolbarOptions = [
-  ["bold", "italic", "underline", "strike"], // toggled buttons
-  ["blockquote", "code-block"],
-  ["link", "image", "formula"],
+  ["bold", "italic", "underline", "strike"], // to
+  ["blockquote"],
+  ["link", "image", "video"],
 
   [{ header: 1 }, { header: 2 }], // custom button values
   [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-  [{ script: "sub" }, { script: "super" }], // superscript/subscript
   [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
   [{ direction: "rtl" }], // text direction
 
   [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
+  // [{ header: [1, 2, 3, 4, 5, 6, false] }],
   [{ color: [] }, { background: [] }], // dropdown with defaults from theme
   [{ font: [] }],
   [{ align: [] }],
@@ -45,6 +41,7 @@ const NovoPost = () => {
   const [title, setTitle] = useState("")
   const [subtitle, setSubtitle] = useState("")
   const [content, setContent] = useState("")
+  console.log(content)
   const [isHighlighted, setIsHighlighted] = useState(false)
   const [category, setCategory] = useState("")
   const [image, setImage] = useState<File | undefined>()
