@@ -1,19 +1,26 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import StoreProductCard from "../components/StoreProductCard"
-import { IoIosAddCircleOutline } from "react-icons/io"
 import { toast } from "react-toastify"
-
-import { BeatLoader, ClipLoader } from "react-spinners"
+import { ClipLoader } from "react-spinners"
 import { STORE_PRODUCT_HEADERS } from "../constants"
-import { uploadImageToFirebaseStorage } from "../utils/helpers"
-import { getAllProducts, url } from "../api/apiCalls"
-import { API_URL } from "../utils/enums"
-import { IProductData } from "../types"
+import {
+  deleteImageFromFirebase,
+  uploadImageToFirebaseStorage,
+} from "../utils/helpers"
+import {
+  deleteProduct,
+  getAllProducts,
+  getAllProdutCategories,
+  url,
+} from "../api/apiCalls"
+import { ICategoryData, IProductData } from "../types"
 
 const LojaAdmin = () => {
   const [products, setProducts] = useState<IProductData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  console.log(products)
+  const [categories, setCategories] = useState<ICategoryData[]>([])
 
+  const [isLoading, setIsLoading] = useState(true)
   const [name, setName] = useState("")
   const [price, setPrice] = useState("")
   const [category, setCategory] = useState("other")
@@ -38,7 +45,6 @@ const LojaAdmin = () => {
       reader.readAsDataURL(image)
     }
   }
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setIsUploadingProduct(true)
@@ -92,14 +98,20 @@ const LojaAdmin = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await getAllProducts()
-        setProducts(data)
-        setIsLoading(false)
-      } catch (error) {
-      } finally {
-        setIsLoading(false)
-      }
+      await Promise.all([getAllProducts(), getAllProdutCategories()])
+        .then((responses) => {
+          const [products, categories] = responses
+
+          setProducts(products)
+          setCategories(categories)
+          setIsLoading(false)
+        })
+        .catch((errors) => {
+          // const [err1, err2] = errors
+          // console.log({ err1: err1, err2: err2 })
+          setIsLoading(false)
+        })
+      setIsLoading(false)
     }
     fetchData()
   }, [])
@@ -107,22 +119,22 @@ const LojaAdmin = () => {
   if (isLoading) {
     return (
       <main className="relative w-full h-[80vh] flex items-center justify-center">
-        <BeatLoader color="#382A3F" />
+        <ClipLoader color="#111111" size={40} />
       </main>
     )
   }
 
   return (
-    <main className="flex-1 h-full grid grid-cols-3 gap-4 ">
-      {products.length === 0 ? (
-        <div className="w-full h-full flex items-center justify-center col-span-2">
-          <h1>Não há nenhum post ainda</h1>
+    <main className="flex-1 p-2 rounded-[10px] h-full grid grid-cols-4 gap-2">
+      {products.length === 0 || !products || products === null ? (
+        <div className="w-full h-full flex items-center justify-center col-span-3">
+          <h1>Não há nenhum produto ainda</h1>
         </div>
       ) : (
         <>
-          <table className="flex flex-col h-full text-center items-center col-span-2 p-2 gap-4 overflow-auto scroll-bar">
+          <table className="flex flex-col h-full text-center items-center col-span-3 p-2 gap-4 ">
             <thead className="w-full flex text-center">
-              <tr className="w-full items-center text-center justify-between shadow-md rounded-lg flex bg-[#1F101A] text-white px-6">
+              <tr className="w-full items-center text-center justify-between shadow-md rounded-sm flex bg-[#111111] text-white px-6">
                 {STORE_PRODUCT_HEADERS.map((label, index) => (
                   <th className="w-[150px]" key={index}>
                     {label}
@@ -131,9 +143,14 @@ const LojaAdmin = () => {
               </tr>
             </thead>
 
-            <tbody className="w-full gap-2 flex flex-col">
+            <tbody className="w-full gap-1 flex flex-col h-[520px] overflow-auto scroll-bar">
               {products.map((product, index) => (
-                <StoreProductCard key={index} product={product} />
+                <StoreProductCard
+                  key={index}
+                  // isLoading={isDeletingProduct}
+                  // deleteProduct={handleDeleteProduct}
+                  product={product}
+                />
               ))}
             </tbody>
           </table>
@@ -143,9 +160,9 @@ const LojaAdmin = () => {
       <form
         encType="multipart/form-data"
         onSubmit={handleSubmit}
-        className="flex items-center w-full h-full flex-col gap-4"
+        className="flex items-center p-2 w-full h-full flex-col"
       >
-        <div className="w-full flex flex-col items-center justify-center rounded-xl h-[300px] border border-dashed border-zinc-800">
+        <div className="w-full flex items-center justify-center rounded-xl h-[200px] border border-dashed border-zinc-800">
           {imageToShow ? (
             <div className="w-full h-full flex flex-col">
               <label htmlFor="file" className="cursor-pointer w-full h-full">
@@ -164,30 +181,29 @@ const LojaAdmin = () => {
               />
             </div>
           ) : (
-            <>
-              <label htmlFor="file" className="cursor-pointer">
-                <IoIosAddCircleOutline size={50} color="#9D9D9D" />
-              </label>
-              <label htmlFor="file" className="cursor-pointer">
-                Adicionar imagem
-              </label>
-              <input
-                id="file"
-                onChange={handleInputFileChange}
-                type="file"
-                className="opacity-0"
-              />
-            </>
+            <div className="w-full flex flex-col ">
+              <div className="flex flex-col mt-6">
+                <label htmlFor="file" className="text-center cursor-pointer">
+                  Adicionar imagem
+                </label>
+                <input
+                  id="file"
+                  onChange={handleInputFileChange}
+                  type="file"
+                  className="opacity-0"
+                />
+              </div>
+            </div>
           )}
         </div>
 
-        <div className="rounded-lg bg-white shadow-md w-full h-full flex flex-col gap-8 items-center justify-center px-8">
+        <div className="w-full my-12 flex flex-col gap-3 items-center justify-center px-2">
           <div className="border border-zinc-300 p-2 rounded-lg w-full">
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="text-[#1A1F10] placeholder:text-zinc-600 w-full text-center outline-none"
+              className="text-[#1A1F10] bg-transparent placeholder:text-zinc-600 w-full text-center outline-none"
               placeholder="Insira o nome do produto"
             />
           </div>
@@ -196,32 +212,32 @@ const LojaAdmin = () => {
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="text-[#1A1F10] placeholder:text-zinc-600 w-full text-center outline-none"
+              className="text-[#1A1F10] bg-transparent placeholder:text-zinc-600 w-full text-center outline-none"
               placeholder="Insira o preço do produto"
             />
           </div>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="border border-zinc-300 p-2 text-center outline-none rounded-lg w-full"
+            className="border border-zinc-300 bg-transparent p-2 text-center outline-none rounded-lg w-full"
           >
             <option disabled value="other">
               Escolha uma categoria
             </option>
-
-            <option value="65f47ace2853088042e9e45e">T-shirt</option>
-            <option value="65f4754886ddcfa4b6790584">Ténis</option>
-            <option value="65f47ae32853088042e9e460">Calça</option>
-            <option value="65f47aec2853088042e9e462">Calção</option>
-            <option value="65f47c8465c4e5470fe8ac16">Óculos</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
           </select>
         </div>
+
         <button
           type="submit"
           disabled={isUploadingProduct}
           className={` ${
-            isUploadingProduct ? "bg-[#2E212F]" : "bg-[#1A101F] "
-          } px-4 py-2 text-white w-full rounded-lg hover:bg-[#2E212F] duration-150 uppercase transition-all ease-in-out`}
+            isUploadingProduct ? "bg-BLACK/85" : "bg-BLACK "
+          } px-4 py-2 text-white w-full rounded-lg hover:bg-BLACK/85 duration-150 uppercase transition-all ease-in-out`}
         >
           {isUploadingProduct ? (
             <div className="flex items-center flex-1 justify-center gap-4">

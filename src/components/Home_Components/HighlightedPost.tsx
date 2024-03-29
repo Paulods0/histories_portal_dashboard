@@ -1,6 +1,6 @@
 const HighlightedPost = () => {
   return (
-    <div className="p-2 cursor-pointer hover:bg-GRAY-LIGHTER duration-200 ease-linear transition-all border border-GRAY-LIGHTER rounded-[6px] flex items-center">
+    <div className="p-2 cursor-pointer bg-white hover:bg-GRAY-LIGHTER duration-200 ease-linear transition-all border border-GRAY-LIGHTER rounded-[6px] flex items-center">
       <div className="relative h-[80px] w-[160px]">
         <img
           src="/6.jpg"

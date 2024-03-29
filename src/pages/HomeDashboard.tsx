@@ -2,63 +2,64 @@ import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { ICategoryData, IPostData, IProductData } from "../types"
 import { getAllCategories, getAllPosts, getAllProducts } from "../api/apiCalls"
-import { BeatLoader } from "react-spinners"
+import { BeatLoader, ClipLoader } from "react-spinners"
 import HomeStatsContainer from "../components/Home_Components/HomeStatsContainer"
 import PostsContainer from "../components/Home_Components/PostsContainer"
 import HighlightedPost from "../components/Home_Components/HighlightedPost"
 import { useAuthContext } from "../context/AuthContext"
-// import StoreTableData from "../components/Home_Components/StoreTableData"
+import StoreTableData from "../components/Home_Components/StoreTableData"
 
 const HomeDashboard = () => {
-  const [categories, setCategories] = useState<ICategoryData[]>([])
-  const [products, setProducts] = useState<IProductData[]>([])
-  const [posts, setPosts] = useState<IPostData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  // const [categories, setCategories] = useState<ICategoryData[]>([])
+  // const [products, setProducts] = useState<IProductData[]>([])
+  // const [posts, setPosts] = useState<IPostData[]>([])
+  // const [isLoading, setIsLoading] = useState(true)
   const { user } = useAuthContext()
+  // console.log(user)
 
-  useEffect(() => {
-    const fetchCategoriesData = async () => {
-      const categories = await getAllCategories()
-      setCategories(categories)
-    }
-    fetchCategoriesData()
-  }, [])
+  // useEffect(() => {
+  //   const fetchCategoriesData = async () => {
+  //     const categories = await getAllCategories()
+  //     setCategories(categories)
+  //   }
+  //   fetchCategoriesData()
+  // }, [])
 
-  useEffect(() => {
-    const fetchProductsData = async () => {
-      const products = await getAllProducts()
-      setProducts(products)
-    }
-    fetchProductsData()
-  }, [])
+  // useEffect(() => {
+  //   const fetchProductsData = async () => {
+  //     const products = await getAllProducts()
+  //     setProducts(products)
+  //   }
+  //   fetchProductsData()
+  // }, [])
 
-  useEffect(() => {
-    const fetchPostsData = async () => {
-      const posts = await getAllPosts()
-      setPosts(posts)
-      setIsLoading(false)
-    }
-    fetchPostsData()
-  }, [])
+  // useEffect(() => {
+  //   const fetchPostsData = async () => {
+  //     const posts = await getAllPosts()
+  //     setPosts(posts)
+  //     setIsLoading(false)
+  //   }
+  //   fetchPostsData()
+  // }, [])
 
-  if (isLoading) {
-    return (
-      <main className="relative w-full h-[80vh] flex items-center justify-center">
-        <BeatLoader color="#382A3F" />
-      </main>
-    )
-  }
+  // if (isLoading) {
+  //   return (
+  //     <main className="relative w-full h-[80vh] flex items-center justify-center">
+  //       <ClipLoader color="#111111" size={40} />
+  //     </main>
+  //   )
+  // }
 
-  if (posts.length === 0) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <h1>Não há nenhum post ainda</h1>
-      </div>
-    )
-  }
+  // if (posts.length === 0) {
+  //   return (
+  //     <div className="w-full h-full flex items-center justify-center">
+  //       <h1>Não há nenhum post ainda</h1>
+  //     </div>
+  //   )
+  // }
 
   return (
-    <main className="w-full bg-white px-5 pb-4 rounded-lg h-full flex flex-col gap-6">
+    <main className="w-full px-5 pb-4 rounded-lg h-full flex flex-col gap-6">
       {/**HEADER */}
       <header className="w-full px-2 mt-2 flex  justify-between items-center">
         <h1 className="text-[22px] font-semibold">
@@ -79,14 +80,22 @@ const HomeDashboard = () => {
               {user?.email}
             </span>
           </div>
-          <div className="w-9 h-9 rounded-full bg-zinc-500"></div>
+          <div className="relative w-9 h-9 rounded-full border">
+            {user?.image && (
+              <img
+                src={user.image}
+                className="absolute w-full h-full rounded-full object-cover"
+                alt="Profile image"
+              />
+            )}
+          </div>
         </div>
       </header>
       {/** END HEADER */}
 
       <div className="gap-4 grid-cols-3 grid place-items-center w-full h-full">
         {/** LEFT SIDE */}
-        <section className="p-3 border gap-4 border-GRAY-LIGHTER rounded-[10px] w-full h-full flex flex-col col-span-2 ">
+        <section className="p-3 border gap-4 bg-white border-GRAY-LIGHTER rounded-[10px] w-full h-full flex flex-col col-span-2 ">
           {/** UPPER SIDE */}
           <div>
             <HomeStatsContainer />
@@ -103,7 +112,7 @@ const HomeDashboard = () => {
 
         {/** RIGHT SIDE */}
         <section className="w-full h-full flex flex-col">
-          <div className="flex w-full items-center justify-between p-2">
+          <div className="flex w-full items-center justify-between  p-2">
             <h1 className="font-medium">Post em destaque</h1>
             <span className="text-[12px] font-normal">Editar</span>
           </div>
@@ -113,11 +122,11 @@ const HomeDashboard = () => {
               <h1 className="font-semibold text-BLACK text-[18px]">
                 Produtos na loja
               </h1>
-              <span className="text-[14px] underline text-BLACK">
+              <Link to="loja" className="text-[14px] underline text-BLACK">
                 Ir à loja
-              </span>
+              </Link>
             </div>
-            {/* <StoreTableData /> */}
+            <StoreTableData />
           </section>
         </section>
         {/** END RIGHT SIDE */}

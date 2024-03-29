@@ -10,6 +10,7 @@ import { IoIosAddCircleOutline } from "react-icons/io"
 import { uploadImageToFirebaseStorage } from "../utils/helpers"
 import { useNavigate } from "react-router-dom"
 import { API_URL } from "../utils/enums"
+import { useAuthContext } from "../context/AuthContext"
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // to
@@ -39,14 +40,25 @@ const NovoPost = () => {
   //STATES
   const [categories, setCategories] = useState<ICategoryData[]>([])
   const [title, setTitle] = useState("")
-  const [subtitle, setSubtitle] = useState("")
   const [content, setContent] = useState("")
-  console.log(content)
   const [isHighlighted, setIsHighlighted] = useState(false)
   const [category, setCategory] = useState("")
+  const [tags, setTags] = useState("")
+
+  const [authorNotes, setAuthorNotes] = useState("")
   const [image, setImage] = useState<File | undefined>()
   const [imageToShow, setImageToShow] = useState<any>()
   const [isCreatingPost, setIsCreatingPost] = useState(false)
+  const [latitude, setLatitude] = useState(0)
+  const [longitude, setLongitude] = useState(0)
+
+  const [categoryName, setCategoryName] = useState<string | undefined>(
+    undefined
+  )
+
+  // console.log(catName)
+
+  const { user } = useAuthContext()
 
   //FUNCTIONS
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +75,6 @@ const NovoPost = () => {
 
   const resetInputs = () => {
     setTitle("")
-    setSubtitle("")
     setContent("")
     setCategory("")
     setIsHighlighted(false)
@@ -75,14 +86,6 @@ const NovoPost = () => {
     setIsCreatingPost(true)
     if (!title) {
       toast.error("O título é obrigatório", {
-        autoClose: 1000,
-        hideProgressBar: true,
-      })
-      setIsCreatingPost(false)
-      return
-    }
-    if (!subtitle) {
-      toast.error("O subtítulo é obrigatório", {
         autoClose: 1000,
         hideProgressBar: true,
       })
@@ -127,11 +130,13 @@ const NovoPost = () => {
         },
         body: JSON.stringify({
           title: title,
-          subtitle: subtitle,
           content: content,
           isHighlighted: isHighlighted,
           category: category,
           mainImage: downloadURL,
+          author_id: user!!.id,
+          author_notes: authorNotes,
+          tag: tags.split(","),
         }),
       })
 
@@ -172,13 +177,20 @@ const NovoPost = () => {
     fetchData()
   }, [])
 
+  useEffect(() => {
+    const catName = categories.filter((cat) => cat._id === category)[0]
+    if (catName) {
+      setCategoryName(catName.name)
+    }
+  }, [category])
+
   return (
-    <main className="w-full  flex p-3 gap-8">
+    <main className="w-full h-full rounded-[10px] flex p-3 gap-8">
       {/** QUILL EDITOR */}
 
       <ReactQuill
         modules={modules}
-        className="h-[450px] w-full "
+        className="h-[520px] w-full "
         value={content}
         theme="snow"
         onChange={(value) => setContent(value)}
@@ -188,9 +200,9 @@ const NovoPost = () => {
       <form
         encType="multipart/form-data"
         onSubmit={(e: FormEvent) => createPost(e)}
-        className=" flex flex-col items-center justify-center"
+        className="flex w-[450px] flex-col items-center justify-center"
       >
-        <div className="w-full flex flex-col items-center justify-center rounded-xl h-[150px] ">
+        <div className="w-full flex flex-col mb-2 items-center justify-center rounded-xl h-[150px] ">
           {imageToShow ? (
             <>
               <div className="w-full h-[150px] flex flex-col">
@@ -223,7 +235,9 @@ const NovoPost = () => {
                   className="cursor-pointer flex flex-col items-center justify-center"
                 >
                   <IoIosAddCircleOutline size={50} color="#9D9D9D" />
-                  <span>Adicionar imagem</span>
+                  <span className="font-normal text-base text-GRAY-DARKER">
+                    Adicionar imagem
+                  </span>
                 </label>
                 <input
                   id="image"
@@ -239,28 +253,19 @@ const NovoPost = () => {
           )}
         </div>
 
-        <div className="p-12 bg-white rounded-lg flex-col flex h-full gap-4 mt-6 justify-center w-full shadow-md">
-          <div className="border-[#9D9D9D] border py-2 px-4 rounded-lg">
+        <div className="py-3 rounded-md flex-col flex h-full gap-2 justify-center w-full ">
+          <div className="border-zinc-300 border py-2 px-4 rounded-md">
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Adicione o título principal"
-              className="text-[14px] bg-transparent border-none w-full text-center outline-none"
-            />
-          </div>
-          <div className="border-[#9D9D9D] border py-2 px-4 rounded-lg">
-            <input
-              type="text"
-              value={subtitle}
-              onChange={(e) => setSubtitle(e.target.value)}
-              placeholder="Adicione o subtítulo"
+              placeholder="Adicione o título"
               className="text-[14px] bg-transparent border-none w-full text-center outline-none"
             />
           </div>
 
           <div className="flex gap-2 items-center ">
-            <div className="py-2 px-4 border border-[#9D9D9D] rounded-lg ">
+            <div className="py-2 px-4 border border-zinc-300 rounded-md ">
               <select
                 onChange={(e) => {
                   setCategory(e.target.value)
@@ -271,6 +276,7 @@ const NovoPost = () => {
                 <option disabled value="" className=" text-[#9D9D9D]">
                   Adicione o tópico
                 </option>
+
                 {categories.map((category) => (
                   <option id="option" value={category._id} key={category._id}>
                     {category.name}
@@ -279,8 +285,8 @@ const NovoPost = () => {
               </select>
             </div>
 
-            <div className="flex gap-2 items-center justify-center text-[#9D9D9D]">
-              <label htmlFor="destaque" className="cursor-pointer">
+            <div className="flex border border-zinc-300 w-full p-2 rounded-md  gap-2 items-center justify-center text-[#9D9D9D]">
+              <label htmlFor="destaque" className="text-[14px] cursor-pointer">
                 Destacar
               </label>
               <input
@@ -292,12 +298,48 @@ const NovoPost = () => {
               />
             </div>
           </div>
+          <div className=" border border-zinc-300 w-full p-2 rounded-md  gap-2">
+            <input
+              type="text"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              className="text-[14px] border-none outline-none w-full"
+              placeholder="Adicione tags (separe-às por vírgulas)"
+            />
+          </div>
+
+          {categoryName === "Passeios" && (
+            <div className="w-full flex flex-col gap-2">
+              <div className=" border border-zinc-300 w-full p-2 rounded-md  gap-2">
+                <input
+                  type="number"
+                  className="text-[14px] capitalize border-none outline-none"
+                  placeholder="latitude"
+                />
+              </div>
+              <div className=" border border-zinc-300 w-full p-2 rounded-md  gap-2">
+                <input
+                  type="number"
+                  className="text-[14px] capitalize border-none outline-none"
+                  placeholder="longitude"
+                />
+              </div>
+            </div>
+          )}
+          <div className="w-full font-normal p-2 rounded-[4px] border border-zinc-300 h-full">
+            <textarea
+              placeholder="Adicione uma nota para este post (opcional)"
+              value={authorNotes}
+              onChange={(e) => setAuthorNotes(e.target.value)}
+              className="w-full bg-transparent resize-none scroll-bar placeholder:text-[14px] outline-none border-none h-full"
+            />
+          </div>
         </div>
 
         <button
           disabled={isCreatingPost}
-          className={`w-full hover:bg-[#382A3F]/80 duration-200 transition-all ease-in p-2 rounded-lg mt-8  text-white uppercase font-semibold mx-6 ${
-            isCreatingPost ? "bg-[#382A3F]/80" : "bg-[#382A3F]"
+          className={`w-full duration-200 transition-all ease-in p-2 rounded-md mt-3 text-white uppercase font-semibold mx-6 ${
+            isCreatingPost ? "bg-BLACK/85" : "bg-BLACK"
           }`}
         >
           {isCreatingPost ? <ClipLoader size={18} color="#FFF" /> : " publicar"}

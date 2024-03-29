@@ -44,4 +44,10 @@ export const ADMIN_DASHBOARD_NAV_LINKS = [
   },
 ]
 
-export const STORE_PRODUCT_HEADERS = ["Imagem", "Nome", "Categoria", "Preço"]
+export const STORE_PRODUCT_HEADERS = [
+  "Imagem",
+  "Nome",
+  "Categoria",
+  "Preço",
+  "Ações",
+]

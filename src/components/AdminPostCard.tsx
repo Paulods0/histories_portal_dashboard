@@ -4,31 +4,21 @@ import { PostProps } from "./RecentPostCard"
 import { Link } from "react-router-dom"
 
 interface IPostCard {
-  post: {
-    _id: string
-    category: {
-      name: string
-    }
-    content: string
-    isHighlighted: boolean
-    mainImage: string
-    subtitle: string
-    title: string
-  }
+  post: IPostData
 }
 
 const AdminPostCard: React.FC<IPostCard> = ({
-  post: { _id, category, content, isHighlighted, mainImage, subtitle, title },
+  post: { _id, category, mainImage, author, title },
 }) => {
   return (
     <Link
       to={`/post/${_id}`}
-      className="cursor-pointer bg-white/30 rounded-lg h-[250px] w-full flex items-center flex-col shadow-sm border border-[1px_solid_#fff]"
+      className="cursor-pointer bg-white rounded-lg h-[250px] w-full flex items-center flex-col border border-GRAY-LIGHTER"
     >
-      <div className=" w-full h-[160px] rounded-t-lg">
+      <div className="relative w-full h-[160px] rounded-t-lg">
         <img
           src={mainImage}
-          className=" w-full h-full object-cover rounded-t-lg"
+          className=" w-full h-full absolute inset-0 object-cover rounded-t-lg"
           alt="Main photo"
         />
       </div>
@@ -36,9 +26,17 @@ const AdminPostCard: React.FC<IPostCard> = ({
         <h1 className="text-[16px] text-pretty font-semibold">
           {title.substring(0, 40).concat("...")}
         </h1>
-        <div className="flex">
-          <span className="text-[12px] text-[#9D9D9D] mr-1">Categoria:</span>
-          <span className="text-[12px] text-[#9D9D9D]">{category.name}</span>
+        <div className="flex items-center w-full justify-between mt-2">
+          <div className="flex">
+            <span className="text-[12px] text-[#9D9D9D] mr-1">Categoria:</span>
+            <span className="text-[12px] text-[#9D9D9D]">{category?.name}</span>
+          </div>
+          <div className="flex items-center gap-1 text-[12px]">
+            <span className="text-GRAY-DARKER">Author: </span>
+            <span className="text-GRAY-DARKER">
+              {author ? `${author.firstname} ${author.lastname}` : "unknown"}
+            </span>
+          </div>
         </div>
       </div>
     </Link>

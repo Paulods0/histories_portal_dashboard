@@ -17,7 +17,7 @@ import {
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // toggled buttons
   ["blockquote", "code-block"],
-  ["link", "image", "formula"],
+  ["link", "image", "video"],
 
   [{ header: 1 }, { header: 2 }], // custom button values
   [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
@@ -78,7 +78,7 @@ const PostDetail = () => {
       console.log(false + " Não tem imagem selecionada")
       setDownloadURLImage(data!!.mainImage)
     } else {
-      const imageName = getImagePathFromFirebaseURL(downloadURLImage)
+      const imageName = getImagePathFromFirebaseURL(downloadURLImage, "images")
       const imageToDeleteRef = ref(storage, `${IMAGE_FOLDER}${imageName}`)
 
       deleteObject(imageToDeleteRef)
@@ -136,7 +136,10 @@ const PostDetail = () => {
     setIsDeletingPost(true)
     try {
       if (downloadURLImage != null || downloadURLImage != "") {
-        const imageName = getImagePathFromFirebaseURL(downloadURLImage)
+        const imageName = getImagePathFromFirebaseURL(
+          downloadURLImage,
+          "images"
+        )
         const imageRef = ref(storage, `${IMAGE_FOLDER}${imageName}`)
         await deleteObject(imageRef)
       }
@@ -191,10 +194,9 @@ const PostDetail = () => {
       </h1>
       <div className="w-full flex gap-6">
         {/** QUILL EDITOR */}
-
         <ReactQuill
           modules={modules}
-          className=" flex-[4] h-[360px]"
+          className=" flex-[4] h-full"
           value={content}
           onChange={(value) => setContent(value)}
         />

@@ -4,10 +4,10 @@ import { CiCalendarDate } from "react-icons/ci"
 import { IPostData } from "../../types"
 
 const StretchedPostCard: React.FC<{ post: IPostData }> = ({
-  post: { mainImage, title, createdAt, category },
+  post: { mainImage, title, createdAt, category, author },
 }) => {
   return (
-    <div className="cursor-pointer w-full hover:bg-GRAY-LIGHTER ease-in-out hover:scale-95 duration-200 transition-all rounded-[10px] p-2 flex">
+    <div className="cursor-pointer w-full hover:bg-GRAY-LIGHTER/80 mt-2 border ease-in-out duration-200 transition-all rounded-[10px] p-2 flex">
       <div className="relative h-[70px] w-[80px] ">
         <img
           src={mainImage}
@@ -25,8 +25,7 @@ const StretchedPostCard: React.FC<{ post: IPostData }> = ({
                 <BiCategory size={12} />
                 <span className="text-[12px] font-semibold">Tópico:</span>
               </div>
-
-              <span className="text-[12px]">{category.name}</span>
+              <span className="text-[12px]">{category?.name}</span>
             </div>
 
             <div className="flex gap-1">
@@ -34,8 +33,11 @@ const StretchedPostCard: React.FC<{ post: IPostData }> = ({
                 <LiaUser size={12} />
                 <span className="text-[12px] font-semibold">Autor:</span>
               </div>
-
-              <span className="text-[12px]">Paulo Luguenda</span>
+              <span className="text-[12px] font-normal">
+                {author
+                  ? `${author?.firstname} ${author?.lastname}`
+                  : "unknown"}
+              </span>
             </div>
           </div>
 
@@ -44,7 +46,7 @@ const StretchedPostCard: React.FC<{ post: IPostData }> = ({
               <CiCalendarDate size={12} />
               <span className="text-[12px] mr-1 font-semibold">Data:</span>
             </div>
-            <span className="text-[12px]">{createdAt.split("T")[0]}</span>
+            <span className="text-[12px]">{createdAt?.split("T")[0]}</span>
           </div>
         </div>
       </div>

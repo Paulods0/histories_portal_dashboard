@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -11,4 +11,24 @@
 .scroll-bar::-webkit-scrollbar {
   width: 6px;
   border-radius: 20px;
+}
+
+.ql {
+  border: none !important;
+}
+.ql-container {
+  height: 79vh !important;
+}
+.ql-editor {
+  /* border: none !important; */
+}
+
+.light {
+  background-color: white;
+  color: #111111;
+}
+
+.dark {
+  background-color: #111111;
+  color: white;
 }

@@ -3,7 +3,7 @@ import { CgNotes } from "react-icons/cg"
 import { BsShopWindow } from "react-icons/bs"
 
 type HomeStatsCardType = {
-  color: "bg-YELLOW" | "bg-BLACK" | "bg-GRAY-LIGHTER" | "bg-PINK-LIGHT"
+  color: "bg-YELLOW" | "bg-BLACK" | "bg-GRAY-LIGHTER" | "bg-BLUE"
   text_color: string
   col_span?: boolean
   amount: number
@@ -28,7 +28,7 @@ const HomeStatsCard: React.FC<HomeStatsCardType> = ({
 }) => {
   return (
     <div
-      className={`${color} rounded-[10px] hover:translate-y-1 cursor-pointer duration-200 transition-transform-y ease-in-out p-2  ${
+      className={`${color} rounded-[10px]  hover:translate-y-1 cursor-pointer duration-200 transition-transform-y ease-in-out p-2  ${
         col_span && "col-span-2"
       } flex flex-col items-center justify-center `}
     >
@@ -39,7 +39,7 @@ const HomeStatsCard: React.FC<HomeStatsCardType> = ({
         <span className="text-[30px] font-medium">{amount}</span>
       </div>
       <span
-        className={`text-[14px] self-start ml-4 text-${text_color} uppercase font-normal`}
+        className={`text-[12px] self-start ml-4 text-${text_color} uppercase font-normal`}
       >
         {label}
       </span>

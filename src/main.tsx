@@ -7,14 +7,17 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import "./index.css"
 import { AuthProvider } from "./context/AuthContext.tsx"
+import { ThemeContextProvider } from "./context/ThemeContext.tsx"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <AuthProvider>
-      <React.StrictMode>
-        <App />
-        <ToastContainer />
-      </React.StrictMode>
+      <ThemeContextProvider>
+        <React.StrictMode>
+          <App />
+          <ToastContainer />
+        </React.StrictMode>
+      </ThemeContextProvider>
     </AuthProvider>
   </BrowserRouter>
 )

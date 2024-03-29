@@ -4,17 +4,18 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        Oswald: ["Oswald", "sans-serif"],
+        InterTight: ["Inter Tight", "sans-serif"],
       },
       colors: {
         BLACK: "#111111",
         GRAY: {
+          LIGH: "#F8F8F8",
           LIGHTER: "#EEEEEE",
           DARKER: "#9D9D9D",
         },
-        PINK: { LIGHT: "#FEB1C8" },
+        BLUE: "#B4EFF3",
         RED: { DARK: "#880B0B" },
-        YELLOW: "#FFD600",
+        YELLOW: "#FFEC8B",
       },
     },
   },
