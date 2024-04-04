@@ -9,6 +9,7 @@ const PostsContainer = () => {
   return (
     <section className="w-full flex flex-col h-full">
       <PostsFilter container={container} setContainer={setContainer} />
+
       {container === "all" ? <AllPostsWrapper /> : <MyPostsWrapper />}
     </section>
   )

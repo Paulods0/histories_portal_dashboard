@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
-import ReactQuill from "react-quill"
+import ReactQuill, { Quill } from "react-quill"
 import "react-quill/dist/quill.snow.css"
 
-import { getAllCategories, getSinglePost, url } from "../api/apiCalls"
-import { ICategoryData, IPostData } from "../types"
+import { getAllCategories, getSinglePost, url } from "../api"
+import { ICategoryData, IPostData } from "../interfaces"
 import { deleteObject, ref } from "firebase/storage"
 import { storage } from "../config/firebase"
 import { ClipLoader } from "react-spinners"
@@ -13,21 +13,24 @@ import {
   getImagePathFromFirebaseURL,
   uploadImageToFirebaseStorage,
 } from "../utils/helpers"
+//@ts-ignore
+import ImageUploader from "quill-image-uploader"
+import "quill-image-uploader/dist/quill.imageUploader.min.css"
+
+Quill.register("modules/imageUploader", ImageUploader)
 
 const toolbarOptions = [
-  ["bold", "italic", "underline", "strike"], // toggled buttons
-  ["blockquote", "code-block"],
+  ["bold", "italic", "underline", "strike"], // to
+  ["blockquote"],
   ["link", "image", "video"],
 
   [{ header: 1 }, { header: 2 }], // custom button values
   [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-  [{ script: "sub" }, { script: "super" }], // superscript/subscript
   [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
   [{ direction: "rtl" }], // text direction
 
   [{ size: ["small", false, "large", "huge"] }], // custom dropdown
-  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-
+  // [{ header: [1, 2, 3, 4, 5, 6, false] }],
   [{ color: [] }, { background: [] }], // dropdown with defaults from theme
   [{ font: [] }],
   [{ align: [] }],
@@ -36,6 +39,13 @@ const toolbarOptions = [
 ]
 const modules = {
   toolbar: toolbarOptions,
+  imageUploader: {
+    upload: async (file: File) => {
+      const FIREBASEFOLDERPATH = "/content"
+
+      return await uploadImageToFirebaseStorage(file, FIREBASEFOLDERPATH)
+    },
+  },
 }
 
 const PostDetail = () => {
@@ -75,7 +85,7 @@ const PostDetail = () => {
     e.preventDefault()
     setIsCreatingPost(true)
     if (!image) {
-      console.log(false + " Não tem imagem selecionada")
+      // console.log(false + " Não tem imagem selecionada")
       setDownloadURLImage(data!!.mainImage)
     } else {
       const imageName = getImagePathFromFirebaseURL(downloadURLImage, "images")
@@ -94,7 +104,7 @@ const PostDetail = () => {
     }
 
     try {
-      const response = await fetch(url + `post/${id}`, {
+      const response = await fetch(`${url}/post/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -112,7 +122,7 @@ const PostDetail = () => {
       const { message } = await response.json()
 
       if (!response.ok) {
-        console.log(message)
+        // console.log(message)
         toast.error(message, {
           position: "bottom-right",
           hideProgressBar: true,

@@ -1,29 +1,40 @@
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useState } from "react"
 import { IoMdEye } from "react-icons/io"
 import { IoMdEyeOff } from "react-icons/io"
-import { url } from "../api/apiCalls"
 import { Navigate } from "react-router-dom"
-
 import { ClipLoader } from "react-spinners"
 import { useAuthContext } from "../context/AuthContext"
 import Cookies from "js-cookie"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
 
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+
+const userCredentialsSchema = z.object({
+  email: z.string().email({ message: "O email é obrigatório" }).min(1),
+  password: z.string().min(1),
+})
+type UserCredentialsType = z.infer<typeof userCredentialsSchema>
+
+// COMPONENT ITSELF
 const LoginPage = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const { login, isLoading } = useAuthContext()
 
+  const { register, handleSubmit } = useForm<UserCredentialsType>({
+    resolver: zodResolver(userCredentialsSchema),
+  })
+  
   const token = Cookies.get("token")
-
   if (token) {
     return <Navigate to="/" />
   }
 
-  const handleLogin = async (e: FormEvent) => {
-    e.preventDefault()
+  const handleLogin = async (credentials: UserCredentialsType) => {
     try {
-      login(email, password)
+      login(credentials.email, credentials.password)
     } catch (error) {
       console.log(error)
     }
@@ -36,28 +47,19 @@ const LoginPage = () => {
   return (
     <div className="relative w-full h-screen flex items-center justify-center">
       <div className="absolute w-[400px] h-screen flex items-center justify-center flex-col">
-        <h1 className="text-2xl text-white uppercase mb-4 font-bold">
+        <h1 className="text-2xl text-black uppercase mb-4 font-bold">
           Faça o login
         </h1>
         <form
-          onSubmit={handleLogin}
+          onSubmit={handleSubmit(handleLogin)}
           className="w-full flex flex-col gap-4 p-12"
         >
-          <div className="w-full p-2 border rounded-sm">
-            <input
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              value={email}
-              className="w-full border-none outline-none bg-transparent text-[12px] text-black"
-              placeholder="Email"
-            />
-          </div>
-          <div className="relative w-full p-2 border rounded-sm">
-            <input
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
+          <Input {...register("email")} placeholder="Email" />
+
+          <div className="relative w-full">
+            <Input
+              {...register("password")}
               type={isPasswordVisible ? "text" : "password"}
-              className="w-full border-none outline-none bg-transparent text-[12px] text-black"
               placeholder="Password"
             />
             <span
@@ -71,15 +73,15 @@ const LoginPage = () => {
               )}
             </span>
           </div>
-          <button
+
+          <Button
+            variant={"default"}
             disabled={isLoading}
             type="submit"
-            className={`${
-              isLoading ? "bg-zinc-700" : "bg-[#111111]"
-            }  w-full p-2 border flex items-center justify-center rounded-sm  text-white uppercase hover:bg-[#2D2D2D]`}
+            className="uppercase"
           >
             {isLoading ? <ClipLoader size={24} color="#fff" /> : "login"}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

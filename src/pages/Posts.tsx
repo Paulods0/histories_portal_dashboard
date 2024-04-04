@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { IPostData } from "../types"
-import { getAllPosts } from "../api/apiCalls"
+import { IPostData } from "../interfaces"
+import { getAllPosts } from "../api"
 import AdminPostCard from "../components/AdminPostCard"
 import { BeatLoader, ClipLoader } from "react-spinners"
 

@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react"
 import StretchedPostCard from "./StretchedPostCard"
-import { IPostData } from "../../types"
-import { getUserPosts } from "../../api/apiCalls"
+import { IPostData } from "../../interfaces"
+import { getUserPosts } from "../../api"
 import { useAuthContext } from "../../context/AuthContext"
 import { ClipLoader } from "react-spinners"
 
 const MyPostsWrapper = () => {
   const [posts, setPosts] = useState<IPostData[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const { user } = useAuthContext()
+  const { userId } = useAuthContext()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getUserPosts(user!!.id)
+        const data = await getUserPosts(userId!!)
         setPosts(data)
       } catch (error) {
         console.log(error)

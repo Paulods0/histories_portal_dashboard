@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
-import { IUser } from "../types"
-import { createUser, getAllUsers } from "../api/apiCalls"
+import { IUser } from "../interfaces"
+import { createUser, getAllUsers } from "../api"
 import { ClipLoader } from "react-spinners"
 import { FaRegEyeSlash } from "react-icons/fa"
 import { IoEye } from "react-icons/io5"
@@ -62,9 +62,9 @@ const AdicionarGestor = () => {
         lastname,
         email,
         password,
-        image: downloadURL,
+        image: image ? downloadURL : "",
       }
-      console.log(user)
+
       await createUser(user)
       toast.success("Usuário criado com sucesso", {
         autoClose: 1000,
@@ -118,7 +118,7 @@ const AdicionarGestor = () => {
               {users.map((user, index) => (
                 <tr key={index} className="flex w-full gap-1 text-BLACK ">
                   <td className="w-full text-center text-[14px]">
-                    {user._id.substring(0, 10)}
+                    {user.id.substring(0, 10)}
                   </td>
                   <td className="w-full text-center text-[14px]">
                     {user.firstname}

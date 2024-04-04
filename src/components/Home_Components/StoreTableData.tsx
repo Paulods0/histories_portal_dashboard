@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { IProductData } from "../../types"
-import { getAllProducts } from "../../api/apiCalls"
+import { IProductData } from "../../interfaces"
+import { getAllProducts } from "../../api"
 import { ClipLoader } from "react-spinners"
 
 const StoreTableData = () => {
@@ -21,12 +21,18 @@ const StoreTableData = () => {
           <ClipLoader color="#111111" size={28} />
         </div>
       ) : (
-        <div className="h-[322px] bg-white border p-2 border-GRAY-LIGHTER rounded-[10px]  flex flex-col w-full">
-          <div className="text-[14px] px-2 flex font-normal w-full border-b border-b-GRAY-LIGHTER">
-            <div className="w-full text-center">Nome</div>
-            <div className="w-full text-center">Categoria</div>
-            {/* <div className="w-full text-center">Quantidade</div> */}
-            <div className="w-full text-center">Preço</div>
+        <div className="h-[100%] bg-white border p-2 rounded-[10px] flex flex-col w-full">
+          <div className="text-[14px] px-2 flex font-normal w-full border-b border-b-zinc-200">
+            <div className="w-full text-zinc-900 font-bold text-center text-[16px]">
+              Nome
+            </div>
+            <div className="w-full  text-zinc-900 font-bold  text-center text-[16px]">
+              Categoria
+            </div>
+            {/* <div className="w-full text-center text-[16px]">Quantidade</div> */}
+            <div className="w-full  text-zinc-900 font-bold  text-center text-[16px]">
+              Preço
+            </div>
           </div>
 
           {products.length === 0 ? (
@@ -36,11 +42,11 @@ const StoreTableData = () => {
               </h1>
             </div>
           ) : (
-            <div className="overflow-y-auto h-[322px] scroll-bar px-1">
+            <div className="overflow-y-auto h-[90%] scroll-bar px-1">
               {products.map((product) => (
                 <div
                   key={product._id}
-                  className="bg-BLACK rounded-[6px] mt-2 text-white font-light px-2 text-[14px] w-full flex"
+                  className=" rounded-[6px] border-b mt-2 text-zinc-900 font-normal px-2 text-[14px] w-full flex"
                 >
                   <div className="w-full text-start line-clamp-1">
                     {product?.name}

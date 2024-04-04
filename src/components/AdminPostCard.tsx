@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { IPostData } from "../types"
+import { IPostData } from "../interfaces"
 import { PostProps } from "./RecentPostCard"
 import { Link } from "react-router-dom"
 
@@ -23,14 +23,15 @@ const AdminPostCard: React.FC<IPostCard> = ({
         />
       </div>
       <div className="w-full flex flex-col p-2">
-        <h1 className="text-[16px] text-pretty font-semibold">
-          {title.substring(0, 40).concat("...")}
+        <h1 className="text-[16px] text-pretty font-semibold line-clamp-1">
+          {title}
         </h1>
-        <div className="flex items-center w-full justify-between mt-2">
+        <div className="flex flex-col items-start w-full justify-between mt-2">
           <div className="flex">
             <span className="text-[12px] text-[#9D9D9D] mr-1">Categoria:</span>
             <span className="text-[12px] text-[#9D9D9D]">{category?.name}</span>
           </div>
+
           <div className="flex items-center gap-1 text-[12px]">
             <span className="text-GRAY-DARKER">Author: </span>
             <span className="text-GRAY-DARKER">

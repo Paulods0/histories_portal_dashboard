@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react"
-import { ICategoryData } from "../../types"
-import {
-  deleteProductCategory,
-  getAllProdutCategories,
-} from "../../api/apiCalls"
+import { ICategoryData } from "../../interfaces"
+import { deleteProductCategory, getAllProdutCategories } from "../../api"
 import { ClipLoader } from "react-spinners"
 import DataRow from "./DataRow"
 

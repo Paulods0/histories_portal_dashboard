@@ -12,12 +12,12 @@ import {
   getAllProducts,
   getAllProdutCategories,
   url,
-} from "../api/apiCalls"
-import { ICategoryData, IProductData } from "../types"
+} from "../api"
+import { ICategoryData, IProductData } from "../interfaces"
 
 const LojaAdmin = () => {
   const [products, setProducts] = useState<IProductData[]>([])
-  console.log(products)
+
   const [categories, setCategories] = useState<ICategoryData[]>([])
 
   const [isLoading, setIsLoading] = useState(true)

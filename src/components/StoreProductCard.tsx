@@ -2,7 +2,7 @@ import { ClipLoader } from "react-spinners"
 import { deleteImageFromFirebase } from "../utils/helpers"
 import { useState } from "react"
 import { toast } from "react-toastify"
-import { deleteProduct } from "../api/apiCalls"
+import { deleteProduct } from "../api"
 
 interface IProdutcCard {
   product: {

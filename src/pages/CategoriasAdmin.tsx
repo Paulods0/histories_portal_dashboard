@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react"
 import CategoriesFilterContainer from "../components/Categories_Components/CategoriesFilterContainer"
-import { createCategory, createProductCategory } from "../api/apiCalls"
+import { createCategory, createProductCategory } from "../api"
 import { ClipLoader } from "react-spinners"
 import { useAuthContext } from "../context/AuthContext"
 import { toast } from "react-toastify"

@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
-import ReactQuill from "react-quill"
+import ReactQuill, { Quill } from "react-quill"
 import "react-quill/dist/quill.snow.css"
 
-import { getAllCategories, url } from "../api/apiCalls"
-import { ICategoryData } from "../types"
+import { getAllCategories, url } from "../api"
+import { ICategoryData } from "../interfaces"
 import { ClipLoader } from "react-spinners"
 import { toast } from "react-toastify"
 import { IoIosAddCircleOutline } from "react-icons/io"
@@ -11,6 +11,14 @@ import { uploadImageToFirebaseStorage } from "../utils/helpers"
 import { useNavigate } from "react-router-dom"
 import { API_URL } from "../utils/enums"
 import { useAuthContext } from "../context/AuthContext"
+
+//@ts-ignore
+import ImageUploader from "quill-image-uploader"
+
+import "quill-image-uploader/dist/quill.imageUploader.min.css"
+import { Button } from "@/components/ui/button"
+
+Quill.register("modules/imageUploader", ImageUploader)
 
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // to
@@ -32,6 +40,13 @@ const toolbarOptions = [
 ]
 const modules = {
   toolbar: toolbarOptions,
+  imageUploader: {
+    upload: async (file: File) => {
+      const FIREBASEFOLDERPATH = "/content"
+
+      return await uploadImageToFirebaseStorage(file, FIREBASEFOLDERPATH)
+    },
+  },
 }
 
 const NovoPost = () => {
@@ -49,14 +64,12 @@ const NovoPost = () => {
   const [image, setImage] = useState<File | undefined>()
   const [imageToShow, setImageToShow] = useState<any>()
   const [isCreatingPost, setIsCreatingPost] = useState(false)
-  const [latitude, setLatitude] = useState(0)
-  const [longitude, setLongitude] = useState(0)
+  const [latitude, setLatitude] = useState("")
+  const [longitude, setLongitude] = useState("")
 
   const [categoryName, setCategoryName] = useState<string | undefined>(
     undefined
   )
-
-  // console.log(catName)
 
   const { user } = useAuthContext()
 
@@ -123,7 +136,7 @@ const NovoPost = () => {
         IMAGE_FOLDER
       )
 
-      const response = await fetch(`${url}${API_URL.CREATE_POST}`, {
+      const response = await fetch(`${url}/${API_URL.CREATE_POST}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -137,12 +150,13 @@ const NovoPost = () => {
           author_id: user!!.id,
           author_notes: authorNotes,
           tag: tags.split(","),
+          latitude: latitude ? latitude : null,
+          longitude: longitude ? longitude : null,
         }),
       })
 
       const { message } = await response.json()
       if (!response.ok) {
-        console.log(message)
         toast.error(message, {
           position: "top-right",
           hideProgressBar: true,
@@ -314,12 +328,16 @@ const NovoPost = () => {
                 <input
                   type="number"
                   className="text-[14px] capitalize border-none outline-none"
+                  value={latitude}
+                  onChange={(e) => setLatitude(e.target.value)}
                   placeholder="latitude"
                 />
               </div>
               <div className=" border border-zinc-300 w-full p-2 rounded-md  gap-2">
                 <input
                   type="number"
+                  value={longitude}
+                  onChange={(e) => setLongitude(e.target.value)}
                   className="text-[14px] capitalize border-none outline-none"
                   placeholder="longitude"
                 />
@@ -336,14 +354,13 @@ const NovoPost = () => {
           </div>
         </div>
 
-        <button
+        <Button
+          variant={"default"}
           disabled={isCreatingPost}
-          className={`w-full duration-200 transition-all ease-in p-2 rounded-md mt-3 text-white uppercase font-semibold mx-6 ${
-            isCreatingPost ? "bg-BLACK/85" : "bg-BLACK"
-          }`}
+          className="w-full duration-200 transition-all ease-in p-2 rounded-md mt-3 text-white uppercase font-semibold mx-6"
         >
           {isCreatingPost ? <ClipLoader size={18} color="#FFF" /> : " publicar"}
-        </button>
+        </Button>
       </form>
     </main>
   )

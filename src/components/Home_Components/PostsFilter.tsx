@@ -11,14 +11,16 @@ const PostsFilter = ({
     <div className="w-full flex text-[14px] font-medium ml-4 gap-4 items-center mb-4">
       <button
         onClick={() => setContainer("all")}
-        className={`${container === "all" ? "text-BLACK" : "text-GRAY-DARKER"}`}
+        className={`${
+          container === "all" ? "text-zinc-900 font-bold" : "text-zinc-400"
+        }`}
       >
         Todos
       </button>
       <button
         onClick={() => setContainer("mine")}
         className={`${
-          container === "mine" ? "text-BLACK" : "text-GRAY-DARKER"
+          container === "mine" ? "text-zinc-900 font-bold" : "text-zinc-400"
         }`}
       >
         Os meus posts

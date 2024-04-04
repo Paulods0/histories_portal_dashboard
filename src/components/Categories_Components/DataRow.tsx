@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { ICategoryData } from "../../types"
+import { ICategoryData } from "../../interfaces"
 import { ClipLoader } from "react-spinners"
-import { deleteCategory } from "../../api/apiCalls"
+import { deleteCategory } from "../../api"
 import { toast } from "react-toastify"
 
 type RowDataType = {

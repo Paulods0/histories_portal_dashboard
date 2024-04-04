@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import StretchedPostCard from "./StretchedPostCard"
-import { IPostData } from "../../types"
-import { getAllPosts } from "../../api/apiCalls"
+import { IPostData } from "../../interfaces"
+import { getAllPosts } from "../../api"
 import { ClipLoader } from "react-spinners"
 
 const AllPostsWrapper = () => {
@@ -29,7 +29,7 @@ const AllPostsWrapper = () => {
     )
   }
   return (
-    <div className="w-full overflow-y-auto pr-2 scroll-bar h-[330px]">
+    <div className="w-full overflow-y-auto pr-2 scroll-bar h-[350px]">
       {posts.length === 0 || posts.length === undefined ? (
         <div className="w-full h-full flex items-center justify-center">
           <h1 className="text-black">Não há posts ainda</h1>

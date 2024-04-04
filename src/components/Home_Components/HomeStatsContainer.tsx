@@ -5,12 +5,12 @@ import {
   getAllProducts,
   getAllUsers,
   getUserPosts,
-} from "../../api/apiCalls"
+} from "../../api"
 import { useAuthContext } from "../../context/AuthContext"
 import { ClipLoader } from "react-spinners"
 
 const HomeStatsContainer = () => {
-  const { user } = useAuthContext()
+  const { user, userId } = useAuthContext()
 
   const [posts, setPosts] = useState(0)
   const [products, setProducts] = useState(0)
@@ -24,7 +24,7 @@ const HomeStatsContainer = () => {
       await Promise.all([
         getAllPosts(),
         getAllProducts(),
-        getUserPosts(user!!.id),
+        getUserPosts(userId!!),
         getAllUsers(),
       ])
         .then((responses) => {
@@ -56,32 +56,28 @@ const HomeStatsContainer = () => {
         <div className="grid grid-cols-5 gap-2">
           <HomeStatsCard
             amount={users}
-            color="bg-YELLOW"
             label="usuários"
-            text_color="BLACK"
             icon="users"
+            classname="border border-zinc-300 text-zinc-900"
           />
           <HomeStatsCard
             amount={products}
-            color="bg-BLUE"
             label="loja"
-            text_color="BLACK"
             icon="store"
+            classname="border border-zinc-300 text-zinc-900"
           />
           <HomeStatsCard
             amount={userPosts}
-            color="bg-GRAY-LIGHTER"
             label="meus posts"
-            text_color="BLACK"
             icon="my_posts"
+            classname="border border-zinc-300 text-zinc-900"
           />
+
           <HomeStatsCard
             amount={posts}
-            color="bg-BLACK"
-            col_span
             label="total de posts"
-            text_color="white"
             icon="total_posts"
+            classname="bg-black text-white col-span-2"
           />
         </div>
       )}

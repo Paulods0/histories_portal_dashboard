@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { ICategoryData } from "../../types"
-import { deleteCategory, getAllCategories } from "../../api/apiCalls"
+import { ICategoryData } from "../../interfaces"
+import { deleteCategory, getAllCategories } from "../../api"
 import { ClipLoader } from "react-spinners"
 import DataRow from "./DataRow"
 
@@ -33,7 +33,13 @@ const TopicsTable = () => {
         </td>
       ) : (
         topics.map((topic, index) => (
-          <DataRow handleDelete={deleteCategory} key={index} hasCreator data={topic} index={index} />
+          <DataRow
+            handleDelete={deleteCategory}
+            key={index}
+            hasCreator
+            data={topic}
+            index={index}
+          />
         ))
       )}
     </table>

@@ -1,20 +1,21 @@
-import { createContext, useContext, useState } from "react"
+import React, { createContext, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Cookies from "js-cookie"
-import { url } from "../api/apiCalls"
+import axios from "../api/axiosConfig"
+import { getUser } from "@/api"
+import { IUser } from "@/interfaces"
 
-type UserType = {
+type UserIdType = {
   id: string
-  firstname: string
-  lastname: string
-  email: string
-  image?: string
 }
 
 type AuthContextType = {
-  user: UserType | undefined
+  userId: string | undefined
+  user: IUser | undefined
+  setUser: React.Dispatch<React.SetStateAction<IUser | undefined>>
   login: (email: string, password: string) => void
   logout: () => void
+  setUserId: React.Dispatch<React.SetStateAction<string | undefined>>
   token: string | undefined
   isLoading: boolean
 }
@@ -31,36 +32,33 @@ export const useAuthContext = () => {
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [user, setUser] = useState<UserType | undefined>(() => {
-    const user = Cookies.get("user")
+  const [user, setUser] = useState<IUser | undefined>(undefined)
+
+  const [userId, setUserId] = useState<string | undefined>(() => {
+    const user = localStorage.getItem("user")
     return user ? JSON.parse(user) : undefined
   })
 
   const [token, setToken] = useState(() => {
     const token = Cookies.get("token")
-    return token ? JSON.parse(token) : undefined
+    return token ? token : undefined
   })
 
   const navigate = useNavigate()
 
-  // console.log(user)
-
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     try {
-      const response = await fetch(`${url}auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email, password: password }),
+      const response = await axios.post(`auth/login`, {
+        email: email,
+        password: password,
       })
-      const authData = await response.json()
-      if (response.ok) {
-        setUser(authData.user)
+      const authData = await response.data
+      if (response.status === 200) {
+        setUserId(authData.id)
         setToken(authData.token)
-        Cookies.set("user", JSON.stringify(authData.user), { expires: 7 })
-        Cookies.set("token", JSON.stringify(authData.token), { expires: 7 })
+        localStorage.setItem("user", JSON.stringify(authData.id))
+        Cookies.set("token", authData.token, { expires: 7 })
         setIsLoading(false)
         navigate("/")
         return
@@ -70,17 +68,50 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
     setIsLoading(false)
   }
-
   const logout = () => {
     setIsLoading(false)
     setToken(undefined)
-    setUser(undefined)
+    setUserId(undefined)
+    localStorage.removeItem("user")
     Cookies.remove("token")
-    Cookies.remove("user")
     navigate("/login")
   }
+  const getCurrentUser = async (): Promise<IUser | undefined> => {
+    const userId = localStorage.getItem("user")
+    if (!userId) return undefined
+    try {
+      const user = await getUser(JSON.parse(userId!!))
+      return user
+    } catch (error) {
+      console.error(error)
+      return undefined
+    }
+  }
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await getCurrentUser()
+      if (!userData) {
+        return
+      }
+      setUser(userData)
+    }
+    fetchUser()
+  }, [])
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        userId,
+        token,
+        login,
+        logout,
+        isLoading,
+        setUserId,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

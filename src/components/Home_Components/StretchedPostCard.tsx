@@ -1,7 +1,7 @@
 import { LiaUser } from "react-icons/lia"
 import { BiCategory } from "react-icons/bi"
 import { CiCalendarDate } from "react-icons/ci"
-import { IPostData } from "../../types"
+import { IPostData } from "../../interfaces"
 
 const StretchedPostCard: React.FC<{ post: IPostData }> = ({
   post: { mainImage, title, createdAt, category, author },
