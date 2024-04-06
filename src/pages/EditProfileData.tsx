@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useAuth, useAuthContext } from "@/context/AuthContext"
+import { useAuthContext } from "@/context/AuthContext"
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { FaArrowLeft } from "react-icons/fa"
 import { updateUser } from "@/api"
 import { useForm } from "react-hook-form"
@@ -13,8 +13,7 @@ import { toast } from "react-toastify"
 
 const EditProfileData = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const { user, setUser } = useAuth()
-  const navigate = useNavigate()
+  const { user, userId, setUser } = useAuthContext()
 
   const userFormSchema = z.object({
     firstname: z.string().optional(),
@@ -36,9 +35,19 @@ const EditProfileData = () => {
   const handleUpdateUser = async (newUserData: UserFormType) => {
     try {
       setIsLoading(true)
-      const response = await updateUser(user!!.id, newUserData)
+      const response = await updateUser(userId!!, newUserData)
 
-      setUser(response)
+      if (response.status != 200) {
+        toast.error("Erro ao atualizar os dados", {
+          autoClose: 1000,
+          hideProgressBar: true,
+        })
+        return
+      }
+
+      setUser(response.data)
+      localStorage.setItem("userData", JSON.stringify(response.data))
+
       toast.success("Dados atualizados", {
         autoClose: 1000,
         hideProgressBar: true,
@@ -51,17 +60,18 @@ const EditProfileData = () => {
       })
     }
     setIsLoading(false)
+    window.location.reload()
   }
 
   return (
-    <section className="mt-2 w-full">
+    <section className="mt-0 w-full">
       <div className="flex items-center justify-between w-full p-3">
         <h1 className="font-bold text-[20px] text-center">
           Editar os dados pessoais
         </h1>
         <Button variant={"outline"} className="flex gap-x-2">
           <FaArrowLeft size={12} />
-          <Link to={`/profile/${user?.id}`}>Voltar ao perfil</Link>
+          <Link to={`/profile/${userId!!}`}>Voltar ao perfil</Link>
         </Button>
       </div>
       <form

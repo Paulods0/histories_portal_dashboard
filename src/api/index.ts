@@ -93,5 +93,12 @@ export const updateUser = async (
 ) => {
   const response = await axios.patch(`${API_URL.UPDATE_USER}/${id}`, user)
 
+  return response
+}
+
+export const getAllPostsByCategory = async (categoryId: string) => {
+  const response = await axios.get(
+    `${API_URL.GET_POSTS_BY_CATEGORY}/${categoryId}`
+  )
   return response.data
 }

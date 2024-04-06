@@ -5,19 +5,21 @@ import axios from "../api/axiosConfig"
 import { getUser } from "@/api"
 import { IUser } from "@/interfaces"
 
-type UserIdType = {
-  id: string
+type UserData = {
+  email: string
+  firstname: string
+  lastname: string
+  image: string
 }
 
 type AuthContextType = {
   userId: string | undefined
-  user: IUser | undefined
-  setUser: React.Dispatch<React.SetStateAction<IUser | undefined>>
-  login: (email: string, password: string) => void
-  logout: () => void
-  setUserId: React.Dispatch<React.SetStateAction<string | undefined>>
+  user: UserData | undefined
   token: string | undefined
   isLoading: boolean
+  logout: () => void
+  login: (email: string, password: string) => void
+  setUser: React.Dispatch<React.SetStateAction<UserData | undefined>>
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType)
@@ -32,11 +34,15 @@ export const useAuthContext = () => {
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [user, setUser] = useState<IUser | undefined>(undefined)
+
+  const [user, setUser] = useState<UserData | undefined>(() => {
+    const userData = localStorage.getItem("userData")
+    return userData ? JSON.parse(userData) : undefined
+  })
 
   const [userId, setUserId] = useState<string | undefined>(() => {
-    const user = localStorage.getItem("user")
-    return user ? JSON.parse(user) : undefined
+    const userId = localStorage.getItem("userId")
+    return userId ? JSON.parse(userId) : undefined
   })
 
   const [token, setToken] = useState(() => {
@@ -57,7 +63,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (response.status === 200) {
         setUserId(authData.id)
         setToken(authData.token)
-        localStorage.setItem("user", JSON.stringify(authData.id))
+        setUser(authData.user)
+        localStorage.setItem("userData", JSON.stringify(authData.user))
+        localStorage.setItem("userId", JSON.stringify(authData.id))
         Cookies.set("token", authData.token, { expires: 7 })
         setIsLoading(false)
         navigate("/")
@@ -72,44 +80,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsLoading(false)
     setToken(undefined)
     setUserId(undefined)
-    localStorage.removeItem("user")
+    setUser(undefined)
+    localStorage.removeItem("userId")
+    localStorage.removeItem("userData")
     Cookies.remove("token")
     navigate("/login")
   }
-  const getCurrentUser = async (): Promise<IUser | undefined> => {
-    const userId = localStorage.getItem("user")
-    if (!userId) return undefined
-    try {
-      const user = await getUser(JSON.parse(userId!!))
-      return user
-    } catch (error) {
-      console.error(error)
-      return undefined
-    }
-  }
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await getCurrentUser()
-      if (!userData) {
-        return
-      }
-      setUser(userData)
-    }
-    fetchUser()
-  }, [])
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        setUser,
         userId,
         token,
         login,
         logout,
+        setUser,
         isLoading,
-        setUserId,
       }}
     >
       {children}

@@ -118,7 +118,7 @@ const AdicionarGestor = () => {
               {users.map((user, index) => (
                 <tr key={index} className="flex w-full gap-1 text-BLACK ">
                   <td className="w-full text-center text-[14px]">
-                    {user.id.substring(0, 10)}
+                    {index + 1}
                   </td>
                   <td className="w-full text-center text-[14px]">
                     {user.firstname}

@@ -13,12 +13,12 @@ const AdminPostCard: React.FC<IPostCard> = ({
   return (
     <Link
       to={`/post/${_id}`}
-      className="cursor-pointer bg-white rounded-lg h-[250px] w-full flex items-center flex-col border border-GRAY-LIGHTER"
+      className="cursor-pointer bg-white h-[250px] w-full flex items-center flex-col border border-GRAY-LIGHTER"
     >
-      <div className="relative w-full h-[160px] rounded-t-lg">
+      <div className="relative w-full h-[160px] ">
         <img
           src={mainImage}
-          className=" w-full h-full absolute inset-0 object-cover rounded-t-lg"
+          className=" w-full h-full absolute inset-0 object-cover "
           alt="Main photo"
         />
       </div>

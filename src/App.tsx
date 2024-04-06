@@ -17,7 +17,7 @@ import ForgotPassword from "./pages/ForgotPassword"
 
 function App() {
   return (
-    <main className="min-h-screen font-Poppins w-full ">
+    <main className="min-h-screen font-Poppins scroll-bar w-full ">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
@@ -28,7 +28,7 @@ function App() {
           <Route path="loja" element={<LojaAdmin />} />
           <Route path="ads" element={<GoogleAds />} />
           <Route path="categorias" element={<CategoriasAdmin />} />
-          <Route path="adicionargestor" element={<AdicionarGestor />} />
+          <Route path="gestor" element={<AdicionarGestor />} />
           <Route path="post/:id" element={<PostDetail />} />
           <Route path="profile/:id/" element={<Profile />}>
             <Route index element={<UserPosts />} />

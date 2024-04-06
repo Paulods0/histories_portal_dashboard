@@ -32,7 +32,7 @@ const MyPostsWrapper = () => {
   }
 
   return (
-    <div className="w-full overflow-y-auto scroll-bar pr-2 h-[320px]">
+    <div className="w-full overflow-y-auto scroll-bar pr-2 absolute h-[92%]">
       {posts.length === 0 || posts.length === undefined ? (
         <div className="w-full h-full flex items-center justify-center">
           <h1 className="text-black">Não há posts ainda</h1>

@@ -6,7 +6,7 @@ import { useAuthContext } from "../context/AuthContext"
 import { toast } from "react-toastify"
 
 const CategoriasAdmin = () => {
-  const { user } = useAuthContext()
+  const { userId } = useAuthContext()
   const [container, setContainer] = useState<"topic" | "category">("topic")
   const [topicName, setTopicName] = useState("")
   const [categoryName, setCategoryName] = useState("")
@@ -16,7 +16,7 @@ const CategoriasAdmin = () => {
   const handleAddTopic = async (e: FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    await createCategory(topicName, user!!.id)
+    await createCategory(topicName, userId!!)
     setIsLoading(false)
     toast.success("Tópico criado com sucesso", {
       position: "bottom-right",

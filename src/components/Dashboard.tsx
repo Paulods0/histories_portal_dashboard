@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom"
 import SidebarNavigation from "./SidebarNavigation"
 import Cookies from "js-cookie"
+import Header from "./Home_Components/Header"
 
 const Dashboard = () => {
   const token = Cookies.get("token")
@@ -9,16 +10,14 @@ const Dashboard = () => {
   }
 
   return (
-    <main className="h-screen w-full bg-background">
-      <div className="relative flex h-full items-center justify-center">
+    <main className="relative h-screen w-full bg-WHITE flex flex-col text-BLACK">
+      <Header />
+      <section className="h-screen w-full flex">
         <SidebarNavigation />
-        <div className="flex  w-full flex-col items-center justify-center ">
-          {/* <Header /> */}
-          <main className="py-2 h-screen  w-full flex items-center justify-between px-2">
-            <Outlet />
-          </main>
+        <div className="w-full h-full bg-zinc-100">
+          <Outlet />
         </div>
-      </div>
+      </section>
     </main>
   )
 }

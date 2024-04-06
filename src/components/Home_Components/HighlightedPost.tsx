@@ -2,40 +2,46 @@ import { useEffect, useState } from "react"
 import { IPostData } from "../../interfaces"
 import { getHighlightedPost } from "../../api"
 import { Link } from "react-router-dom"
+import { ClipLoader } from "react-spinners"
 
 const HighlightedPost = () => {
   const [highlightedPost, setHighlightedPost] = useState<IPostData>()
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getHighlightedPost()
-      setHighlightedPost(data)
+      try {
+        const data = await getHighlightedPost()
+        setHighlightedPost(data)
+      } catch (error) {
+        console.error(error)
+        setIsLoading(false)
+      }
+      setIsLoading(false)
     }
     fetchData()
   }, [])
+
+  if (isLoading) {
+    return (
+      <main className="w-full h-full flex items-center justify-center">
+        <ClipLoader size={40} color="#111111" />
+      </main>
+    )
+  }
+
   return (
-    <Link to={`/post/${highlightedPost?._id}`}>
-      <div className="p-2 h-full cursor-pointer bg-white hover:bg-GRAY-LIGHTER duration-200 ease-linear transition-all border border-GRAY-LIGHTER rounded-[6px] gap-2 grid grid-cols-3">
-        <div className="relative w-full h-full">
-          <img
-            src={highlightedPost?.mainImage}
-            alt="imagem do post"
-            className="absolute rounded-[5px] inset-0 h-full w-full object-contain"
-          />
-        </div>
-
-        <div className="w-full col-span-2">
-          <h1 className="text-[14px] text-BLACK font-semibold line-clamp-2">
-            {highlightedPost?.title}
-          </h1>
-
-          <div
-            className="text-[12px] text-GRAY-DARKER line-clamp-2"
-            dangerouslySetInnerHTML={{
-              __html: highlightedPost?.content ? highlightedPost?.content : "",
-            }}
-          />
-        </div>
+    <Link
+      to={`/post/${highlightedPost?._id}`}
+      className="relative outline-none border-none"
+    >
+      <img
+        src={highlightedPost?.mainImage}
+        alt="imagem do post"
+        className="rounded-[6px] inset-0 h-[200px] w-full object-cover"
+      />
+      <div className="absolute inset-0 w-full h-full bg-zinc-800/70 hover:opacity-0 duration-300 transition-all flex items-center justify-center">
+        <span className="text-white">Post em destaque</span>
       </div>
     </Link>
   )

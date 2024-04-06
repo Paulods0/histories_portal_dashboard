@@ -8,26 +8,27 @@ import { CiSettings } from "react-icons/ci"
 import { CiUser } from "react-icons/ci"
 
 const Profile = () => {
-  const path = useLocation()
-  const { user, userId } = useAuthContext()
-  if (!user) return
-
   const [posts, setPosts] = useState<IPostData[]>([])
-
-  const pathName = path.pathname.split("/")[4]
+  const { user, userId } = useAuthContext()
+  const path = useLocation()
+  const [pathName, setPathName] = useState<string>("")
 
   useEffect(() => {
+    setPathName(path.pathname.split("/")[4])
+    if (!user) return
     const fetchData = async () => {
       const data = await getUserPosts(userId!!)
       setPosts(data)
     }
     fetchData()
-  }, [])
+  }, [user, userId, path.pathname])
+
+  if (!user) return null
 
   return (
     <main className="w-full h-full overflow-y-auto scroll-bar p-4 ">
       <section className="w-[800px] h-full flex flex-col items-start justify-start mx-auto">
-        <section className="flex p-4 w-full border">
+        <section className="flex p-4 w-full border-b">
           <div className="flex items-center w-full justify-between">
             <div className="flex">
               <div className="relative w-36 h-36">
@@ -47,8 +48,8 @@ const Profile = () => {
                 <div className="w-full text-[#999999] text-[14px]">
                   {user?.email}
                 </div>
-                <div className="self-start gap-x-1 mt-4 flex items-center">
-                  <span className="text-[14px]">Número de posts</span>
+                <div className="self-start gap-x-1 capitalize mt-4 flex items-center">
+                  <span className="text-[14px]">posts</span>
                   <span className="font-bold text-[18px]">{posts.length}</span>
                 </div>
               </div>
@@ -58,7 +59,7 @@ const Profile = () => {
                   <Link to="settings/edit_profile">
                     <Button
                       variant={`${
-                        pathName === "edit_profile" ? "secondary" : "ghost"
+                        pathName === "edit_profile" ? "default" : "outline"
                       }`}
                       className="text-[13px] flex items-center space-x-1"
                     >
@@ -69,7 +70,7 @@ const Profile = () => {
                   <Link to="settings/security">
                     <Button
                       variant={`${
-                        pathName === "security" ? "secondary" : "ghost"
+                        pathName === "security" ? "default" : "outline"
                       }`}
                       className="text-[13px] flex items-center space-x-1"
                     >

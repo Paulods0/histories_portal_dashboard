@@ -13,6 +13,7 @@ export enum API_URL {
   GET_ALL_CATEGORIES = "category/all",
   GET_HIGHLIGHTED_POSTS = "post/highlighted",
   GET_PRODUCT_CATEGORIES = "prod-category/categories",
+  GET_POSTS_BY_CATEGORY = "post/category",
   GET_USER_POSTS = "post/get/userposts",
   UPDATE_PRODUCT = "product",
   UPDATE_USER = "auth",

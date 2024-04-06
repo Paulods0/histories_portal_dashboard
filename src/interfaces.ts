@@ -28,12 +28,14 @@ export interface IPostData {
     firstname: string
     lastname: string
   }
+  views: number
 }
 export interface IProductData {
   _id: string
   image: string
   name: string
   price: string
+  quantity: number
   category: {
     _id: string
     name: string

@@ -7,7 +7,7 @@ const StretchedPostCard: React.FC<{ post: IPostData }> = ({
   post: { mainImage, title, createdAt, category, author },
 }) => {
   return (
-    <div className="cursor-pointer w-full hover:bg-GRAY-LIGHTER/80 mt-2 border ease-in-out duration-200 transition-all rounded-[10px] p-2 flex">
+    <div className="cursor-pointer bg-WHITE w-full hover:bg-GRAY-LIGHTER/80 mt-2 border ease-in-out duration-200 transition-all rounded-[10px] p-2 flex">
       <div className="relative h-[70px] w-[80px] ">
         <img
           src={mainImage}

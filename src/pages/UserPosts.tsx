@@ -22,8 +22,8 @@ const UserPosts = () => {
       try {
         const data = await getUserPosts(userId!!)
         setPosts(data)
-        setIsLoading(false)
       } catch (error) {
+        console.error(error)
         setIsLoading(false)
       }
       setIsLoading(false)
@@ -46,11 +46,11 @@ const UserPosts = () => {
           className="w-[700px] flex items-center justify-center"
           opts={{ align: "center" }}
         >
-          <CarouselContent className="h-[350px] w-[400px] bg-red-50">
+          <CarouselContent className="h-[300px] w-[400px] bg-red-50">
             {posts.map((post, index) => (
               <CarouselItem key={index}>
-                <Card className="h-full border-none">
-                  <CardTitle className="line-clamp-2 text-[16px] text-center">
+                <Card className="h-full relative bg-transparent border-none">
+                  <CardTitle className="line-clamp-2 mb-2 text-[16px] text-center">
                     {post.title}
                   </CardTitle>
                   <CardContent className="relative w-full h-full">
@@ -60,6 +60,14 @@ const UserPosts = () => {
                       alt="Post image"
                     />
                   </CardContent>
+                  <div className="absolute bottom-4 left-2 flex items-center justify-between px-3 w-full">
+                    <span className="p-2 capitalize rounded-full text-white  text-[12px] bg-zinc-900/40">
+                      Categoria: {post.category.name}
+                    </span>
+                    <span className="capitalize bg-zinc-900/40 p-2 rounded-full text-white  text-[12px]">
+                      views: {post.views}
+                    </span>
+                  </div>
                 </Card>
               </CarouselItem>
             ))}

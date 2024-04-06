@@ -3,21 +3,27 @@ import HomeStatsCard from "./HomeStatsCard"
 import {
   getAllPosts,
   getAllProducts,
+  getAllProdutCategories,
   getAllUsers,
   getUserPosts,
 } from "../../api"
 import { useAuthContext } from "../../context/AuthContext"
 import { ClipLoader } from "react-spinners"
+import { IPostData } from "@/interfaces"
 
 const HomeStatsContainer = () => {
-  const { user, userId } = useAuthContext()
+  const { userId } = useAuthContext()
 
-  const [posts, setPosts] = useState(0)
+  const [posts, setPosts] = useState<IPostData[]>([])
+  const [userPosts, setUserPosts] = useState<IPostData[]>([])
+  const [productCategories, setProductCategories] = useState(0)
   const [products, setProducts] = useState(0)
-  const [userPosts, setUserPosts] = useState(0)
   const [users, setUsers] = useState(0)
 
   const [isLoading, setIsLoading] = useState(true)
+
+  const postsViews = posts.reduce((total, acc) => acc.views + total, 0)
+  const userPostsViews = userPosts.reduce((total, acc) => acc.views + total, 0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,13 +32,16 @@ const HomeStatsContainer = () => {
         getAllProducts(),
         getUserPosts(userId!!),
         getAllUsers(),
+        getAllProdutCategories(),
       ])
         .then((responses) => {
-          const [posts, products, userPosts, users] = responses
-          setPosts(posts.length)
+          const [posts, products, userPosts, users, productCategories] =
+            responses
+          setPosts(posts)
           setProducts(products.length)
-          setUserPosts(userPosts.length)
+          setUserPosts(userPosts)
           setUsers(users.length)
+          setProductCategories(productCategories.length)
 
           setIsLoading(false)
         })
@@ -53,31 +62,36 @@ const HomeStatsContainer = () => {
           <ClipLoader color="#111111" size={28} />
         </div>
       ) : (
-        <div className="grid grid-cols-5 gap-2">
+        <div className="flex w-full gap-2">
           <HomeStatsCard
             amount={users}
             label="usuários"
-            icon="users"
-            classname="border border-zinc-300 text-zinc-900"
+            classname="border border-zinc-300 w-full text-zinc-900"
           />
           <HomeStatsCard
             amount={products}
-            label="loja"
-            icon="store"
-            classname="border border-zinc-300 text-zinc-900"
+            label="produtos na loja"
+            text1="Categorias"
+            text2={productCategories.toString()}
+            iconText="category"
+            classname="border border-zinc-300 w-full text-zinc-900"
           />
           <HomeStatsCard
-            amount={userPosts}
-            label="meus posts"
-            icon="my_posts"
-            classname="border border-zinc-300 text-zinc-900"
+            amount={userPosts.length}
+            label="os meus posts"
+            text1="views"
+            text2={userPostsViews.toString()}
+            iconText="views"
+            classname="border border-zinc-300 w-full text-zinc-900"
           />
 
           <HomeStatsCard
-            amount={posts}
+            amount={posts.length}
+            text1="views"
+            text2={postsViews.toString()}
             label="total de posts"
-            icon="total_posts"
-            classname="bg-black text-white col-span-2"
+            iconText="views"
+            classname="border-zinc-300 w-full border text-BLACK "
           />
         </div>
       )}

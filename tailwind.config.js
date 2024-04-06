@@ -19,8 +19,14 @@ module.exports = {
     extend: {
       fontFamily: {
         Poppins: "Poppins, sans-serif",
+        BebasNeue: "Bebas Neue, sans-serif",
       },
       colors: {
+        BLACK: "#1B1B1B",
+        WHITE: "#FEFEFE",
+        BLUE: "#3C59D0",
+        GREEN: "#3BB77B",
+        YELLOW: "#FFBA42",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

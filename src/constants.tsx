@@ -38,9 +38,9 @@ export const ADMIN_DASHBOARD_NAV_LINKS = [
     link: "/categorias",
   },
   {
-    name: "Adicionar gestor",
+    name: "Gestor",
     icon: <FaUserPlus size={20} />,
-    link: "/adicionargestor",
+    link: "/gestor",
   },
 ]
 
@@ -49,5 +49,6 @@ export const STORE_PRODUCT_HEADERS = [
   "Nome",
   "Categoria",
   "Preço",
+  "Quantidade",
   "Ações",
 ]

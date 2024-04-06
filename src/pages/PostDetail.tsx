@@ -198,19 +198,18 @@ const PostDetail = () => {
   }, [id])
 
   return (
-    <main className="p-4">
-      <h1 className="text-[20px] font-semibold uppercase text-[#382A3F] mb-4">
-        Atualizar o post
-      </h1>
-      <div className="w-full flex gap-6">
-        {/** QUILL EDITOR */}
+    <main className="relative p-4 w-full h-full grid grid-cols-3">
+      {/** QUILL EDITOR */}
+      <div className="col-span-2 relative h-[460px]">
         <ReactQuill
           modules={modules}
-          className=" flex-[4] h-full"
+          className="h-full w-full absolute inset-0"
           value={content}
           onChange={(value) => setContent(value)}
         />
+      </div>
 
+      <div className="w-full flex gap-4">
         {/** FORM */}
         <form
           encType="multipart/form-data"

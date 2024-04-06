@@ -51,27 +51,36 @@ const modules = {
 
 const NovoPost = () => {
   const navigate = useNavigate()
+  const { userId } = useAuthContext()
 
   //STATES
   const [categories, setCategories] = useState<ICategoryData[]>([])
+  const [tags, setTags] = useState("")
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
-  const [isHighlighted, setIsHighlighted] = useState(false)
   const [category, setCategory] = useState("")
-  const [tags, setTags] = useState("")
-
   const [authorNotes, setAuthorNotes] = useState("")
-  const [image, setImage] = useState<File | undefined>()
   const [imageToShow, setImageToShow] = useState<any>()
+  const [image, setImage] = useState<File | undefined>()
+  const [isHighlighted, setIsHighlighted] = useState(false)
   const [isCreatingPost, setIsCreatingPost] = useState(false)
-  const [latitude, setLatitude] = useState("")
-  const [longitude, setLongitude] = useState("")
-
+  const [geoCoordinates, setGeoCoordinates] = useState<string[]>([])
   const [categoryName, setCategoryName] = useState<string | undefined>(
     undefined
   )
 
-  const { user } = useAuthContext()
+  const generateGeoCoordinates = () => {
+    if (geoCoordinates.length === 0) {
+      return
+    }
+    const coordinates = {
+      latitude: Number(geoCoordinates[0].split(",")[0]),
+      longitude: Number(geoCoordinates[0].split(",")[1]),
+    }
+    return coordinates
+  }
+  const coordinates = generateGeoCoordinates()
+  // console.log(coordinates)
 
   //FUNCTIONS
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -85,7 +94,6 @@ const NovoPost = () => {
       reader.readAsDataURL(file)
     }
   }
-
   const resetInputs = () => {
     setTitle("")
     setContent("")
@@ -93,7 +101,6 @@ const NovoPost = () => {
     setIsHighlighted(false)
     setIsCreatingPost(false)
   }
-
   const createPost = async (e: FormEvent) => {
     e.preventDefault()
     setIsCreatingPost(true)
@@ -147,11 +154,11 @@ const NovoPost = () => {
           isHighlighted: isHighlighted,
           category: category,
           mainImage: downloadURL,
-          author_id: user!!.id,
+          author_id: userId!!,
           author_notes: authorNotes,
           tag: tags.split(","),
-          latitude: latitude ? latitude : null,
-          longitude: longitude ? longitude : null,
+          latitude: coordinates ? coordinates.latitude : null,
+          longitude: coordinates ? coordinates.longitude : null,
         }),
       })
 
@@ -199,36 +206,63 @@ const NovoPost = () => {
   }, [category])
 
   return (
-    <main className="w-full h-full rounded-[10px] flex p-3 gap-8">
+    <main className="relative p-2 w-full h-full grid grid-cols-3">
       {/** QUILL EDITOR */}
 
-      <ReactQuill
-        modules={modules}
-        className="h-[520px] w-full "
-        value={content}
-        theme="snow"
-        onChange={(value) => setContent(value)}
-      />
+      <div className="col-span-2 relative h-[460px]">
+        <ReactQuill
+          modules={modules}
+          className="h-full w-full absolute inset-0"
+          value={content}
+          theme="snow"
+          onChange={(value) => setContent(value)}
+        />
+      </div>
 
       {/** FORM */}
-      <form
-        encType="multipart/form-data"
-        onSubmit={(e: FormEvent) => createPost(e)}
-        className="flex w-[450px] flex-col items-center justify-center"
-      >
-        <div className="w-full flex flex-col mb-2 items-center justify-center rounded-xl h-[150px] ">
-          {imageToShow ? (
-            <>
-              <div className="w-full h-[150px] flex flex-col">
-                <label
-                  htmlFor="image"
-                  className="cursor-pointer relative w-full h-full "
-                >
-                  <img
-                    src={imageToShow}
-                    alt="Imagem do post"
-                    className="absolute inset-0 w-full h-full object-contain"
-                  />
+      <div className="w-full flex gap-4">
+        <form
+          encType="multipart/form-data"
+          onSubmit={(e: FormEvent) => createPost(e)}
+          className="w-[250px] rounded-lg px-4 flex-col flex-[1.5] flex items-center justify-between "
+        >
+          <div className="w-full flex flex-col mb-2 items-center justify-center rounded-xl h-[150px] ">
+            {imageToShow ? (
+              <>
+                <div className="w-full h-[120px] flex flex-col">
+                  <label
+                    htmlFor="image"
+                    className="cursor-pointer relative w-full h-full "
+                  >
+                    <img
+                      src={imageToShow}
+                      alt="Imagem do post"
+                      className="absolute inset-0 w-full h-full object-contain"
+                    />
+                    <input
+                      id="image"
+                      accept="image/*"
+                      name="image"
+                      type="file"
+                      onChange={(e) => handleFileInputChange(e)}
+                      placeholder="Adicione a imagem principal"
+                      className="opacity-0"
+                    />
+                  </label>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="border h-[120px] border-zinc-300 w-full flex flex-col items-center justify-center rounded-xl ">
+                  <label
+                    htmlFor="image"
+                    className="cursor-pointer flex flex-col items-center justify-center"
+                  >
+                    <IoIosAddCircleOutline size={40} color="#9D9D9D" />
+                    <span className="font-normal text-base text-GRAY-DARKER">
+                      Adicionar imagem
+                    </span>
+                  </label>
                   <input
                     id="image"
                     accept="image/*"
@@ -236,132 +270,107 @@ const NovoPost = () => {
                     type="file"
                     onChange={(e) => handleFileInputChange(e)}
                     placeholder="Adicione a imagem principal"
-                    className="opacity-0"
+                    className="h-0 w-0"
                   />
-                </label>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="border h-[150px] border-dashed border-zinc-800 w-full flex flex-col items-center justify-center rounded-xl ">
-                <label
-                  htmlFor="image"
-                  className="cursor-pointer flex flex-col items-center justify-center"
-                >
-                  <IoIosAddCircleOutline size={50} color="#9D9D9D" />
-                  <span className="font-normal text-base text-GRAY-DARKER">
-                    Adicionar imagem
-                  </span>
-                </label>
-                <input
-                  id="image"
-                  accept="image/*"
-                  name="image"
-                  type="file"
-                  onChange={(e) => handleFileInputChange(e)}
-                  placeholder="Adicione a imagem principal"
-                  className="h-0 w-0"
-                />
-              </div>
-            </>
-          )}
-        </div>
-
-        <div className="py-3 rounded-md flex-col flex h-full gap-2 justify-center w-full ">
-          <div className="border-zinc-300 border py-2 px-4 rounded-md">
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Adicione o título"
-              className="text-[14px] bg-transparent border-none w-full text-center outline-none"
-            />
+                </div>
+              </>
+            )}
           </div>
 
-          <div className="flex gap-2 items-center ">
-            <div className="py-2 px-4 border border-zinc-300 rounded-md ">
-              <select
-                onChange={(e) => {
-                  setCategory(e.target.value)
-                }}
-                value={category}
-                className="text-[14px] bg-transparent cursor-pointer border-none outline-none h-full text-[#9D9D9D] text-center "
-              >
-                <option disabled value="" className=" text-[#9D9D9D]">
-                  Adicione o tópico
-                </option>
-
-                {categories.map((category) => (
-                  <option id="option" value={category._id} key={category._id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
+          <div className="py-3 rounded-md flex-col flex h-full gap-2 justify-center w-full ">
+            <div className="border-zinc-300 border py-2 px-4 rounded-md">
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Adicione o título"
+                className="text-[14px] bg-transparent border-none w-full text-center outline-none"
+              />
             </div>
 
-            <div className="flex border border-zinc-300 w-full p-2 rounded-md  gap-2 items-center justify-center text-[#9D9D9D]">
-              <label htmlFor="destaque" className="text-[14px] cursor-pointer">
-                Destacar
-              </label>
+            <div className="flex gap-2 items-center ">
+              <div className="py-2 px-4 border border-zinc-300 rounded-md ">
+                <select
+                  onChange={(e) => {
+                    setCategory(e.target.value)
+                  }}
+                  value={category}
+                  className="text-[14px] bg-transparent cursor-pointer border-none outline-none h-full text-[#9D9D9D] text-center "
+                >
+                  <option disabled value="" className=" text-[#9D9D9D]">
+                    Adicione o tópico
+                  </option>
+
+                  {categories.map((category) => (
+                    <option id="option" value={category._id} key={category._id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex border border-zinc-300 w-full p-2 rounded-md  gap-2 items-center justify-center text-[#9D9D9D]">
+                <label
+                  htmlFor="destaque"
+                  className="text-[14px] cursor-pointer"
+                >
+                  Destacar
+                </label>
+                <input
+                  id="destaque"
+                  type="checkbox"
+                  checked={isHighlighted}
+                  onChange={(e) => setIsHighlighted(e.target.checked)}
+                  className="text-[14px] border-none outline-none"
+                />
+              </div>
+            </div>
+            <div className=" border border-zinc-300 w-full p-2 rounded-md  gap-2">
               <input
-                id="destaque"
-                type="checkbox"
-                checked={isHighlighted}
-                onChange={(e) => setIsHighlighted(e.target.checked)}
-                className="text-[14px] border-none outline-none"
+                type="text"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                className="text-[14px] bg-transparent border-none outline-none w-full"
+                placeholder="Adicione tags (separe-às por vírgulas)"
+              />
+            </div>
+
+            {categoryName === "Passeios" && (
+              <div className="w-full flex flex-col gap-2">
+                <div className=" border border-zinc-300 w-full p-2 rounded-md  gap-2">
+                  <input
+                    type="text"
+                    className="text-[14px]  w-full bg-transparent capitalize border-none outline-none"
+                    value={geoCoordinates}
+                    onChange={(e) => setGeoCoordinates([e.target.value])}
+                    placeholder="latitude,longitude"
+                  />
+                </div>
+              </div>
+            )}
+            <div className="w-full font-normal p-2 rounded-[4px] border border-zinc-300 h-full">
+              <textarea
+                placeholder="Adicione uma nota para este post (opcional)"
+                value={authorNotes}
+                onChange={(e) => setAuthorNotes(e.target.value)}
+                className="w-full bg-transparent resize-none scroll-bar placeholder:text-[14px] outline-none border-none h-full"
               />
             </div>
           </div>
-          <div className=" border border-zinc-300 w-full p-2 rounded-md  gap-2">
-            <input
-              type="text"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-              className="text-[14px] border-none outline-none w-full"
-              placeholder="Adicione tags (separe-às por vírgulas)"
-            />
-          </div>
 
-          {categoryName === "Passeios" && (
-            <div className="w-full flex flex-col gap-2">
-              <div className=" border border-zinc-300 w-full p-2 rounded-md  gap-2">
-                <input
-                  type="number"
-                  className="text-[14px] capitalize border-none outline-none"
-                  value={latitude}
-                  onChange={(e) => setLatitude(e.target.value)}
-                  placeholder="latitude"
-                />
-              </div>
-              <div className=" border border-zinc-300 w-full p-2 rounded-md  gap-2">
-                <input
-                  type="number"
-                  value={longitude}
-                  onChange={(e) => setLongitude(e.target.value)}
-                  className="text-[14px] capitalize border-none outline-none"
-                  placeholder="longitude"
-                />
-              </div>
-            </div>
-          )}
-          <div className="w-full font-normal p-2 rounded-[4px] border border-zinc-300 h-full">
-            <textarea
-              placeholder="Adicione uma nota para este post (opcional)"
-              value={authorNotes}
-              onChange={(e) => setAuthorNotes(e.target.value)}
-              className="w-full bg-transparent resize-none scroll-bar placeholder:text-[14px] outline-none border-none h-full"
-            />
-          </div>
-        </div>
-
-        <Button
-          variant={"default"}
-          disabled={isCreatingPost}
-          className="w-full duration-200 transition-all ease-in p-2 rounded-md mt-3 text-white uppercase font-semibold mx-6"
-        >
-          {isCreatingPost ? <ClipLoader size={18} color="#FFF" /> : " publicar"}
-        </Button>
-      </form>
+          <Button
+            variant={"default"}
+            disabled={isCreatingPost}
+            className="w-full duration-200 transition-all ease-in p-2 rounded-md mt-0 text-white uppercase font-semibold mx-6"
+          >
+            {isCreatingPost ? (
+              <ClipLoader size={18} color="#FFF" />
+            ) : (
+              " publicar"
+            )}
+          </Button>
+        </form>
+      </div>
     </main>
   )
 }

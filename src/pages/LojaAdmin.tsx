@@ -1,5 +1,4 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
-import StoreProductCard from "../components/StoreProductCard"
 import { toast } from "react-toastify"
 import { ClipLoader } from "react-spinners"
 import { STORE_PRODUCT_HEADERS } from "../constants"
@@ -14,12 +13,39 @@ import {
   url,
 } from "../api"
 import { ICategoryData, IProductData } from "../interfaces"
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { CiEdit, CiTrash } from "react-icons/ci"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const LojaAdmin = () => {
   const [products, setProducts] = useState<IProductData[]>([])
-
   const [categories, setCategories] = useState<ICategoryData[]>([])
-
   const [isLoading, setIsLoading] = useState(true)
   const [name, setName] = useState("")
   const [price, setPrice] = useState("")
@@ -95,6 +121,7 @@ const LojaAdmin = () => {
     setIsUploadingProduct(false)
     window.location.reload()
   }
+  const handleDeleteProduct = (product_id: string) => {}
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,8 +134,10 @@ const LojaAdmin = () => {
           setIsLoading(false)
         })
         .catch((errors) => {
-          // const [err1, err2] = errors
-          // console.log({ err1: err1, err2: err2 })
+          console.error({
+            err1: errors[0],
+            err2: errors[1],
+          })
           setIsLoading(false)
         })
       setIsLoading(false)
@@ -125,42 +154,141 @@ const LojaAdmin = () => {
   }
 
   return (
-    <main className="flex-1 p-2 rounded-[10px] h-full grid grid-cols-4 gap-2">
+    <main className="w-full p-2 h-full items-start flex gap-2">
       {products.length === 0 || !products || products === null ? (
         <div className="w-full h-full flex items-center justify-center col-span-3">
           <h1>Não há nenhum produto ainda</h1>
         </div>
       ) : (
-        <>
-          <table className="flex flex-col h-full text-center items-center col-span-3 p-2 gap-4 ">
-            <thead className="w-full flex text-center">
-              <tr className="w-full items-center text-center justify-between shadow-md rounded-sm flex bg-[#111111] text-white px-6">
-                {STORE_PRODUCT_HEADERS.map((label, index) => (
-                  <th className="w-[150px]" key={index}>
-                    {label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody className="w-full gap-1 flex flex-col h-[520px] overflow-auto scroll-bar">
-              {products.map((product, index) => (
-                <StoreProductCard
+        <Table className="flex-[3] flex flex-col mt-2">
+          <TableHeader>
+            <TableRow className="flex items-center w-full">
+              {STORE_PRODUCT_HEADERS.map((label, index) => (
+                <TableHead
+                  className="w-full h-[20px] bg-BLACK p-3 flex items-center justify-center text-center text-WHITE"
                   key={index}
-                  // isLoading={isDeletingProduct}
-                  // deleteProduct={handleDeleteProduct}
-                  product={product}
-                />
+                >
+                  {label}
+                </TableHead>
               ))}
-            </tbody>
-          </table>
-        </>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody className="flex flex-col h-[480px] overflow-auto scroll-bar">
+            {products.map((product, index) => (
+              <TableRow
+                key={index}
+                className="flex text-center w-full items-center"
+              >
+                <TableCell className="relative w-full">
+                  <img
+                    src={product.image}
+                    className="w-full h-[60px] object-contain"
+                    alt="Imagem do produto"
+                  />
+                </TableCell>
+
+                <TableCell className="w-full">{product.name}</TableCell>
+                <TableCell className="w-full">
+                  {product.category.name}
+                </TableCell>
+                <TableCell className="w-full text-center">
+                  {product.price}
+                </TableCell>
+                <TableCell className="w-full">{product.quantity}</TableCell>
+
+                <TableCell className="w-full gap-x-3 text-center items-center justify-center flex">
+                  <Dialog>
+                    <DialogTrigger asChild className="cursor-pointer">
+                      <CiEdit size={24} />
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Editar produto</DialogTitle>
+                      </DialogHeader>
+
+                      <img
+                        src={product.image}
+                        className="w-14 h-14 object-cover"
+                        alt=""
+                      />
+
+                      <div className="w-full p-2 border border-zinc-300 rounded-lg">
+                        <input
+                          type="text"
+                          value={product.name}
+                          placeholder="Nome do produto"
+                          className="w-full h-fullbg-transparent border-none outline-none"
+                        />
+                      </div>
+                      <select
+                        defaultValue={product.category._id}
+                        className="w-full p-2 border border-zinc-300 rounded-lg"
+                      >
+                        {categories.map((category) => (
+                          <option
+                            value={""}
+                            className="w-full h-fullbg-transparent border-none outline-none"
+                          >
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="w-full p-2 border border-zinc-300 rounded-lg">
+                        <input
+                          type="number"
+                          value={product.price}
+                          placeholder="Preço"
+                          className="w-full h-fullbg-transparent border-none outline-none"
+                        />
+                      </div>
+                      <div className="w-full p-2 border border-zinc-300 rounded-lg">
+                        <input
+                          type="number"
+                          value={product.quantity}
+                          placeholder="Quantidade"
+                          className="w-full h-fullbg-transparent border-none outline-none"
+                        />
+                      </div>
+                      <Button>Atualizar alterações</Button>
+                    </DialogContent>
+                  </Dialog>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger>
+                      <CiTrash size={24} color="#FF0000" />
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Tens a certeza que queres eliminar este produto?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Esta ação não pode ser desfeita. Isto vai eliminar
+                          permanentemente este produto da loja.
+                        </AlertDialogDescription>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDeleteProduct(product._id)}
+                          >
+                            Eliminar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogHeader>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
 
       <form
         encType="multipart/form-data"
         onSubmit={handleSubmit}
-        className="flex items-center p-2 w-full h-full flex-col"
+        className="flex items-center p-2 flex-1 h-full flex-col"
       >
         <div className="w-full flex items-center justify-center rounded-xl h-[200px] border border-dashed border-zinc-800">
           {imageToShow ? (

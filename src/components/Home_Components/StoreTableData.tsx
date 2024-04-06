@@ -2,67 +2,87 @@ import { useEffect, useState } from "react"
 import { IProductData } from "../../interfaces"
 import { getAllProducts } from "../../api"
 import { ClipLoader } from "react-spinners"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table"
 
 const StoreTableData = () => {
   const [products, setProducts] = useState<IProductData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getAllProducts()
-      setProducts(data)
+      try {
+        const data = await getAllProducts()
+        setProducts(data)
+        setIsLoading(false)
+      } catch (error) {
+        console.error(error)
+        setIsLoading(false)
+      }
       setIsLoading(false)
     }
     fetchData()
   }, [])
+
+  if (isLoading) {
+    return (
+      <div className="w-full lg:h-[300px] flex items-center justify-center">
+        <ClipLoader color="#111111" size={28} />
+      </div>
+    )
+  }
+
   return (
-    <>
-      {isLoading ? (
-        <div className="w-full lg:h-[300px] flex items-center justify-center">
-          <ClipLoader color="#111111" size={28} />
+    <div className="absolute w-full h-full">
+      {products.length === 0 ? (
+        <div className="w-full h-full flex items-center justify-center">
+          <h1 className="font-semibold text-base">
+            Não há nenhum produto na loja.
+          </h1>
         </div>
       ) : (
-        <div className="h-[100%] bg-white border p-2 rounded-[10px] flex flex-col w-full">
-          <div className="text-[14px] px-2 flex font-normal w-full border-b border-b-zinc-200">
-            <div className="w-full text-zinc-900 font-bold text-center text-[16px]">
-              Nome
-            </div>
-            <div className="w-full  text-zinc-900 font-bold  text-center text-[16px]">
-              Categoria
-            </div>
-            {/* <div className="w-full text-center text-[16px]">Quantidade</div> */}
-            <div className="w-full  text-zinc-900 font-bold  text-center text-[16px]">
-              Preço
-            </div>
-          </div>
+        <Table className="bg-white">
+          <TableHeader>
+            <TableRow className="flex items-center w-full">
+              <TableHead className="w-full h-[20px] bg-BLACK p-3 flex items-center justify-center text-center text-WHITE">
+                Nome
+              </TableHead>
+              <TableHead className="w-full h-[20px] bg-BLACK p-3 flex items-center justify-center text-center text-WHITE">
+                Quantidade
+              </TableHead>
+              <TableHead className="w-full h-[20px] bg-BLACK p-3 flex items-center justify-center text-center text-WHITE">
+                Preço
+              </TableHead>
+            </TableRow>
+          </TableHeader>
 
-          {products.length === 0 ? (
-            <div className="w-full h-full flex items-center justify-center">
-              <h1 className="font-semibold text-base">
-                Não há nenhum produto na loja.
-              </h1>
-            </div>
-          ) : (
-            <div className="overflow-y-auto h-[90%] scroll-bar px-1">
-              {products.map((product) => (
-                <div
-                  key={product._id}
-                  className=" rounded-[6px] border-b mt-2 text-zinc-900 font-normal px-2 text-[14px] w-full flex"
-                >
-                  <div className="w-full text-start line-clamp-1">
-                    {product?.name}
-                  </div>
-                  <div className="w-full text-center">
-                    {product?.category?.name}
-                  </div>
-                  {/* <div className="w-full text-center">{3}</div> */}
-                  <div className="w-full text-center">{product?.price} kz</div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+          <TableBody className="flex flex-col overflow-auto scroll-bar">
+            {products.map((product) => (
+              <TableRow
+                key={product._id}
+                className="flex text-center w-full items-center"
+              >
+                <TableCell className="relative w-full">
+                  {product?.name}
+                </TableCell>
+                <TableCell className="relative w-full">
+                  {product?.quantity}
+                </TableCell>
+
+                <TableCell className="relative w-full">
+                  {product?.price} kz
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
-    </>
+    </div>
   )
 }
 
