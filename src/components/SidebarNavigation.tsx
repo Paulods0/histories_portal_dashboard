@@ -12,11 +12,12 @@ const SidebarNavigation = () => {
   const locationPath = useLocation()
 
   const handleLogout = () => logout()
+  console.log(locationPath.pathname)
 
-  const HOME_LINK_PATH = "home"
+  const HOME_LINK_PATH = "/"
   const path =
-    locationPath.pathname.split("/")[1] === ""
-      ? HOME_LINK_PATH
+    locationPath.pathname === "/"
+      ? "Home"
       : locationPath.pathname.split("/")[1]
 
   return (

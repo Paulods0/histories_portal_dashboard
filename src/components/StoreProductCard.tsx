@@ -4,7 +4,7 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { deleteProduct } from "../api"
 
-interface IProdutcCard {
+type IProdutcCard = {
   product: {
     _id?: string
     image?: string
@@ -20,11 +20,9 @@ interface IProdutcCard {
   // isLoading: boolean
 }
 
-const StoreProductCard: React.FC<IProdutcCard> = ({
+const StoreProductCard = ({
   product: { _id, category, image, name, price },
-  // deleteProduct,
-  // isLoading,
-}) => {
+}: IProdutcCard) => {
   const [isDeletingProduct, setIsDeletingProduct] = useState(false)
   const handleDeleteProduct = async (id: string, image: string) => {
     const IMAGE_FOLDER = "products"

@@ -1,27 +1,11 @@
-import { useEffect, useState } from "react"
 import StretchedPostCard from "./StretchedPostCard"
-import { IPostData } from "../../interfaces"
-import { getUserPosts } from "../../api"
 import { useAuthContext } from "../../context/AuthContext"
 import { ClipLoader } from "react-spinners"
+import { useGetUserPosts } from "@/utils/react-query/queries-and-mutations"
 
 const MyPostsWrapper = () => {
-  const [posts, setPosts] = useState<IPostData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const { userId } = useAuthContext()
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getUserPosts(userId!!)
-        setPosts(data)
-      } catch (error) {
-        console.log(error)
-      }
-      setIsLoading(false)
-    }
-    fetchData()
-  }, [])
+  const { data, isLoading } = useGetUserPosts(userId!!)
 
   if (isLoading) {
     return (
@@ -33,13 +17,13 @@ const MyPostsWrapper = () => {
 
   return (
     <div className="w-full overflow-y-auto scroll-bar pr-2 absolute h-[92%]">
-      {posts.length === 0 || posts.length === undefined ? (
+      {data?.length === 0 || data?.length === undefined ? (
         <div className="w-full h-full flex items-center justify-center">
           <h1 className="text-black">Não há posts ainda</h1>
         </div>
       ) : (
-        posts &&
-        posts.map((post) => (
+        data &&
+        data.map((post) => (
           <div key={post._id}>
             <StretchedPostCard post={post} />
           </div>

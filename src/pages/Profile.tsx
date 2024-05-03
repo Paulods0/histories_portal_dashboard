@@ -1,17 +1,20 @@
 import { getUserPosts } from "@/api"
 import { Button } from "@/components/ui/button"
 import { useAuthContext } from "@/context/AuthContext"
-import { IPostData } from "@/interfaces"
+import { PostData } from "@/types"
 import { useEffect, useState } from "react"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { CiSettings } from "react-icons/ci"
 import { CiUser } from "react-icons/ci"
+import { useGetUserPosts } from "@/utils/react-query/queries-and-mutations"
 
 const Profile = () => {
-  const [posts, setPosts] = useState<IPostData[]>([])
+  const [posts, setPosts] = useState<PostData[]>([])
   const { user, userId } = useAuthContext()
   const path = useLocation()
   const [pathName, setPathName] = useState<string>("")
+
+  // const { data: userPosts } = useGetUserPosts(userId!!)
 
   useEffect(() => {
     setPathName(path.pathname.split("/")[4])

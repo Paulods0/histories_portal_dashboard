@@ -7,9 +7,9 @@ const PostsContainer = () => {
   const [container, setContainer] = useState<"mine" | "all">("all")
 
   return (
-    <section className="w-full h-full flex flex-col mt-8">
+    <section className="w-full absolute h-full overflow-y-hidden scroll-bar bg-background flex flex-col">
       <PostsFilter container={container} setContainer={setContainer} />
-      <div className="h-full relative">
+      <div className="h-full w-full">
         {container === "all" ? <AllPostsWrapper /> : <MyPostsWrapper />}
       </div>
     </section>

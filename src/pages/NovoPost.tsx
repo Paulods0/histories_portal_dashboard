@@ -2,14 +2,20 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import ReactQuill, { Quill } from "react-quill"
 import "react-quill/dist/quill.snow.css"
 
-import { getAllCategories, url } from "../api"
-import { ICategoryData } from "../interfaces"
+import {
+  CategoryData,
+  NewExcursionPost,
+  NewPost,
+  NewSchedulePost,
+} from "../types"
 import { ClipLoader } from "react-spinners"
 import { toast } from "react-toastify"
-import { IoIosAddCircleOutline } from "react-icons/io"
-import { uploadImageToFirebaseStorage } from "../utils/helpers"
+import {
+  uploadImageToFirebaseStorage,
+  validateInputFields,
+} from "../utils/helpers"
 import { useNavigate } from "react-router-dom"
-import { API_URL } from "../utils/enums"
+
 import { useAuthContext } from "../context/AuthContext"
 
 //@ts-ignore
@@ -17,6 +23,23 @@ import ImageUploader from "quill-image-uploader"
 
 import "quill-image-uploader/dist/quill.imageUploader.min.css"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  useCreateClassifiedPost,
+  useCreatePost,
+  useCreateSchedulePost,
+  useGetAllUsers,
+  useGetCategories,
+} from "@/utils/react-query/queries-and-mutations"
+import { Textarea } from "@/components/ui/textarea"
 
 Quill.register("modules/imageUploader", ImageUploader)
 
@@ -42,47 +65,36 @@ const modules = {
   toolbar: toolbarOptions,
   imageUploader: {
     upload: async (file: File) => {
-      const FIREBASEFOLDERPATH = "/content"
-
-      return await uploadImageToFirebaseStorage(file, FIREBASEFOLDERPATH)
+      return await uploadImageToFirebaseStorage(file, "posts-content")
     },
   },
 }
 
 const NovoPost = () => {
+  const { data: users } = useGetAllUsers()
+  const { data: categories } = useGetCategories()
+  const { mutateAsync: createPost } = useCreatePost()
+  const { mutateAsync: createSchedulePost } = useCreateSchedulePost()
+
   const navigate = useNavigate()
   const { userId } = useAuthContext()
+  const CLASSIFICADOS = "Classificados"
 
-  //STATES
-  const [categories, setCategories] = useState<ICategoryData[]>([])
   const [tags, setTags] = useState("")
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [category, setCategory] = useState("")
+  const [author, setAuthor] = useState(userId!!)
   const [authorNotes, setAuthorNotes] = useState("")
   const [imageToShow, setImageToShow] = useState<any>()
   const [image, setImage] = useState<File | undefined>()
+  const [document, setDocument] = useState<File | null>(null)
+  const [geoCoordinates, setGeoCoordinates] = useState("")
   const [isHighlighted, setIsHighlighted] = useState(false)
-  const [isCreatingPost, setIsCreatingPost] = useState(false)
-  const [geoCoordinates, setGeoCoordinates] = useState<string[]>([])
+  const [isSavingPost, setIsSavingPost] = useState(false)
   const [categoryName, setCategoryName] = useState<string | undefined>(
     undefined
   )
-
-  const generateGeoCoordinates = () => {
-    if (geoCoordinates.length === 0) {
-      return
-    }
-    const coordinates = {
-      latitude: Number(geoCoordinates[0].split(",")[0]),
-      longitude: Number(geoCoordinates[0].split(",")[1]),
-    }
-    return coordinates
-  }
-  const coordinates = generateGeoCoordinates()
-  // console.log(coordinates)
-
-  //FUNCTIONS
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const file = e.target.files[0]
@@ -95,280 +107,303 @@ const NovoPost = () => {
     }
   }
   const resetInputs = () => {
+    setTags("")
     setTitle("")
     setContent("")
     setCategory("")
+    setAuthorNotes("")
+    setGeoCoordinates("")
     setIsHighlighted(false)
-    setIsCreatingPost(false)
   }
-  const createPost = async (e: FormEvent) => {
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    setIsCreatingPost(true)
-    if (!title) {
-      toast.error("O título é obrigatório", {
-        autoClose: 1000,
-        hideProgressBar: true,
-      })
-      setIsCreatingPost(false)
-      return
-    }
-    if (!content) {
-      toast.error("O contéudo é obrigatório", {
-        autoClose: 1000,
-        hideProgressBar: true,
-      })
-      setIsCreatingPost(false)
-      return
-    }
-    if (!category) {
-      toast.error("A categoria é obrigatória", {
-        autoClose: 1000,
-        hideProgressBar: true,
-      })
-      setIsCreatingPost(false)
-      return
-    }
-    if (!image) {
-      toast.error("A imagem é obrigatória", {
-        autoClose: 1000,
-        hideProgressBar: true,
-      })
-      setIsCreatingPost(false)
-      return
-    }
-    try {
-      const IMAGE_FOLDER = "images/"
-      const downloadURL = await uploadImageToFirebaseStorage(
-        image,
-        IMAGE_FOLDER
-      )
-
-      const response = await fetch(`${url}/${API_URL.CREATE_POST}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: title,
-          content: content,
-          isHighlighted: isHighlighted,
-          category: category,
-          mainImage: downloadURL,
-          author_id: userId!!,
-          author_notes: authorNotes,
-          tag: tags.split(","),
-          latitude: coordinates ? coordinates.latitude : null,
-          longitude: coordinates ? coordinates.longitude : null,
-        }),
-      })
-
-      const { message } = await response.json()
-      if (!response.ok) {
-        toast.error(message, {
-          position: "top-right",
-          hideProgressBar: true,
-          autoClose: 1000,
-        })
-      } else {
-        toast.success(message, {
-          position: "top-right",
-          autoClose: 1000,
+    setIsSavingPost(true)
+    validateInputFields(title, content)
+    if (categoryName === "Agenda AO") {
+      if (!document || !title || !category) {
+        toast.error("Por favor preencha todos os campos obrigatórios.", {
+          autoClose: 2000,
           hideProgressBar: true,
         })
-        navigate("/posts")
+        setIsSavingPost(false)
+        return
       }
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setIsCreatingPost(false)
+      const firebaseFileURL = await uploadImageToFirebaseStorage(
+        document,
+        "schedule-posts"
+      )
+      const schedulePost: NewSchedulePost = {
+        author: author,
+        file: firebaseFileURL,
+        category: category,
+        title: title,
+      }
+      createSchedulePost(schedulePost)
+      toast.success("Agenda Ao criada com sucesso", {
+        autoClose: 2000,
+        hideProgressBar: true,
+      })
       resetInputs()
+      setIsSavingPost(false)
+    } else if (categoryName === "Passeios") {
+      if (!title || !category || !image || !geoCoordinates || !content) {
+        toast.error("Por favor preencha todos os campos obrigatórios.", {
+          autoClose: 2000,
+          hideProgressBar: true,
+        })
+        setIsSavingPost(false)
+        return
+      }
+      const downloadURL = await uploadImageToFirebaseStorage(image, "posts")
+      const coordinates = geoCoordinates.split(",")
+      const post: NewExcursionPost = {
+        author_id: author,
+        mainImage: downloadURL,
+        category: category,
+        title: title,
+        highlighted: isHighlighted,
+        latitude: coordinates[0] ?? "",
+        longitude: coordinates[1] ?? "",
+        content: content,
+        tag: tags.split(","),
+        author_notes: authorNotes,
+      }
+      createPost(post)
+      console.log("Excursion post: ", post)
+      toast.success("Post criado com sucesso", {
+        autoClose: 1000,
+        hideProgressBar: true,
+      })
+      setIsSavingPost(false)
+    } else {
+      if (!image || !title || !content || !category) {
+        toast.error("Por favor preeencha todos os campos obrigatórios.", {
+          hideProgressBar: true,
+          autoClose: 2000,
+        })
+        setIsSavingPost(false)
+        return
+      }
+      const downloadURL = await uploadImageToFirebaseStorage(image, "posts")
+      const post: NewPost = {
+        author_id: author,
+        mainImage: downloadURL,
+        category: category,
+        title: title,
+        highlighted: isHighlighted,
+        content: content,
+        tag: tags.split(","),
+        author_notes: authorNotes,
+      }
+      createPost(post)
+      toast.success("Post criado com sucesso", {
+        autoClose: 1000,
+        hideProgressBar: true,
+      })
+      console.log(post)
+      setIsSavingPost(false)
     }
   }
 
-  //USE EFFECTS
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data: ICategoryData[] = await getAllCategories()
-        setCategories(data)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    fetchData()
-  }, [])
-
-  useEffect(() => {
-    const catName = categories.filter((cat) => cat._id === category)[0]
+    const catName = categories?.filter((cat) => cat._id === category)[0]
     if (catName) {
       setCategoryName(catName.name)
     }
   }, [category])
 
   return (
-    <main className="relative p-2 w-full h-full grid grid-cols-3">
-      {/** QUILL EDITOR */}
-
-      <div className="col-span-2 relative h-[460px]">
+    <main className="w-full h-[calc(85vh+3vh)] gap-6 flex items-center justify-center">
+      <div className="flex-[2]  border overflow-y-auto scroll-bar w-full rounded-md">
         <ReactQuill
           modules={modules}
-          className="h-full w-full absolute inset-0"
-          value={content}
           theme="snow"
+          value={content}
           onChange={(value) => setContent(value)}
+          placeholder="Escrever post"
+          className="w-full h-[70vh] overflow-hidden"
         />
       </div>
 
-      {/** FORM */}
-      <div className="w-full flex gap-4">
+      <div className="relative flex-1 overflow-y-auto scroll-bar border-l h-[70vh]">
         <form
-          encType="multipart/form-data"
-          onSubmit={(e: FormEvent) => createPost(e)}
-          className="w-[250px] rounded-lg px-4 flex-col flex-[1.5] flex items-center justify-between "
+          onSubmit={handleSubmit}
+          className="absolute inset-0 w-full h-full px-4 py-6"
         >
-          <div className="w-full flex flex-col mb-2 items-center justify-center rounded-xl h-[150px] ">
-            {imageToShow ? (
-              <>
-                <div className="w-full h-[120px] flex flex-col">
-                  <label
-                    htmlFor="image"
-                    className="cursor-pointer relative w-full h-full "
+          <div className="w-full flex justify-center items-center relative">
+            <Label htmlFor="file" className="cursor-pointer">
+              {image ? (
+                <>
+                  <Button
+                    variant={"secondary"}
+                    onClick={() => setImage(undefined)}
+                    className="absolute right-2 font-semibold text-[12px] z-50"
                   >
-                    <img
-                      src={imageToShow}
-                      alt="Imagem do post"
-                      className="absolute inset-0 w-full h-full object-contain"
-                    />
-                    <input
-                      id="image"
-                      accept="image/*"
-                      name="image"
-                      type="file"
-                      onChange={(e) => handleFileInputChange(e)}
-                      placeholder="Adicione a imagem principal"
-                      className="opacity-0"
-                    />
-                  </label>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="border h-[120px] border-zinc-300 w-full flex flex-col items-center justify-center rounded-xl ">
-                  <label
-                    htmlFor="image"
-                    className="cursor-pointer flex flex-col items-center justify-center"
-                  >
-                    <IoIosAddCircleOutline size={40} color="#9D9D9D" />
-                    <span className="font-normal text-base text-GRAY-DARKER">
-                      Adicionar imagem
-                    </span>
-                  </label>
-                  <input
-                    id="image"
-                    accept="image/*"
-                    name="image"
-                    type="file"
-                    onChange={(e) => handleFileInputChange(e)}
-                    placeholder="Adicione a imagem principal"
-                    className="h-0 w-0"
+                    Fechar
+                  </Button>
+                  <img
+                    src={imageToShow}
+                    className="w-full h-[150px] object-contain"
+                    alt=""
                   />
-                </div>
-              </>
-            )}
-          </div>
-
-          <div className="py-3 rounded-md flex-col flex h-full gap-2 justify-center w-full ">
-            <div className="border-zinc-300 border py-2 px-4 rounded-md">
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Adicione o título"
-                className="text-[14px] bg-transparent border-none w-full text-center outline-none"
-              />
-            </div>
-
-            <div className="flex gap-2 items-center ">
-              <div className="py-2 px-4 border border-zinc-300 rounded-md ">
-                <select
-                  onChange={(e) => {
-                    setCategory(e.target.value)
-                  }}
-                  value={category}
-                  className="text-[14px] bg-transparent cursor-pointer border-none outline-none h-full text-[#9D9D9D] text-center "
-                >
-                  <option disabled value="" className=" text-[#9D9D9D]">
-                    Adicione o tópico
-                  </option>
-
-                  {categories.map((category) => (
-                    <option id="option" value={category._id} key={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="flex border border-zinc-300 w-full p-2 rounded-md  gap-2 items-center justify-center text-[#9D9D9D]">
-                <label
-                  htmlFor="destaque"
-                  className="text-[14px] cursor-pointer"
-                >
-                  Destacar
-                </label>
-                <input
-                  id="destaque"
-                  type="checkbox"
-                  checked={isHighlighted}
-                  onChange={(e) => setIsHighlighted(e.target.checked)}
-                  className="text-[14px] border-none outline-none"
+                </>
+              ) : (
+                <>
+                  <span className="border px-4 py-2 text-center">
+                    Adicionar imagem
+                  </span>
+                </>
+              )}
+              <div className="w-full flex flex-col">
+                <Input
+                  onChange={handleFileInputChange}
+                  id="file"
+                  type="file"
+                  accept="image/*"
+                  className="opacity-0 w-0 h-0"
                 />
               </div>
-            </div>
-            <div className=" border border-zinc-300 w-full p-2 rounded-md  gap-2">
-              <input
-                type="text"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                className="text-[14px] bg-transparent border-none outline-none w-full"
-                placeholder="Adicione tags (separe-às por vírgulas)"
-              />
-            </div>
-
-            {categoryName === "Passeios" && (
-              <div className="w-full flex flex-col gap-2">
-                <div className=" border border-zinc-300 w-full p-2 rounded-md  gap-2">
-                  <input
-                    type="text"
-                    className="text-[14px]  w-full bg-transparent capitalize border-none outline-none"
-                    value={geoCoordinates}
-                    onChange={(e) => setGeoCoordinates([e.target.value])}
-                    placeholder="latitude,longitude"
-                  />
-                </div>
-              </div>
-            )}
-            <div className="w-full font-normal p-2 rounded-[4px] border border-zinc-300 h-full">
-              <textarea
-                placeholder="Adicione uma nota para este post (opcional)"
-                value={authorNotes}
-                onChange={(e) => setAuthorNotes(e.target.value)}
-                className="w-full bg-transparent resize-none scroll-bar placeholder:text-[14px] outline-none border-none h-full"
-              />
-            </div>
+            </Label>
           </div>
 
-          <Button
-            variant={"default"}
-            disabled={isCreatingPost}
-            className="w-full duration-200 transition-all ease-in p-2 rounded-md mt-0 text-white uppercase font-semibold mx-6"
-          >
-            {isCreatingPost ? (
-              <ClipLoader size={18} color="#FFF" />
-            ) : (
-              " publicar"
+          <div>
+            <Label htmlFor="title" className="text-[12px]">
+              Título
+            </Label>
+            <Input type="text" onChange={(e) => setTitle(e.target.value)} />
+          </div>
+
+          <div className="flex w-full gap-x-4 items-end">
+            <div className="w-full">
+              <Label htmlFor="title" className="text-[12px]">
+                Categoria
+              </Label>
+              <Select onValueChange={(value) => setCategory(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories
+                    ?.filter((category) => category.name !== CLASSIFICADOS)
+                    .map((category) => (
+                      <SelectItem key={category._id} value={category._id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {categoryName !== "Agenda AO" && (
+              <div className="border flex py-2 h-10 px-2 items-center rounded-md">
+                <Label htmlFor="checkbox" className="text-[12px]">
+                  Destacar
+                </Label>
+                <Input
+                  id="checkbox"
+                  type="checkbox"
+                  onChange={(e) => setIsHighlighted(e.target.checked)}
+                  className="w-8 h-4"
+                />
+              </div>
             )}
-          </Button>
+          </div>
+
+          {categoryName === "Passeios" && (
+            <div>
+              <Label htmlFor="coordinates" className="text-[12px]">
+                Latitude e longitude
+              </Label>
+              <Input
+                id="coordinates"
+                type="text"
+                onChange={(e) => setGeoCoordinates(e.target.value)}
+              />
+            </div>
+          )}
+
+          {categoryName === "Agenda AO" && (
+            <div>
+              <Label htmlFor="doc" className="text-[12px]">
+                Documento PDF
+              </Label>
+              <Input
+                id="doc"
+                type="file"
+                onChange={(e) =>
+                  setDocument(e.target.files && e.target.files[0])
+                }
+                accept="application/pdf"
+              />
+            </div>
+          )}
+
+          {categoryName !== "Agenda AO" && (
+            <div>
+              <Label htmlFor="tags" className="text-[12px]">
+                Adicionar tags(separe-ás por vírgulas)
+              </Label>
+              <Input
+                id="tags"
+                type="text"
+                onChange={(e) => setTags(e.target.value)}
+              />
+            </div>
+          )}
+
+          {categoryName !== "Agenda AO" && (
+            <div>
+              <Label htmlFor="notes" className="text-[12px]">
+                Notas do autor(opcional)
+              </Label>
+              <Textarea
+                id="notes"
+                className="resize-none"
+                onChange={(e) => setAuthorNotes(e.target.value)}
+                rows={5}
+              />
+            </div>
+          )}
+
+          <div className="w-full">
+            <Label htmlFor="author" className="text-[12px]">
+              Autor
+            </Label>
+            <Select onValueChange={(value) => setAuthor(value)}>
+              <SelectTrigger id="author">
+                <SelectValue placeholder="Eu" />
+              </SelectTrigger>
+              <SelectContent>
+                {users?.map((user) => (
+                  <SelectItem key={user._id} value={user._id}>
+                    <div className="w-full gap-x-3 flex items-center">
+                      <img
+                        src={user.image ?? "/user.png"}
+                        className="w-6 h-6 rounded-full object-cover"
+                        alt="imagem do autor"
+                      />
+                      <div className="flex items-center gap-x-1">
+                        {user._id === userId ? (
+                          <span className="capitalize">eu</span>
+                        ) : (
+                          <>
+                            <span>{user.firstname}</span>
+                            <span>{user.lastname}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="w-full mt-3 items-center flex">
+            <Button disabled={isSavingPost} type="submit" variant={"default"}>
+              {isSavingPost ? <ClipLoader size={20} /> : "Salvar"}
+            </Button>
+          </div>
         </form>
       </div>
     </main>

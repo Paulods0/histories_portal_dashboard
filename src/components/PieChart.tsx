@@ -32,7 +32,7 @@ const PieChart = () => {
       {
         label: "Quantidade",
         data: products.map((item) => item.quantity),
-        backgroundColor: generateRandomColor(products),
+        backgroundColor: ["#FF0000", "#0000FF", "#FFFF00", "#A020F0"],
         borderColor: "#dddddd",
         borderWidth: 1,
       },
@@ -42,14 +42,14 @@ const PieChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getAllProducts()
-      setProducts(data)
+      setProducts(data.filter((product) => product.quantity >= 12))
       setIsLoading(false)
     }
     fetchData()
   }, [])
 
   return (
-    <div className="flex items-center justify-center text-center flex-col w-full mt-4">
+    <div className="flex w-full h-72 items-center justify-center text-center flex-col mt-4">
       <Doughnut
         options={{
           responsive: true,
@@ -58,7 +58,12 @@ const PieChart = () => {
               backgroundColor: "#000000",
             },
             legend: {
-              display: false,
+              display: true,
+              labels: {
+                font: {
+                  size: 12,
+                },
+              },
             },
           },
         }}

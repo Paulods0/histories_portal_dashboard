@@ -38,7 +38,7 @@ const StoreTableData = () => {
   }
 
   return (
-    <div className="absolute w-full h-full">
+    <div className="w-full h-full">
       {products.length === 0 ? (
         <div className="w-full h-full flex items-center justify-center">
           <h1 className="font-semibold text-base">
@@ -46,41 +46,43 @@ const StoreTableData = () => {
           </h1>
         </div>
       ) : (
-        <Table className="bg-white">
-          <TableHeader>
-            <TableRow className="flex items-center w-full">
-              <TableHead className="w-full h-[20px] bg-BLACK p-3 flex items-center justify-center text-center text-WHITE">
-                Nome
-              </TableHead>
-              <TableHead className="w-full h-[20px] bg-BLACK p-3 flex items-center justify-center text-center text-WHITE">
-                Quantidade
-              </TableHead>
-              <TableHead className="w-full h-[20px] bg-BLACK p-3 flex items-center justify-center text-center text-WHITE">
-                Preço
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody className="flex flex-col overflow-auto scroll-bar">
-            {products.map((product) => (
-              <TableRow
-                key={product._id}
-                className="flex text-center w-full items-center"
-              >
-                <TableCell className="relative w-full">
-                  {product?.name}
-                </TableCell>
-                <TableCell className="relative w-full">
-                  {product?.quantity}
-                </TableCell>
-
-                <TableCell className="relative w-full">
-                  {product?.price} kz
-                </TableCell>
+        <div className="absolute inset-0 w-full h-full scroll-bar overflow-y-auto">
+          <Table className="bg-background min-h-[100px] text-foreground">
+            <TableHeader>
+              <TableRow className="flex items-center w-full">
+                <TableHead className="w-full h-[20px] bg-BLACK p-3 flex items-center justify-center text-center text-WHITE">
+                  Nome
+                </TableHead>
+                <TableHead className="w-full h-[20px] bg-BLACK p-3 flex items-center justify-center text-center text-WHITE">
+                  Quantidade
+                </TableHead>
+                <TableHead className="w-full h-[20px] bg-BLACK p-3 flex items-center justify-center text-center text-WHITE">
+                  Preço
+                </TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+
+            <TableBody className="flex flex-col overflow-auto scroll-bar">
+              {products.map((product) => (
+                <TableRow
+                  key={product._id}
+                  className="flex text-center w-full items-center"
+                >
+                  <TableCell className="relative w-full">
+                    {product?.name}
+                  </TableCell>
+                  <TableCell className="relative w-full">
+                    {product?.quantity}
+                  </TableCell>
+
+                  <TableCell className="relative w-full">
+                    {product?.price} kz
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       )}
     </div>
   )

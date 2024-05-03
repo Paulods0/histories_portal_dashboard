@@ -1,6 +1,6 @@
 import RecentPostsDetails from "./RecentPostsDetails"
 
-export interface PostProps {
+export type PostProps = {
   post: {
     _id: string
     title: string

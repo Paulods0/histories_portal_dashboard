@@ -10,13 +10,10 @@ const Dashboard = () => {
   }
 
   return (
-    <main className="relative h-screen w-full bg-WHITE flex flex-col text-BLACK">
+    <main className="w-full bg-background flex flex-col overflow-y-hidden dark text-foreground min-h-screen">
       <Header />
-      <section className="h-screen w-full flex">
-        <SidebarNavigation />
-        <div className="w-full h-full bg-zinc-100">
-          <Outlet />
-        </div>
+      <section className="w-full px-4 h-full overflow-y-hidden py-2">
+        <Outlet />
       </section>
     </main>
   )

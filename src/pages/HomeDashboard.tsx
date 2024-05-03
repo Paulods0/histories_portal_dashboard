@@ -1,33 +1,47 @@
-import { Link } from "react-router-dom"
 import HomeStatsContainer from "../components/Home_Components/HomeStatsContainer"
 import PostsContainer from "../components/Home_Components/PostsContainer"
 import HighlightedPost from "../components/Home_Components/HighlightedPost"
-
 import PieChart from "@/components/PieChart"
 import StoreTableData from "@/components/Home_Components/StoreTableData"
 
+{
+  /* <section className="grid grid-cols-3 h-full w-full gap-8 p-2">
+</section> */
+}
+{
+}
 const HomeDashboard = () => {
   return (
-    <main className="w-full p-4 rounded-lg gap-x-4 h-full flex">
-      <section className="w-full flex-[2] h-full flex flex-col">
-        <HomeStatsContainer />
-        <PostsContainer />
-      </section>
+    <main className="w-full px-4 py-2 rounded-lg flex-col flex items-center justify-center">
+      <div className="w-full grid-rows-2 grid gap-5 ">
 
-      <section className="w-full flex-1 gap-y-4  flex flex-col h-full">
-        <div className="flex flex-col">
-          <HighlightedPost />
+        <div className="grid grid-cols-3 gap-5">
+          <div className="self-end col-span-2 flex flex-col gap-y-3">
+            <h1 className="text-3xl font-bold uppercase">dashboard</h1>
+            <HomeStatsContainer />
+          </div>
+
+          <div className="h-full">
+            <HighlightedPost />
+          </div>
         </div>
 
-        <div className="h-full relative overflow-y-auto scroll-bar">
-          <StoreTableData />
+        <div className="grid grid-cols-3 relative gap-5">
+          <div className="col-span-2 w-full h-full relative">
+            <PostsContainer />
+          </div>
+
+          <div className="w-full h-full relative">
+            <StoreTableData />
+          </div>
         </div>
-      </section>
+      </div>
     </main>
   )
 }
 
 export default HomeDashboard
+
 // <ResponsiveContainer width="100%" height="100%">
 //   <PieChart width={400} height={400}>
 //     <Pie

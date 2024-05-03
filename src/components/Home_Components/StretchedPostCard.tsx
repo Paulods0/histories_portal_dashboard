@@ -1,13 +1,15 @@
 import { LiaUser } from "react-icons/lia"
 import { BiCategory } from "react-icons/bi"
 import { CiCalendarDate } from "react-icons/ci"
-import { IPostData } from "../../interfaces"
+import { PostData } from "../../types"
 
-const StretchedPostCard: React.FC<{ post: IPostData }> = ({
+const StretchedPostCard = ({
   post: { mainImage, title, createdAt, category, author },
+}: {
+  post: PostData
 }) => {
   return (
-    <div className="cursor-pointer bg-WHITE w-full hover:bg-GRAY-LIGHTER/80 mt-2 border ease-in-out duration-200 transition-all rounded-[10px] p-2 flex">
+    <div className="cursor-pointer bg-background text-foreground w-full hover:bg-foreground/10 mt-2 border ease-in-out duration-200 transition-all rounded-[10px] p-2 flex">
       <div className="relative h-[70px] w-[80px] ">
         <img
           src={mainImage}
@@ -17,7 +19,7 @@ const StretchedPostCard: React.FC<{ post: IPostData }> = ({
       </div>
 
       <div className="w-full flex flex-col justify-between items-start ml-4">
-        <h1 className="font-bold">{title}</h1>
+        <h1 className="font-bold line-clamp-1">{title}</h1>
         <div className="w-full flex justify-between items-end">
           <div className="flex flex-col">
             <div className="flex gap-1">

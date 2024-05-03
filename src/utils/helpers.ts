@@ -9,25 +9,36 @@ import { toast } from "react-toastify"
 import { format } from "date-fns"
 import { pt } from "date-fns/locale"
 
+type firebaseFolder =
+  | "posts"
+  | "classified-posts"
+  | "products"
+  | "profile"
+  | "schedule-posts"
+  | "posts-content"
+
 export function getImagePathFromFirebaseURL(
   imageURL: string,
-  folder: string
+  folder: firebaseFolder
 ): string {
   const imagePathArray = imageURL.split(`/o/${folder}%2F`)
   const imageName = imagePathArray[1].split("?alt=")[0]
-  // firebasestorage.googleapis.com/v0/b/history-post.appspot.com/o/products%2F1710710391446114.jpg?alt=media&token=d7eb81c8-a277-4584-8a5b-5c3dde0a6a33
 
   return imageName
 }
 
-export async function deleteImageFromFirebase(
+export function deleteImageFromFirebase(
   image: string,
-  firebaseFolder: string
+  firebaseFolder: firebaseFolder
 ) {
   const imageName = getImagePathFromFirebaseURL(image, firebaseFolder)
-  // console.log(imageName)
-  const imageRef = ref(storage, `${firebaseFolder}/${imageName}`)
-  await deleteObject(imageRef)
+
+  const imageRef = ref(storage, `${firebaseFolder}/` + imageName)
+  deleteObject(imageRef)
+    .then(() => {
+      console.log("imagem deletada")
+    })
+    .catch((err) => console.error(err + "não deletada"))
 }
 
 export function renameImageName(image: string) {
@@ -44,10 +55,10 @@ export function renameImageName(image: string) {
 
 export async function uploadImageToFirebaseStorage(
   image: File,
-  firbaseImageFolderPath: string
+  firbaseImageFolderPath: firebaseFolder
 ) {
   const filename = renameImageName(image?.name)
-  const imageRef = ref(storage, firbaseImageFolderPath + filename)
+  const imageRef = ref(storage, `${firbaseImageFolderPath}/` + filename)
   const uploadTask = uploadBytesResumable(imageRef, image)
 
   await new Promise((resolve: (value?: unknown) => void, reject) => {
@@ -76,4 +87,11 @@ export const formatDate = (date: string) => {
   })
 
   return reformatedDate
+}
+
+export const validateInputFields = (...inputs: string[]) => {
+  if (!inputs) {
+    toast.error("Por favor preencha todos os campos obrigatórios.")
+    return
+  }
 }

@@ -1,54 +1,78 @@
-import { FaUsers } from "react-icons/fa"
+import { FaUsers, FaEye, FaFile } from "react-icons/fa"
 import { BsShopWindow } from "react-icons/bs"
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card"
+import { Button } from "../ui/button"
+import { Link } from "react-router-dom"
 
-type HomeStatsCardType = {
-  classname?: string
-  amount: number
-  iconText?: "views" | "category"
-
-  text1?: string
-  text2?: string
-  label: string
+type HomeStatsProps = {
+  customStyle?: string
+  titleIcon: "store" | "posts" | "myPosts"
+  title: string
+  amount?: string
+  description?: string
+  footerIcon: "views" | "category"
+  footerAmount: number | 0 | undefined
+  footerText: string
 }
 
+const titleIcons = {
+  store: <BsShopWindow size={18} />,
+  posts: <FaFile size={18} />,
+  myPosts: <FaUsers size={18} />,
+}
 const icons = {
-  views: <FaUsers size={12} />,
+  views: <FaEye size={12} />,
   category: <BsShopWindow size={12} />,
 }
 
-const HomeStatsCard: React.FC<HomeStatsCardType> = ({
+const HomeStatsCard = ({
+  customStyle,
+  titleIcon,
+  title,
   amount,
-  text1,
-  text2,
-
-  iconText,
-  label,
-  classname,
-}) => {
+  description,
+  footerAmount,
+  footerText,
+  footerIcon,
+}: HomeStatsProps) => {
   return (
-    <div
-      className={`rounded-[10px] hover:translate-y-1 bg-WHITE cursor-pointer duration-200 transition-transform-y ease-in-out p-2  flex flex-col items-center justify-center ${classname}`}
+    <Card
+      className={`w-[120px]  ${customStyle} hover:translate-y-1 transition-all duration-200 ease-linear`}
     >
-      <div className="flex flex-col">
-        <span className="text-[12px] capitalize text-zinc-400">{label}</span>
-        <span className="font-bold text-[26px] text-center">{amount}</span>
-      </div>
+      <CardHeader className="">
+        <CardDescription className="flex items-center justify-between">
+          <div className="flex items-center text-background gap-x-2">
+            {titleIcons[titleIcon]}
+            <span className="capitalize text-[12px]">{title}</span>
+          </div>
+          <Link
+            to={""}
+            className="text-background rounded-full px-4 py-1 bg-foreground/10"
+          >
+            Ver
+          </Link>
+        </CardDescription>
 
-      {text1 || text2 ? (
-        <div className="w-full flex items-center gap-x-3">
-          <span className="ml-2 font-normal text-BLACK text-[12px]">
-            {text1}
-          </span>
-          <span className="px-3 py-1 rounded-full bg-zinc-300/50 font-light text-green-500 text-[12px] flex items-center gap-x-2">
-            {text2}
+        <CardTitle className="capitalize text-[18px] text-background flex items-center gap-x-2">
+          <span>{amount}</span>
+          <span>{description}</span>
+        </CardTitle>  
+      </CardHeader>
 
-            {iconText && icons[iconText]}
-          </span>
-        </div>
-      ) : (
-        ""
-      )}
-    </div>
+      <CardFooter>
+        <p className="px-2 py-1 text-background bg-foreground/10 rounded-full flex items-center gap-x-2 text-[10px]">
+          {icons[footerIcon]}
+          <span>{footerAmount}</span>
+          <span>{footerText}</span>
+        </p>
+      </CardFooter>
+    </Card>
   )
 }
 

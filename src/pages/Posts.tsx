@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ICategoryData, IPostData } from "../interfaces"
+import { CategoryData, PostData } from "../types"
 import { getAllCategories, getAllPosts, getAllPostsByCategory } from "../api"
 import AdminPostCard from "../components/AdminPostCard"
 import { ClipLoader } from "react-spinners"
@@ -12,57 +12,48 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useLocation, useNavigate } from "react-router-dom"
+
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import {
+  useGetAllPosts,
+  useGetCategories,
+  // useGetPostsByCategory,
+} from "@/utils/react-query/queries-and-mutations"
+import { useQuery } from "@tanstack/react-query"
+import { FaPlusCircle } from "react-icons/fa"
 
 const Posts = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const path = new URLSearchParams(location.search).get("cat")
+  const path = new URLSearchParams(location.search).get("id")
 
-  const [posts, setPosts] = useState<IPostData[]>([])
-  const [categories, setCategories] = useState<ICategoryData[]>([])
+  const { data: posts, isLoading } = useGetAllPosts()
+  const { data: categories, isLoading: isLoadingCategories } =
+    useGetCategories()
+
   const [category, setCategory] = useState("all")
 
-  const [isLoading, setIsLoading] = useState(true)
-
-  const handleFilterPosts = () => {
-    if (category === "all") {
-      navigate("/posts")
-      return
-    }
-    navigate(`?cat=${category}`)
-  }
-
   useEffect(() => {
-    const fetchPosts = async () => {
-      let data
-      try {
-        if (path) {
-          data = await getAllPostsByCategory(category)
-          setPosts(data)
-        } else {
-          data = await getAllPosts()
-          setPosts(data)
-        }
-      } catch (error) {
-        console.error(error)
-      }
-      setIsLoading(false)
+    if (path) {
+      setCategory(path)
+    } else {
+      setCategory("all")
     }
-    fetchPosts()
-  }, [location.search])
+  }, [location.search, path])
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await getAllCategories()
-        setCategories(data)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    fetchCategories()
-  }, [])
+  // const handleFilterPosts = () => {
+  //   if (category === "all") {
+  //     navigate("/posts")
+  //   } else {
+  //     navigate(`?id=${category}`)
+  //   }
+  // }
+
+  const { data: filteredPosts } = useQuery<PostData[]>({
+    queryKey: ["postsByCategory", category],
+    queryFn: () => getAllPostsByCategory(category),
+    enabled: category !== "all",
+  })
 
   if (isLoading) {
     return (
@@ -73,41 +64,50 @@ const Posts = () => {
   }
 
   return (
-    <main className="w-full h-full px-1 rounded-[10px] ">
-      <div className="w-full flex border-b items-center justify-between mb-3 p-3">
-        <Input
-          type="search"
-          className="w-[250px]"
-          placeholder="Pesquisar post"
-        />
-        <div className="w-[200px] flex items-center gap-x-2">
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="focus:ring-0  focus:ring-offset-0">
-              <SelectValue placeholder="Selecionar categoria" />
-            </SelectTrigger>
+    <main className="w-full h-full flex-col px-1 flex">
+      <div className="gap-x-2 flex w-full justify-between items-center">
+        <Select value={category} onValueChange={setCategory}>
+          <SelectTrigger className="w-48 focus:ring-0 focus:ring-offset-0">
+            <SelectValue placeholder="Selecionar categoria" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem className="cursor-pointer" value="all">
+              Todos
+            </SelectItem>
+            {categories?.map((category) => (
+              <SelectItem
+                className="cursor-pointer"
+                key={category._id}
+                value={category._id}
+              >
+                {category.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              {categories.map((category) => (
-                <SelectItem key={category._id} value={category._id}>
-                  {category.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button onClick={handleFilterPosts} variant={"default"}>
-            Filtrar
+        <Link to={"/novopost"}>
+          <Button variant={"default"} className="gap-x-2 flex">
+            <FaPlusCircle size={12} /> Novo
           </Button>
-        </div>
+        </Link>
       </div>
 
+      <hr className="w-full my-3" />
+
       <div className="w-full relative gap-4 grid grid-cols-4 scroll-bar overflow-y-auto h-[calc(90vh-80px)]">
-        {posts.length === 0 ? (
+        {posts?.length === 0 ? (
           <main className="w-full h-full flex items-center col-span-4 justify-center">
             <h1>Não há posts nada ainda.</h1>
           </main>
+        ) : category !== "all" ? (
+          filteredPosts?.map((filterdPost: PostData) => (
+            <div key={filterdPost._id}>
+              <AdminPostCard post={filterdPost} />
+            </div>
+          ))
         ) : (
-          posts.map((post) => (
+          posts?.map((post) => (
             <div key={post._id}>
               <AdminPostCard post={post} />
             </div>

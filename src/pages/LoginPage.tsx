@@ -11,22 +11,24 @@ import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { SignInFormSchema } from "@/utils/validation"
 
-const userCredentialsSchema = z.object({
-  email: z.string().email({ message: "O email é obrigatório" }).min(1),
-  password: z.string().min(1),
-})
-type UserCredentialsType = z.infer<typeof userCredentialsSchema>
+type UserCredentialsType = z.infer<typeof SignInFormSchema>
 
 // COMPONENT ITSELF
 const LoginPage = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const { login, isLoading } = useAuthContext()
 
-  const { register, handleSubmit } = useForm<UserCredentialsType>({
-    resolver: zodResolver(userCredentialsSchema),
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserCredentialsType>({
+    resolver: zodResolver(SignInFormSchema),
   })
-  
+
   const token = Cookies.get("token")
   if (token) {
     return <Navigate to="/" />
@@ -54,24 +56,40 @@ const LoginPage = () => {
           onSubmit={handleSubmit(handleLogin)}
           className="w-full flex flex-col gap-4 p-12"
         >
-          <Input {...register("email")} placeholder="Email" />
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" {...register("email")} placeholder="Email" />
 
-          <div className="relative w-full">
-            <Input
-              {...register("password")}
-              type={isPasswordVisible ? "text" : "password"}
-              placeholder="Password"
-            />
-            <span
-              onClick={changePasswordState}
-              className="absolute right-2 top-3 cursor-pointer"
-            >
-              {isPasswordVisible ? (
-                <IoMdEyeOff color="black" size={18} />
-              ) : (
-                <IoMdEye color="black" size={18} />
-              )}
-            </span>
+            {errors.email && (
+              <span className="text-[10px] text-red-500">
+                {errors.email?.message}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <div className="relative w-full">
+              <Input
+                {...register("password")}
+                type={isPasswordVisible ? "text" : "password"}
+                placeholder="Password"
+              />
+              <span
+                onClick={changePasswordState}
+                className="absolute right-2 top-3 cursor-pointer"
+              >
+                {isPasswordVisible ? (
+                  <IoMdEyeOff color="black" size={18} />
+                ) : (
+                  <IoMdEye color="black" size={18} />
+                )}
+              </span>
+            </div>
+
+            {errors.password && (
+              <span className="text-[10px] text-red-500">
+                {errors.password?.message}
+              </span>
+            )}
           </div>
 
           <Button

@@ -2,8 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Cookies from "js-cookie"
 import axios from "../api/axiosConfig"
-import { getUser } from "@/api"
-import { IUser } from "@/interfaces"
+// import { getUser } from "@/api"
+// import { IUser } from "@/interfaces"
 
 type UserData = {
   email: string
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     try {
-      const response = await axios.post(`auth/login`, {
+      const response = await axios.post(`/auth/login`, {
         email: email,
         password: password,
       })

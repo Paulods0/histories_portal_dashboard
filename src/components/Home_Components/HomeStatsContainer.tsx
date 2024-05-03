@@ -10,88 +10,62 @@ import {
 import { useAuthContext } from "../../context/AuthContext"
 import { ClipLoader } from "react-spinners"
 import { IPostData } from "@/interfaces"
+import {
+  useGetAllPosts,
+  useGetAllProductCategories,
+  useGetAllProducts,
+  useGetAllUsers,
+  useGetUserPosts,
+} from "@/utils/react-query/queries-and-mutations"
 
 const HomeStatsContainer = () => {
   const { userId } = useAuthContext()
 
-  const [posts, setPosts] = useState<IPostData[]>([])
-  const [userPosts, setUserPosts] = useState<IPostData[]>([])
-  const [productCategories, setProductCategories] = useState(0)
-  const [products, setProducts] = useState(0)
-  const [users, setUsers] = useState(0)
+  const { data: posts, isLoading } = useGetAllPosts()
+  const { data: products } = useGetAllProducts()
+  const { data: userPosts } = useGetUserPosts(userId!!)
+  const { data: productCategories } = useGetAllProductCategories()
 
-  const [isLoading, setIsLoading] = useState(true)
-
-  const postsViews = posts.reduce((total, acc) => acc.views + total, 0)
-  const userPostsViews = userPosts.reduce((total, acc) => acc.views + total, 0)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await Promise.all([
-        getAllPosts(),
-        getAllProducts(),
-        getUserPosts(userId!!),
-        getAllUsers(),
-        getAllProdutCategories(),
-      ])
-        .then((responses) => {
-          const [posts, products, userPosts, users, productCategories] =
-            responses
-          setPosts(posts)
-          setProducts(products.length)
-          setUserPosts(userPosts)
-          setUsers(users.length)
-          setProductCategories(productCategories.length)
-
-          setIsLoading(false)
-        })
-        .catch((err) => {
-          const [err1, err2] = err
-          console.log({
-            postsErr: err1,
-            categoriesErr: err2,
-          })
-        })
-    }
-    fetchData()
-  }, [])
+  const totalPostsViews = posts?.reduce((total, acc) => acc.views + total, 0)
+  const userPostsViews = userPosts?.reduce((total, acc) => acc.views + total, 0)
+  const totalProductCategories = productCategories?.length
   return (
-    <div>
+    <div className="w-full h-full">
       {isLoading ? (
-        <div className="w-full flex items-center justify-center h-full">
+        <div className="flex items-center justify-center h-full">
           <ClipLoader color="#111111" size={28} />
         </div>
       ) : (
-        <div className="flex w-full gap-2">
+        <div className="flex items-center h-full w-full justify-between gap-x-2 ">
           <HomeStatsCard
-            amount={users}
-            label="usuários"
-            classname="border border-zinc-300 w-full text-zinc-900"
+            customStyle="bg-[#D93C3C] w-full"
+            titleIcon="myPosts"
+            title="Os meus posts"
+            amount={userPosts?.length.toString()}
+            description="Posts meus "
+            footerIcon="views"
+            footerText="views"
+            footerAmount={userPostsViews}
           />
           <HomeStatsCard
-            amount={products}
-            label="produtos na loja"
-            text1="Categorias"
-            text2={productCategories.toString()}
-            iconText="category"
-            classname="border border-zinc-300 w-full text-zinc-900"
+            customStyle="bg-[#423B94] w-full"
+            titleIcon="posts"
+            title="Total de posts"
+            amount={posts?.length.toString()}
+            description="posts no total"
+            footerIcon="views"
+            footerText="views"
+            footerAmount={totalPostsViews}
           />
           <HomeStatsCard
-            amount={userPosts.length}
-            label="os meus posts"
-            text1="views"
-            text2={userPostsViews.toString()}
-            iconText="views"
-            classname="border border-zinc-300 w-full text-zinc-900"
-          />
-
-          <HomeStatsCard
-            amount={posts.length}
-            text1="views"
-            text2={postsViews.toString()}
-            label="total de posts"
-            iconText="views"
-            classname="border-zinc-300 w-full border text-BLACK "
+            customStyle="bg-[#505050] w-full"
+            titleIcon="store"
+            title="loja"
+            amount={products?.length.toString()}
+            description="Produtos"
+            footerIcon="category"
+            footerText="categorias"
+            footerAmount={totalProductCategories}
           />
         </div>
       )}

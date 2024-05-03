@@ -1,26 +1,14 @@
-import { useEffect, useState } from "react"
-import { IPostData } from "../../interfaces"
-import { getHighlightedPost } from "../../api"
 import { Link } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
+import { useGetHighlightedPost } from "@/utils/react-query/queries-and-mutations"
+import { FaEye } from "react-icons/fa"
+import { SlLike } from "react-icons/sl"
+
+SlLike
 
 const HighlightedPost = () => {
-  const [highlightedPost, setHighlightedPost] = useState<IPostData>()
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getHighlightedPost()
-        setHighlightedPost(data)
-      } catch (error) {
-        console.error(error)
-        setIsLoading(false)
-      }
-      setIsLoading(false)
-    }
-    fetchData()
-  }, [])
+  const { data, isLoading } = useGetHighlightedPost()
+  console.log(data)
 
   if (isLoading) {
     return (
@@ -32,16 +20,26 @@ const HighlightedPost = () => {
 
   return (
     <Link
-      to={`/post/${highlightedPost?._id}`}
-      className="relative outline-none border-none"
+      to={`/post/${data?._id}`}
+      className="relative outline-none w-full rounded-[6px] border-none"
     >
       <img
-        src={highlightedPost?.mainImage}
+        src={data?.mainImage}
         alt="imagem do post"
-        className="rounded-[6px] inset-0 h-[200px] w-full object-cover"
+        className="rounded-[6px] inset-0 h-[240px] w-full object-cover"
       />
-      <div className="absolute inset-0 w-full h-full bg-zinc-800/70 hover:opacity-0 duration-300 transition-all flex items-center justify-center">
+      <div className="absolute inset-0 rounded-[6px] flex-col w-full h-full bg-zinc-800/70 hover:opacity-0 duration-300 transition-all flex items-center justify-center">
         <span className="text-white">Post em destaque</span>
+        <div className="flex items-center mt-4 gap-x-4">
+          <span className="text-white flex items-center gap-x-1">
+            <FaEye size={18} />
+            {data?.views}
+          </span>
+          <span className="text-white flex items-center gap-x-1">
+            <SlLike size={18} />
+            {data?.rating}
+          </span>
+        </div>
       </div>
     </Link>
   )

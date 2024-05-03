@@ -7,14 +7,14 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel"
 import { useAuthContext } from "@/context/AuthContext"
-import { IPostData } from "@/interfaces"
+import { PostData } from "@/types"
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import { ClipLoader } from "react-spinners"
 
 const UserPosts = () => {
   const { userId } = useAuthContext()
-  const [posts, setPosts] = useState<IPostData[]>([])
+  const [posts, setPosts] = useState<PostData[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {

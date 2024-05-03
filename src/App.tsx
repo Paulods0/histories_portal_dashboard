@@ -5,19 +5,20 @@ import GoogleAds from "./pages/GoogleAds"
 import HomeDashboard from "./pages/HomeDashboard"
 import Posts from "./pages/Posts"
 import LojaAdmin from "./pages/LojaAdmin"
-import CategoriasAdmin from "./pages/CategoriasAdmin"
+import CategoriesPage from "./pages/categories-page"
 import AdicionarGestor from "./pages/AdicionarGestor"
-import PostDetail from "./pages/PostDetail"
+import EditPost from "./pages/EditPost"
 import LoginPage from "./pages/LoginPage"
 import Profile from "./pages/Profile"
 import EditProfileData from "./pages/EditProfileData"
 import EditSecurityData from "./pages/EditSecurityData"
 import UserPosts from "./pages/UserPosts"
 import ForgotPassword from "./pages/ForgotPassword"
+import PostDetails from "./pages/PostDetails"
 
 function App() {
   return (
-    <main className="min-h-screen font-Poppins scroll-bar w-full ">
+    <main className="font-Poppins">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
@@ -25,11 +26,14 @@ function App() {
           <Route index element={<HomeDashboard />} />
           <Route path="novopost" element={<NovoPost />} />
           <Route path="posts" element={<Posts />} />
+
           <Route path="loja" element={<LojaAdmin />} />
           <Route path="ads" element={<GoogleAds />} />
-          <Route path="categorias" element={<CategoriasAdmin />} />
+          <Route path="categorias" element={<CategoriesPage />} />
           <Route path="gestor" element={<AdicionarGestor />} />
-          <Route path="post/:id" element={<PostDetail />} />
+          <Route path="edit-post/:id" element={<EditPost />} />
+          <Route path="post/:id" element={<PostDetails />} />
+
           <Route path="profile/:id/" element={<Profile />}>
             <Route index element={<UserPosts />} />
             <Route path="settings/edit_profile" element={<EditProfileData />} />
