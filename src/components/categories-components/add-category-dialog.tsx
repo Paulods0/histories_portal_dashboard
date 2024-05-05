@@ -9,7 +9,7 @@ const AddCategoryDialog = () => {
   return (
     <Dialog>
       <DialogTrigger className="relative right-32" asChild>
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center text-xs lg:text-base gap-2">
           <CiCirclePlus size={22} />
           Adicionar
         </Button>

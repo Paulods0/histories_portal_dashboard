@@ -7,21 +7,26 @@ import AddCategoryDialog from "@/components/categories-components/add-category-d
 const CategoriesPage = () => {
   return (
     <main className="py-3 flex flex-col items-center justify-center">
-      <div className="w-[700px] mx-auto flex">
+      <div className="w-full lg:w-[700px] mx-auto flex">
         <Tabs defaultValue="posts">
           <TabsList>
-            <TabsTrigger value="posts">Categoria de posts</TabsTrigger>
-            <TabsTrigger value="produtos">Categoria de produtos</TabsTrigger>
+            <TabsTrigger className="text-xs lg:text-sm" value="posts">
+              Categoria de posts
+            </TabsTrigger>
+            <TabsTrigger className="text-xs lg:text-sm" value="produtos">
+              Categoria de produtos
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="posts">
             <PostCategoriesTable />
           </TabsContent>
-          
+
           <TabsContent value="produtos">
             <ProductCategoryTable />
           </TabsContent>
         </Tabs>
+
         <AddCategoryDialog />
       </div>
     </main>

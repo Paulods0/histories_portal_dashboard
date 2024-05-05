@@ -25,7 +25,7 @@ const ProductCategoryTable = () => {
     )
   }
   return (
-    <div className="w-[700px] mx-auto overflow-y-auto scroll-bar rounded-lg border p-2 h-[75vh]">
+    <div className="w-full lg:w-[760px] mx-auto overflow-y-auto scroll-bar rounded-lg border p-2 h-[75vh]">
       <Table>
         <TableHeader>
           <TableRow>

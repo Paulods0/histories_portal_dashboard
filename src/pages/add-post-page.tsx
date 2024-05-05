@@ -1,8 +1,7 @@
+import { uploadImageToFirebaseStorage } from "../utils/helpers"
 import { useState } from "react"
 import ReactQuill, { Quill } from "react-quill"
 import "react-quill/dist/quill.snow.css"
-
-import { uploadImageToFirebaseStorage } from "../utils/helpers"
 
 //@ts-ignore
 import ImageUploader from "quill-image-uploader"
@@ -16,33 +15,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+
 import { useGetAllUsers, useGetCategories } from "@/lib/react-query/queries"
 
-import PostForm from "@/components/forms/post-form"
 import SchedulePostForm from "@/components/forms/schedule-post-form"
 import ToursPostForm from "@/components/forms/tours-post-form"
 import { useAuthContext } from "@/context/AuthContext"
+import PostForm from "@/components/forms/post-form"
+import { toolbarOptions } from "@/utils/constants"
+import { User } from "@/types/data"
 
 Quill.register("modules/imageUploader", ImageUploader)
 
-const toolbarOptions = [
-  ["bold", "italic", "underline", "strike"],
-  ["blockquote"],
-  ["link", "image", "video"],
-
-  [{ header: 1 }, { header: 2 }],
-  [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-  [{ indent: "-1" }, { indent: "+1" }],
-  [{ direction: "rtl" }],
-
-  [{ size: ["small", false, "large", "huge"] }],
-
-  [{ color: [] }, { background: [] }],
-  [{ font: [] }],
-  [{ align: [] }],
-
-  ["clean"],
-]
 const modules = {
   toolbar: toolbarOptions,
   imageUploader: {
@@ -53,23 +37,22 @@ const modules = {
 }
 
 const AddPostPage = () => {
+  const { userId } = useAuthContext()
   const CLASSIFICADOS = "Classificados"
   const OVERLAND_EXPERIENCE = "Overland Experience"
 
-  const { userId } = useAuthContext()
-  const { data: users, isLoading } = useGetAllUsers()
   const { data: categories } = useGetCategories()
+  const { data: users, isLoading } = useGetAllUsers()
 
-  let defaultUser
-
-  if (!isLoading) {
-    defaultUser = users!!.find((user) => user._id === userId)
-  }
-
-  const [author, setAuthor] = useState("")
   const [content, setContent] = useState("")
   const [category, setCategory] = useState("")
   const [categoryName, setCategoryName] = useState("")
+  const [authorId, setAuthorId] = useState<string | undefined>(undefined)
+
+  let currAuthor
+  if (!isLoading) {
+    currAuthor = users?.find((user) => user._id === userId)
+  }
 
   const handleChangeCategory = (value: string) => {
     const category = categories?.find((category) => category._id === value)
@@ -126,18 +109,19 @@ const AddPostPage = () => {
               Autor
             </Label>
 
-            <Select onValueChange={(value) => setAuthor(value)}>
+            <Select onValueChange={(value) => setAuthorId(value)}>
               <SelectTrigger id="author">
                 <SelectValue
-                  defaultValue={defaultUser?._id}
+                  defaultValue={users?.find((user) => user._id === userId)?._id}
                   placeholder={
                     <span className="flex items-center gap-1">
                       <img
-                        src={defaultUser?.image}
+                        src={currAuthor?.image ?? ""}
                         className="size-6 "
-                        alt=""
+                        alt="profile-image"
                       />
-                      {defaultUser?.firstname} {defaultUser?.lastname}
+                      {currAuthor?.firstname}
+                      {currAuthor?.lastname}
                     </span>
                   }
                 />
@@ -164,11 +148,16 @@ const AddPostPage = () => {
           </div>
 
           {categoryName === "Passeios" ? (
-            <ToursPostForm category={category} author={author!!} />
+            // <ToursPostForm category={category} author={currUser!!} />
+            ""
           ) : categoryName === "Agenda AO" ? (
             <SchedulePostForm category={category} />
           ) : (
-            <PostForm category={category} author={author!!} />
+            <PostForm
+              content={content}
+              category={category}
+              authorId={authorId!!}
+            />
           )}
         </div>
       </div>

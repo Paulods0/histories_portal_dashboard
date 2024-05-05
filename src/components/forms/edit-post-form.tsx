@@ -2,27 +2,23 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Textarea } from "../ui/textarea"
 import { Button } from "../ui/button"
-import { ChangeEvent, useState } from "react"
 import { useForm } from "react-hook-form"
-import { FormSchemaType, formSchema } from "./post-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PostData } from "@/types/data"
+import { EditPostFormSchemaType, editPostFormSchema } from "@/types/schema"
 
 type Props = {
   post: PostData
 }
 
 const EditPostForm = ({ post }: Props) => {
-  const { register } = useForm<FormSchemaType>({
-    resolver: zodResolver(formSchema),
+  const { register } = useForm<EditPostFormSchemaType>({
+    resolver: zodResolver(editPostFormSchema),
     defaultValues: {
       title: post.title,
-      tags: post.tag ?? undefined,
+      tags: post.tag.toString(),
       author_notes: post.author_notes,
-      coordinates: {
-        latitude: Number(post.latitude),
-        longitude: Number(post.longitude),
-      },
+      coordinates: `${post.latitude},${post.longitude}`,
     },
   })
 

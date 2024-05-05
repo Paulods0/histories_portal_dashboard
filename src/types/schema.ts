@@ -1,20 +1,13 @@
 import { z } from "zod"
 
 export const postFormSchema = z.object({
-  title: z.string().min(6, "*O título deve conter no mínimo 6 caracteres."),
-  coordinates: z.string().transform((coordinates) => {
-    const currentCoordinates = coordinates.split(",")
-    return {
-      latitude: Number(currentCoordinates[0]),
-      longitude: Number(currentCoordinates[1]),
-    }
-  }),
+  title: z.string().min(1, "*O título deve conter no mínimo 6 caracteres."),
   tags: z
     .string()
     .transform((text) => text.split(","))
     .optional(),
   author_notes: z.string().optional(),
-  category: z.string().optional(),
+  hightlight: z.boolean().default(false),
 })
 
 export const scheduleFormSchema = z.object({

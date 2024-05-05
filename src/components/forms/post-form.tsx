@@ -1,19 +1,24 @@
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import { Textarea } from "../ui/textarea"
 import { Button } from "../ui/button"
-import { ChangeEvent, useState } from "react"
-import { useCreatePost } from "@/lib/react-query/mutations"
 import { useForm } from "react-hook-form"
+import { Textarea } from "../ui/textarea"
+import { useCreatePost } from "@/lib/react-query/mutations"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useAuthContext } from "@/context/AuthContext"
+import { ChangeEvent, useState } from "react"
 import { PostFormSchemaType, postFormSchema } from "@/types/schema"
 
+import { toast } from "react-toastify"
+
 type Props = {
-  author: string
+  authorId: string
   category: string
+  content: string
 }
 
-const PostForm = ({ category, author }: Props) => {
+const PostForm = ({ category, authorId, content }: Props) => {
+  const { userId } = useAuthContext()
   // const { mutation, isPending } = useCreatePost()
   const [file, setFile] = useState("")
 
@@ -29,12 +34,16 @@ const PostForm = ({ category, author }: Props) => {
     setFile("")
   }
 
-  const { register, handleSubmit, formState } = useForm<PostFormSchemaType>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PostFormSchemaType>({
     resolver: zodResolver(postFormSchema),
   })
 
   const handleSubmitForm = (data: PostFormSchemaType) => {
-    console.log({ ...data, category, author })
+    console.log({ ...data, category, author_id: authorId ?? userId, content })
   }
 
   return (
@@ -70,18 +79,21 @@ const PostForm = ({ category, author }: Props) => {
         />
       </Label>
 
-      <div>
+      <div className="flex flex-col">
         <Label htmlFor="title" className="text-xs">
           Título
         </Label>
         <Input type="text" {...register("title")} />
+        {errors.title && (
+          <span className="text-xs text-red-600">{errors.title.message}</span>
+        )}
       </div>
 
       <div className="border flex py-2 h-10 px-2 gap-2 items-center w-fit rounded-md">
         <Label htmlFor="checkbox" className="text-xs">
           Destacar
         </Label>
-        <Input id="checkbox" type="checkbox" />
+        <Input id="checkbox" type="checkbox" {...register("hightlight")} />
       </div>
 
       <div>

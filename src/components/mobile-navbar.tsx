@@ -20,10 +20,8 @@ type Props = {
 const MobileNavbar = ({ user }: Props) => {
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <>
-          <IoMenu size={32} />
-        </>
+      <SheetTrigger asChild className="cursor-pointer">
+        <IoMenu size={32} />
       </SheetTrigger>
 
       <SheetContent className="bg-foreground space-y-6 text-background border-white/20">

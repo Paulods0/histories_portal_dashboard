@@ -17,13 +17,13 @@ const PostCategoriesTable = () => {
   const { data: postCategories, isLoading } = useGetCategories()
 
   return (
-    <div className="border w-[760px] h-[75vh] scroll-bar overflow-y-auto mx-auto rounded-lg bg-foregroud flex p-2 flex-col gap-4">
+    <div className="border w-full lg:w-[760px] h-[75vh] scroll-bar overflow-y-auto mx-auto rounded-lg bg-foregroud flex p-2 flex-col gap-4">
       <Table>
-        <TableHeader className="w-full">
+        <TableHeader className="w-full text-xs lg:text-sm">
           <TableRow className="w-full">
             <TableHead>ID</TableHead>
             <TableHead className="">Nome</TableHead>
-            <TableHead className="w-[200px]">Data de criação</TableHead>
+            <TableHead className="lg:w-[200px]">Data de criação</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -32,13 +32,13 @@ const PostCategoriesTable = () => {
             <ClipLoader color="#111111" size={40} />
           </div>
         ) : (
-          <TableBody className="scroll-bar overflow-y-auto">
+          <TableBody className="scroll-bar text-xs lg:text-sm overflow-y-auto">
             {postCategories?.map((category) => (
               <TableRow key={category._id}>
                 <TableCell>{category._id.substring(0, 10)}...</TableCell>
                 <TableCell>{category.name}</TableCell>
                 <TableCell>{formatDate(category.createdAt)}</TableCell>
-                <TableCell className="space-x-3">
+                <TableCell className="flex gap-2 flex-col lg:gap-3 lg:flex-row">
                   <EditPostCategoryDialog
                     id={category._id}
                     name={category.name}
