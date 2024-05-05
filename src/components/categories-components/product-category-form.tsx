@@ -1,7 +1,7 @@
 import { useAuthContext } from "@/context/AuthContext"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
-import { useCreateProductCategory } from "@/utils/react-query/queries-and-mutations"
+import { useCreateProductCategory } from "@/lib/react-query/queries-and-mutations"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"

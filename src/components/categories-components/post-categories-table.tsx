@@ -8,11 +8,10 @@ import {
   TableRow,
 } from "../ui/table"
 
-import { useGetCategories } from "@/utils/react-query/queries-and-mutations"
-import EditCategoryDialog from "./edit-category-dialog"
-import { Button } from "../ui/button"
-import DeleteCategoryDialog from "./delete-category-dialog"
 import { formatDate } from "@/utils/helpers"
+import DeleteCategoryDialog from "./delete-category-dialog"
+import { useGetCategories } from "@/lib/react-query/queries-and-mutations"
+import EditPostCategoryDialog from "./edit-post-category-dialog"
 
 const PostCategoriesTable = () => {
   const { data: postCategories, isLoading } = useGetCategories()
@@ -22,8 +21,8 @@ const PostCategoriesTable = () => {
       <Table>
         <TableHeader className="w-full">
           <TableRow className="w-full">
+            <TableHead>ID</TableHead>
             <TableHead className="">Nome</TableHead>
-            <TableHead>Criado por</TableHead>
             <TableHead className="w-[200px]">Data de criação</TableHead>
           </TableRow>
         </TableHeader>
@@ -36,12 +35,19 @@ const PostCategoriesTable = () => {
           <TableBody className="scroll-bar overflow-y-auto">
             {postCategories?.map((category) => (
               <TableRow key={category._id}>
+                <TableCell>{category._id.substring(0, 10)}...</TableCell>
                 <TableCell>{category.name}</TableCell>
-                <TableCell>{`${category.creator?.firstname} ${category.creator?.lastname}`}</TableCell>
                 <TableCell>{formatDate(category.createdAt)}</TableCell>
                 <TableCell className="space-x-3">
-                  <EditCategoryDialog />
-                  <DeleteCategoryDialog type="post-category" id={category._id} />
+                  <EditPostCategoryDialog
+                    id={category._id}
+                    name={category.name}
+                  />
+
+                  <DeleteCategoryDialog
+                    type="post-category"
+                    id={category._id}
+                  />
                 </TableCell>
               </TableRow>
             ))}

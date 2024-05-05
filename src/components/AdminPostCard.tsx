@@ -1,4 +1,4 @@
-import { PostData } from "../types"
+import { PostData } from "../types/data"
 import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
 import { useAuth } from "@/context/AuthContext"
@@ -42,9 +42,9 @@ const AdminPostCard = ({
 
             {/* {userId === author._id && (
             )} */}
-              <Button variant={"outline"}>
-                <Link to={`/edit-post/${_id}`}>Editar</Link>
-              </Button>
+            <Button variant={"outline"}>
+              <Link to={`/edit-post/${_id}`}>Editar</Link>
+            </Button>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom"
 import SidebarNavigation from "./SidebarNavigation"
 import Cookies from "js-cookie"
-import Header from "./Home_Components/Header"
+import Header from "./home-components/Header"
 
 const Dashboard = () => {
   const token = Cookies.get("token")

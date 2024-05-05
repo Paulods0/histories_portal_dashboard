@@ -11,7 +11,7 @@ import { Button } from "../ui/button"
 import {
   useDeletePostCategory,
   useDeleteProductCategory,
-} from "@/utils/react-query/queries-and-mutations"
+} from "@/lib/react-query/queries-and-mutations"
 import { toast } from "react-toastify"
 
 type Props = {

@@ -1,20 +1,20 @@
 import { Route, Routes } from "react-router-dom"
 import Dashboard from "./components/Dashboard"
-import NovoPost from "./pages/NovoPost"
-import GoogleAds from "./pages/GoogleAds"
-import HomeDashboard from "./pages/HomeDashboard"
-import Posts from "./pages/Posts"
-import LojaAdmin from "./pages/LojaAdmin"
 import CategoriesPage from "./pages/categories-page"
-import AdicionarGestor from "./pages/AdicionarGestor"
-import EditPost from "./pages/EditPost"
-import LoginPage from "./pages/LoginPage"
-import Profile from "./pages/Profile"
-import EditProfileData from "./pages/EditProfileData"
-import EditSecurityData from "./pages/EditSecurityData"
-import UserPosts from "./pages/UserPosts"
-import ForgotPassword from "./pages/ForgotPassword"
-import PostDetails from "./pages/PostDetails"
+import LoginPage from "./pages/login-page"
+import ManageUserPage from "./pages/manage-user-page"
+import UserPostsPage from "./pages/user-posts-page"
+import StorePage from "./pages/store-page"
+import ProfilePage from "./pages/profile-page"
+import PostsPage from "./pages/posts-page"
+import PostDetailsPage from "./pages/post-details-page"
+import AddPostPage from "./pages/add-post-page"
+import HomeDashboardPage from "./pages/home-dashboard-page"
+import GoogleAdsPage from "./pages/google-ads-page"
+import ForgotPasswordPage from "./pages/forgot-password-page"
+import EditSecurityDataPage from "./pages/edit-security-data-page"
+import EditProfileDataPage from "./pages/edit-profile-data-page"
+import EditPostPostPage from "./pages/edit-post-page"
 
 function App() {
   return (
@@ -23,25 +23,34 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         <Route path="/" element={<Dashboard />}>
-          <Route index element={<HomeDashboard />} />
-          <Route path="novopost" element={<NovoPost />} />
-          <Route path="posts" element={<Posts />} />
+          <Route index element={<HomeDashboardPage />} />
+          <Route path="novopost" element={<AddPostPage />} />
+          <Route path="posts" element={<PostsPage />} />
 
-          <Route path="loja" element={<LojaAdmin />} />
-          <Route path="ads" element={<GoogleAds />} />
+          <Route path="loja" element={<StorePage />} />
+          <Route path="ads" element={<GoogleAdsPage />} />
           <Route path="categorias" element={<CategoriesPage />} />
-          <Route path="gestor" element={<AdicionarGestor />} />
-          <Route path="edit-post/:id" element={<EditPost />} />
-          <Route path="post/:id" element={<PostDetails />} />
+          <Route path="usuarios" element={<ManageUserPage />} />
+          <Route path="edit-post/:id" element={<EditPostPostPage />} />
+          <Route path="post/:id" element={<PostDetailsPage />} />
 
-          <Route path="profile/:id/" element={<Profile />}>
-            <Route index element={<UserPosts />} />
-            <Route path="settings/edit_profile" element={<EditProfileData />} />
-            <Route path="settings/security" element={<EditSecurityData />} />
+          <Route path="profile/:id/" element={<ProfilePage />}>
+            <Route index element={<UserPostsPage />} />
+            <Route
+              path="settings/edit_profile"
+              element={<EditProfileDataPage />}
+            />
+            <Route
+              path="settings/security"
+              element={<EditSecurityDataPage />}
+            />
           </Route>
         </Route>
 
-        <Route path="/settings/forgotpassword" element={<ForgotPassword />} />
+        <Route
+          path="/settings/forgotpassword"
+          element={<ForgotPasswordPage />}
+        />
       </Routes>
     </main>
   )

@@ -1,5 +1,5 @@
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom"
-import { ADMIN_DASHBOARD_NAV_LINKS } from "../constants"
+import { ADMIN_DASHBOARD_NAV_LINKS } from "../utils/constants"
 import { FiLogOut } from "react-icons/fi"
 import { useAuthContext } from "../context/AuthContext"
 import { LiaToggleOffSolid } from "react-icons/lia"
@@ -16,9 +16,7 @@ const SidebarNavigation = () => {
 
   const HOME_LINK_PATH = "/"
   const path =
-    locationPath.pathname === "/"
-      ? "Home"
-      : locationPath.pathname.split("/")[1]
+    locationPath.pathname === "/" ? "Home" : locationPath.pathname.split("/")[1]
 
   return (
     <aside className="w-[170px] border-r-zinc-300 border-r items-center justify-center flex flex-col">

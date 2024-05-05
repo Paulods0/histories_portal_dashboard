@@ -1,4 +1,4 @@
-import { useGetAllProductCategories } from "@/utils/react-query/queries-and-mutations"
+import { useGetAllProductCategories } from "@/lib/react-query/queries-and-mutations"
 import {
   Table,
   TableBody,
@@ -8,9 +8,9 @@ import {
   TableRow,
 } from "../ui/table"
 import { ClipLoader } from "react-spinners"
-import EditCategoryDialog from "./edit-category-dialog"
 import DeleteCategoryDialog from "./delete-category-dialog"
 import { formatDate } from "@/utils/helpers"
+import EditProductCategoryDialog from "./edit-product-category-dialog"
 
 const ProductCategoryTable = () => {
   const { data: productCategories, isLoading } = useGetAllProductCategories()
@@ -47,7 +47,11 @@ const ProductCategoryTable = () => {
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{formatDate(product.createdAt)}</TableCell>
                 <TableCell className="flex items-center gap-x-3">
-                  <EditCategoryDialog />
+                  <EditProductCategoryDialog
+                    id={product._id}
+                    name={product.name}
+                  />
+
                   <DeleteCategoryDialog
                     type="product-category"
                     id={product._id}

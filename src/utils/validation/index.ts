@@ -1,4 +1,3 @@
-import { CategoryData, NewPost } from "@/types"
 import { z } from "zod"
 
 export const SignInFormSchema = z.object({
