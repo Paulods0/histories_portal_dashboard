@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
-import { useGetHighlightedPost } from "@/lib/react-query/queries-and-mutations"
+import { useGetHighlightedPost } from "@/lib/react-query/queries"
 import { FaEye } from "react-icons/fa"
 import { SlLike } from "react-icons/sl"
 
@@ -8,7 +8,6 @@ SlLike
 
 const HighlightedPost = () => {
   const { data, isLoading } = useGetHighlightedPost()
-  console.log(data)
 
   if (isLoading) {
     return (

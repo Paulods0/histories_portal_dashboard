@@ -1,4 +1,4 @@
-import RecentPostsDetails from "./RecentPostsDetails"
+import RecentPostsDetails from "./post-details/recent-post-details"
 
 export type PostProps = {
   post: {

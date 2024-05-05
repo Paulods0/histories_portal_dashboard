@@ -1,6 +1,6 @@
-import StretchedPostCard from "./StretchedPostCard"
+import StretchedPostCard from "./home-post-card"
 import { ClipLoader } from "react-spinners"
-import { useGetAllPosts } from "@/lib/react-query/queries-and-mutations"
+import { useGetAllPosts } from "@/lib/react-query/queries"
 
 const AllPostsWrapper = () => {
   const { data, isLoading } = useGetAllPosts()

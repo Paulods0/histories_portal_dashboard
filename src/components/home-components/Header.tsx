@@ -10,11 +10,11 @@ import {
 import { Button } from "@/components/ui/button"
 import { CiSettings, CiUser } from "react-icons/ci"
 import { IoCalendarOutline } from "react-icons/io5"
-
 import { formatDate } from "@/utils/helpers"
 import { Link, useLocation } from "react-router-dom"
 import { useAuthContext } from "@/context/AuthContext"
 import { ADMIN_DASHBOARD_NAV_LINKS } from "@/utils/constants"
+import MobileNavbar from "../mobile-navbar"
 
 const Header = () => {
   const { logout, user, userId } = useAuthContext()
@@ -29,11 +29,11 @@ const Header = () => {
         <Link to="/">
           <img
             src="/logotipo-texto.png"
-            className="w-[120px] h-[70px] object-contain"
+            className="w-[120px] h-[35px] object-contain"
             alt="logotipo-texto"
           />
         </Link>
-        <ul className="flex items-center justify-center gap-x-4">
+        <ul className="hidden lg:flex items-center justify-center gap-x-4">
           {ADMIN_DASHBOARD_NAV_LINKS.map((link, index) => (
             <Link
               key={index}
@@ -48,13 +48,13 @@ const Header = () => {
             </Link>
           ))}
         </ul>
-        <div className="flex justify-center items-center gap-x-2 ">
+        <div className="hidden lg:flex justify-center items-center gap-x-2 ">
           <IoCalendarOutline size={18} />
           <span className="text-[14px]">{reformatedDate}</span>
         </div>
       </section>
 
-      <div className="flex items-center gap-2">
+      <div className="hidden lg:flex items-center gap-2">
         <div className="flex gap-x-1 text-[14px] font-semibold w-full">
           <span>{user?.firstname}</span>
           <span>{user?.lastname}</span>
@@ -126,6 +126,10 @@ const Header = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+      </div>
+
+      <div className="flex lg:hidden">
+        <MobileNavbar user={user!!} />
       </div>
     </header>
   )

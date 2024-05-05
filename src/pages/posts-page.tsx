@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { CategoryData, PostData } from "../types/data"
 import { getAllCategories, getAllPosts, getAllPostsByCategory } from "../api"
-import AdminPostCard from "../components/AdminPostCard"
+import AdminPostCard from "../components/admin-post-card"
 import { ClipLoader } from "react-spinners"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,10 +14,7 @@ import {
 } from "@/components/ui/select"
 
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import {
-  useGetAllPosts,
-  useGetCategories,
-} from "@/lib/react-query/queries-and-mutations"
+import { useGetAllPosts, useGetCategories } from "@/lib/react-query/queries"
 import { useQuery } from "@tanstack/react-query"
 import { FaPlusCircle } from "react-icons/fa"
 
@@ -85,7 +82,7 @@ const PostsPage = () => {
 
       <hr className="w-full my-3" />
 
-      <div className="w-full relative gap-4 grid grid-cols-4 scroll-bar overflow-y-auto h-[calc(90vh-80px)]">
+      <div className="w-full relative gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 scroll-bar overflow-y-auto h-[calc(90vh-80px)]">
         {posts?.length === 0 ? (
           <main className="w-full h-full flex items-center col-span-4 justify-center">
             <h1>Não há posts nada ainda.</h1>

@@ -5,7 +5,7 @@ import axios from "../api/axiosConfig"
 // import { getUser } from "@/api"
 // import { IUser } from "@/interfaces"
 
-type UserData = {
+export type UserData = {
   email: string
   firstname: string
   lastname: string

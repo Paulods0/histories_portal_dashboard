@@ -1,4 +1,4 @@
-import { useGetAllProductCategories } from "@/lib/react-query/queries-and-mutations"
+import { useGetAllProductCategories } from "@/lib/react-query/queries"
 import {
   Table,
   TableBody,

@@ -14,7 +14,7 @@ import {
   uploadImageToFirebaseStorage,
 } from "@/utils/helpers"
 import { toast } from "react-toastify"
-import { useUpdateUser } from "@/lib/react-query/queries-and-mutations"
+import { useUpdateUser } from "@/lib/react-query/mutations"
 
 type Props = {
   user: User

@@ -1,77 +1,51 @@
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
-
-import { Textarea } from "../ui/textarea"
-import { Button } from "../ui/button"
 import { ChangeEvent, useState } from "react"
 import { useCreatePost } from "@/lib/react-query/mutations"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { TourFormSchemaType, tourFormSchema } from "@/types/schema"
+import { EditTourFormSchemaType, editTourFormSchema } from "@/types/schema"
+
+import { Input } from "../ui/input"
+import { Label } from "../ui/label"
+import { Textarea } from "../ui/textarea"
+import { Button } from "../ui/button"
+import { PostData } from "@/types/data"
 
 type Props = {
-  author: string
-  category: string
+  post: PostData
 }
 
-const ToursPostForm = ({ category, author }: Props) => {
-  const [file, setFile] = useState("")
-
-  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const file = e.target.files[0]
-      const urlImage = URL.createObjectURL(file)
-      setFile(urlImage)
-    }
-  }
-
-  const handleCloseImage = () => {
-    setFile("")
-  }
-
+const EditTourPostForm = ({ post }: Props) => {
   const {
     register,
-    handleSubmit,
     formState: { errors },
-  } = useForm<TourFormSchemaType>({
-    mode: "all",
-    resolver: zodResolver(tourFormSchema),
+  } = useForm<EditTourFormSchemaType>({
+    resolver: zodResolver(editTourFormSchema),
+    defaultValues: {
+      title: post.title,
+      tags: post.tag,
+      highlighted: post.highlighted,
+      coordinates: `${post.latitude},${post.longitude}`,
+    },
   })
 
-  const handleSubmitForm = (data: TourFormSchemaType) => {
-    console.log({ ...data, category, author })
-  }
   return (
-    <form
-      onSubmit={handleSubmit(handleSubmitForm)}
-      className="flex flex-col gap-3"
-    >
-      {file && (
-        <div className="relative">
-          <img
-            src={file}
-            className="h-32 w-full object-contain aspect-square mx-auto"
-          />
-          <button
-            onClick={handleCloseImage}
-            className="absolute text-xs top-3 hover:text-white/20 transition-all right-10"
-          >
-            Fechar
-          </button>
-        </div>
-      )}
+    <form className="flex flex-col gap-3 w-full">
+      <div className="relative">
+        <img
+          src={post.mainImage}
+          className="h-32 w-full object-contain aspect-square mx-auto"
+        />
+        <button className="absolute text-xs top-3 hover:text-white/20 transition-all right-10">
+          Fechar
+        </button>
+      </div>
 
       <Label
         className="p-3 cursor-pointer text-center border rounded-lg"
         htmlFor="image"
       >
         Adicionar imagem
-        <Input
-          onChange={(e) => handleFile(e)}
-          id="image"
-          type="file"
-          className="hidden w-full"
-        />
+        <Input id="image" type="file" className="hidden w-full" />
       </Label>
 
       <div>
@@ -136,4 +110,4 @@ const ToursPostForm = ({ category, author }: Props) => {
   )
 }
 
-export default ToursPostForm
+export default EditTourPostForm

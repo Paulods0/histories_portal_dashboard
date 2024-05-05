@@ -1,22 +1,13 @@
-import { useEffect, useState } from "react"
-import HomeStatsCard from "./HomeStatsCard"
-import {
-  getAllPosts,
-  getAllProducts,
-  getAllProdutCategories,
-  getAllUsers,
-  getUserPosts,
-} from "../../api"
+import HomeStatsCard from "./home-stats-card"
 import { useAuthContext } from "../../context/AuthContext"
 import { ClipLoader } from "react-spinners"
-import { IPostData } from "@/interfaces"
+
 import {
   useGetAllPosts,
   useGetAllProductCategories,
   useGetAllProducts,
-  useGetAllUsers,
   useGetUserPosts,
-} from "@/lib/react-query/queries-and-mutations"
+} from "@/lib/react-query/queries"
 
 const HomeStatsContainer = () => {
   const { userId } = useAuthContext()
@@ -36,7 +27,7 @@ const HomeStatsContainer = () => {
           <ClipLoader color="#111111" size={28} />
         </div>
       ) : (
-        <div className="flex items-center h-full w-full justify-between gap-x-2 ">
+        <div className="flex items-center h-full w-full flex-wrap lg:flex-nowrap justify-between gap-2 ">
           <HomeStatsCard
             customStyle="bg-[#D93C3C] w-full"
             titleIcon="myPosts"

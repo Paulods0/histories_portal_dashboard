@@ -13,7 +13,7 @@ import {
 import { Button } from "../ui/button"
 import { User } from "@/types/data"
 import { deleteImageFromFirebase } from "@/utils/helpers"
-import { useDeleteUser } from "@/lib/react-query/queries-and-mutations"
+import { useDeleteUser } from "@/lib/react-query/mutations"
 
 type Props = {
   user: User

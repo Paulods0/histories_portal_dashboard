@@ -1,4 +1,4 @@
-import { useCreateSchedulePost } from "@/lib/react-query/queries-and-mutations"
+import { useCreateSchedulePost } from "@/lib/react-query/mutations"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"

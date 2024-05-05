@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { CiSettings } from "react-icons/ci"
 import { CiUser } from "react-icons/ci"
-import { useGetUserPosts } from "@/lib/react-query/queries-and-mutations"
+import { useGetUserPosts } from "@/lib/react-query/queries"
 
 const ProfilePage = () => {
   const [posts, setPosts] = useState<PostData[]>([])

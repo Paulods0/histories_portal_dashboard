@@ -10,7 +10,7 @@ import {
 
 import { formatDate } from "@/utils/helpers"
 import DeleteCategoryDialog from "./delete-category-dialog"
-import { useGetCategories } from "@/lib/react-query/queries-and-mutations"
+import { useGetCategories } from "@/lib/react-query/queries"
 import EditPostCategoryDialog from "./edit-post-category-dialog"
 
 const PostCategoriesTable = () => {

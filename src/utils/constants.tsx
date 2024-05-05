@@ -1,45 +1,46 @@
-import { HiOutlineHome } from "react-icons/hi"
-import { FiEdit2 } from "react-icons/fi"
-import { ImFilesEmpty } from "react-icons/im"
-import { MdOutlineStorefront } from "react-icons/md"
-import { SiGoogleanalytics } from "react-icons/si"
-import { BiCategory } from "react-icons/bi"
-import { FaUserPlus } from "react-icons/fa"
+import {
+  BiUser,
+  BiPlus,
+  BiHomeAlt2,
+  BiStore,
+  BiSolidGrid,
+  BiSolidFile,
+} from "react-icons/bi"
 
 export const ADMIN_DASHBOARD_NAV_LINKS = [
   {
     name: "Home",
-    icon: <HiOutlineHome size={24} />,
+    icon: <BiHomeAlt2 size={24} />,
     link: "/",
   },
   {
     name: "Novo post",
-    icon: <FiEdit2 size={20} />,
+    icon: <BiPlus size={20} />,
     link: "/novopost",
   },
   {
     name: "Posts",
-    icon: <ImFilesEmpty size={20} />,
+    icon: <BiSolidFile size={20} />,
     link: "/posts",
   },
   {
     name: "Loja",
-    icon: <MdOutlineStorefront size={20} />,
+    icon: <BiStore size={20} />,
     link: "/loja",
   },
-  {
-    name: "Ads",
-    icon: <SiGoogleanalytics size={20} />,
-    link: "/ads",
-  },
+  // {
+  //   name: "Ads",
+  //   icon: <SiGoogleanalytics size={20} />,
+  //   link: "/ads",
+  // },
   {
     name: "Categorias",
-    icon: <BiCategory size={20} />,
+    icon: <BiSolidGrid size={20} />,
     link: "/categorias",
   },
   {
     name: "Usuários",
-    icon: <FaUserPlus size={20} />,
+    icon: <BiUser size={20} />,
     link: "/usuarios",
   },
 ]
@@ -51,4 +52,23 @@ export const STORE_PRODUCT_HEADERS = [
   "Preço",
   "Quantidade",
   "Ações",
+]
+
+export const toolbarOptions = [
+  ["bold", "italic", "underline", "strike"], // to
+  ["blockquote"],
+  ["link", "image", "video"],
+
+  [{ header: 1 }, { header: 2 }], // custom button values
+  [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+  [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+  [{ direction: "rtl" }], // text direction
+
+  [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+  // [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+  [{ font: [] }],
+  [{ align: [] }],
+
+  ["clean"], // remove formatting button
 ]

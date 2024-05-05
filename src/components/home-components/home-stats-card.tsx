@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card"
-import { Button } from "../ui/button"
 import { Link } from "react-router-dom"
 
 type HomeStatsProps = {
@@ -62,7 +61,7 @@ const HomeStatsCard = ({
         <CardTitle className="capitalize text-[18px] text-background flex items-center gap-x-2">
           <span>{amount}</span>
           <span>{description}</span>
-        </CardTitle>  
+        </CardTitle>
       </CardHeader>
 
       <CardFooter>

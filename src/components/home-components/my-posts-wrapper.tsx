@@ -1,7 +1,7 @@
-import StretchedPostCard from "./StretchedPostCard"
+import StretchedPostCard from "./home-post-card"
 import { useAuthContext } from "../../context/AuthContext"
 import { ClipLoader } from "react-spinners"
-import { useGetUserPosts } from "@/lib/react-query/queries-and-mutations"
+import { useGetUserPosts } from "@/lib/react-query/queries"
 
 const MyPostsWrapper = () => {
   const { userId } = useAuthContext()

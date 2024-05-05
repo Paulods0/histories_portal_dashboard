@@ -1,44 +1,17 @@
-import { User } from "@/types/data"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select"
 import { Textarea } from "../ui/textarea"
 import { Button } from "../ui/button"
 import { ChangeEvent, useState } from "react"
-import { useCreatePost } from "@/lib/react-query/queries-and-mutations"
+import { useCreatePost } from "@/lib/react-query/mutations"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { PostFormSchemaType, postFormSchema } from "@/types/schema"
 
 type Props = {
   author: string
   category: string
 }
-
-export const formSchema = z.object({
-  title: z.string().min(6, "*O título deve conter no mínimo 6 caracteres."),
-  coordinates: z.string().transform((coordinates) => {
-    const currentCoordinates = coordinates.split(",")
-    return {
-      latitude: Number(currentCoordinates[0]),
-      longitude: Number(currentCoordinates[1]),
-    }
-  }),
-  tags: z
-    .string()
-    .transform((text) => text.split(","))
-    .optional(),
-  author_notes: z.string().optional(),
-  category: z.string().optional(),
-})
-
-export type FormSchemaType = z.infer<typeof formSchema>
 
 const PostForm = ({ category, author }: Props) => {
   // const { mutation, isPending } = useCreatePost()
@@ -56,11 +29,11 @@ const PostForm = ({ category, author }: Props) => {
     setFile("")
   }
 
-  const { register, handleSubmit, formState } = useForm<FormSchemaType>({
-    resolver: zodResolver(formSchema),
+  const { register, handleSubmit, formState } = useForm<PostFormSchemaType>({
+    resolver: zodResolver(postFormSchema),
   })
 
-  const handleSubmitForm = (data: FormSchemaType) => {
+  const handleSubmitForm = (data: PostFormSchemaType) => {
     console.log({ ...data, category, author })
   }
 

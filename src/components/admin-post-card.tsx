@@ -10,7 +10,6 @@ type PostCardProps = {
 const AdminPostCard = ({
   post: { _id, category, mainImage, author, title },
 }: PostCardProps) => {
-  const { userId } = useAuth()
   return (
     <div className="bg-background h-[270px] w-full flex items-center flex-col border border-secondary">
       <Link to={`/post/${_id}`} className="relative w-full h-[160px] ">

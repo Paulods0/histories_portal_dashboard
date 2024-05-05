@@ -1,4 +1,4 @@
-import { useCreatePostCategory } from "@/lib/react-query/queries-and-mutations"
+import { useCreatePostCategory } from "@/lib/react-query/mutations"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import z from "zod"

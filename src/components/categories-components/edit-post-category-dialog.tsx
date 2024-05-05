@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog"
 import { Button } from "../ui/button"
-import { useUpdatePostCategory } from "@/lib/react-query/queries-and-mutations"
+import { useUpdatePostCategory } from "@/lib/react-query/mutations"
 import { toast } from "react-toastify"
 import { z } from "zod"
 import { useForm } from "react-hook-form"

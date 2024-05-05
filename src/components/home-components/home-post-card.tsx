@@ -3,22 +3,25 @@ import { BiCategory } from "react-icons/bi"
 import { CiCalendarDate } from "react-icons/ci"
 import { PostData } from "../../types/data"
 
-const StretchedPostCard = ({
+const HomePostCard = ({
   post: { mainImage, title, createdAt, category, author },
 }: {
   post: PostData
 }) => {
   return (
     <div className="cursor-pointer bg-background text-foreground w-full hover:bg-foreground/10 mt-2 border ease-in-out duration-200 transition-all rounded-[10px] p-2 flex">
-      <div className="relative h-[70px] w-[80px] ">
+      <div className="relative w-full h-56 lg:h-[70px] lg:w-[80px] ">
         <img
           src={mainImage}
-          className="absolute rounded-[8px] inset-0 w-full h-full object-cover"
+          className="absolute rounded-[8px] inset-0 w-full aspect-square h-full object-cover"
           alt=""
         />
+        <h1 className="absolute bottom-4 text-base p-2 flex lg:hidden font-bold line-clamp-1">
+          {title}
+        </h1>
       </div>
 
-      <div className="w-full flex flex-col justify-between items-start ml-4">
+      <div className="w-full hidden lg:flex flex-col justify-between items-start ml-4">
         <h1 className="font-bold line-clamp-1">{title}</h1>
         <div className="w-full flex justify-between items-end">
           <div className="flex flex-col">
@@ -56,4 +59,4 @@ const StretchedPostCard = ({
   )
 }
 
-export default StretchedPostCard
+export default HomePostCard

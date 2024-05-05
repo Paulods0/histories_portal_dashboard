@@ -1,6 +1,6 @@
-import AuthorNotes from "@/components/post-details-components/AuthorNotes"
+import AuthorNotes from "@/components/post-details-components/author-notes"
 import { formatDate } from "@/utils/helpers"
-import { useGetSinglePost } from "@/lib/react-query/queries-and-mutations"
+import { useGetSinglePost } from "@/lib/react-query/queries"
 import { Link, useParams } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
 import { SlLike, SlDislike } from "react-icons/sl"

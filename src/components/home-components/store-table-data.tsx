@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { IProductData } from "../../interfaces"
+import { ProductData } from "../../types/data"
 import { getAllProducts } from "../../api"
 import { ClipLoader } from "react-spinners"
 import {
@@ -12,7 +12,7 @@ import {
 } from "../ui/table"
 
 const StoreTableData = () => {
-  const [products, setProducts] = useState<IProductData[]>([])
+  const [products, setProducts] = useState<ProductData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     const fetchData = async () => {
