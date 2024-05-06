@@ -9,9 +9,11 @@ const EditSecurityDataPage = () => {
   return (
     <section className="mt-2">
       <div className="flex items-center justify-between w-full p-3">
-        <h1 className="font-bold text-[20px]">Editar os dados de segurança</h1>
+        <h1 className="font-bold text-sm md:text-base lg:text-xl">
+          Editar os dados de segurança
+        </h1>
         <Button variant={"outline"} className="flex gap-x-2">
-          <FaArrowLeft size={12} />
+          <FaArrowLeft size={12} className="hidden lg:inline-block" />
           <Link to={`/profile/${userId!!}`}>Voltar ao perfil</Link>
         </Button>
       </div>

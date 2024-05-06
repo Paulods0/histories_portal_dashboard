@@ -1,6 +1,5 @@
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -9,6 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { FaPlusCircle } from "react-icons/fa"
 import { Button } from "../ui/button"
+import StoreForm from "./store-form"
 
 const AddProductButton = () => {
   return (
@@ -25,7 +25,7 @@ const AddProductButton = () => {
           <DialogDescription>Adicionar um produto no sistema</DialogDescription>
         </DialogHeader>
 
-        {/* <StoreForm categories={categories} /> */}
+        <StoreForm />
       </DialogContent>
     </Dialog>
   )

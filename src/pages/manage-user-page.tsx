@@ -5,6 +5,7 @@ import AddUserDialog from "@/components/manage-user-component/add-user-dialog"
 
 const ManageUserPage = () => {
   const { data: users, isLoading } = useGetAllUsers()
+
   if (isLoading) {
     return (
       <main className="w-full h-full flex items-center justify-center">
@@ -14,7 +15,7 @@ const ManageUserPage = () => {
   }
 
   return (
-    <main className="w-full ">
+    <main className="w-full">
       <section className="flex flex-col gap-4 w-auto mx-auto">
         <div className="flex items-center justify-between">
           <div>

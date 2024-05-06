@@ -6,15 +6,12 @@ import { ClipLoader } from "react-spinners"
 import { useAuthContext } from "../context/AuthContext"
 import Cookies from "js-cookie"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { SignInFormSchema } from "@/utils/validation"
-
-type UserCredentialsType = z.infer<typeof SignInFormSchema>
+import { LoginInSchema, loginSchema } from "@/types/schema"
 
 // COMPONENT ITSELF
 const LoginPage = () => {
@@ -25,8 +22,8 @@ const LoginPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<UserCredentialsType>({
-    resolver: zodResolver(SignInFormSchema),
+  } = useForm<LoginInSchema>({
+    resolver: zodResolver(loginSchema),
   })
 
   const token = Cookies.get("token")
@@ -34,7 +31,7 @@ const LoginPage = () => {
     return <Navigate to="/" />
   }
 
-  const handleLogin = async (credentials: UserCredentialsType) => {
+  const handleLogin = async (credentials: LoginInSchema) => {
     try {
       login(credentials.email, credentials.password)
     } catch (error) {

@@ -8,11 +8,13 @@ import { PostData } from "@/types/data"
 import { EditPostFormSchemaType, editPostFormSchema } from "@/types/schema"
 
 type Props = {
+  author: string
   post: PostData
+  category: string
 }
 
-const EditPostForm = ({ post }: Props) => {
-  const { register } = useForm<EditPostFormSchemaType>({
+const EditPostForm = ({ author, category, post }: Props) => {
+  const { register, handleSubmit } = useForm<EditPostFormSchemaType>({
     resolver: zodResolver(editPostFormSchema),
     defaultValues: {
       title: post.title,
@@ -22,8 +24,15 @@ const EditPostForm = ({ post }: Props) => {
     },
   })
 
+  const handleUpdatePost = (data: EditPostFormSchemaType) => {
+    console.log({ ...data, author, category })
+  }
+
   return (
-    <form className="flex flex-col gap-3 w-full">
+    <form
+      onSubmit={handleSubmit(handleUpdatePost)}
+      className="flex flex-col gap-3 w-full"
+    >
       <div className="relative">
         <img
           src={post.mainImage}
@@ -72,7 +81,7 @@ const EditPostForm = ({ post }: Props) => {
         />
       </div>
 
-      <Button className="w-fit" type="submit">
+      <Button type="submit" className="w-fit">
         Publicar
       </Button>
     </form>

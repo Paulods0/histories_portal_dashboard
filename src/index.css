@@ -70,6 +70,15 @@
   background-color: #111111;
 }
 
+body::-webkit-scrollbar {
+  width: 6px;
+}
+
+body::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background-color: #111111;
+}
+
 .ql-container {
   border: none !important;
   min-height: 300px !important;
@@ -80,7 +89,7 @@
   padding: 28px 28px !important;
   border: none !important;
   font-size: 18px !important;
-  color: #000 !important;
+  color: #fff !important;
   overflow-y: auto !important ;
 }
 

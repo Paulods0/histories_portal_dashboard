@@ -1,4 +1,3 @@
-import { PostData } from "@/types/data"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 

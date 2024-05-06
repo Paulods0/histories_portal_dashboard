@@ -1,184 +1,78 @@
-import { CategoryData } from "@/types/data"
-import {
-  // deleteImageFromFirebase,
-  uploadImageToFirebaseStorage,
-} from "@/utils/helpers"
-import { ChangeEvent, FormEvent, useState } from "react"
-import { ClipLoader } from "react-spinners"
-import { toast } from "react-toastify"
+import { useForm } from "react-hook-form"
+import { StoreFormSchema, storeFormSchema } from "@/types/schema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Input } from "../ui/input"
+import { Label } from "../ui/label"
 import { Button } from "../ui/button"
-import { DialogClose } from "../ui/dialog"
-import axios from "../../api/axiosConfig"
+import { toast } from "react-toastify"
 
-type StoreFormProps = {
-  handleSubmit?: () => void
-  categories: CategoryData[]
-}
+const StoreForm = () => {
+  // const { mutate, isPending } = useCreateProductCategory()
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+  } = useForm<StoreFormSchema>({
+    resolver: zodResolver(storeFormSchema),
+  })
 
-const StoreForm = ({ categories }: StoreFormProps) => {
-  const [name, setName] = useState("")
-  const [price, setPrice] = useState("")
-  const [category, setCategory] = useState("")
-  const [file, setFile] = useState<File | undefined>()
-  const [imageToShow, setImageToShow] = useState<any>()
-  const [isUploadingProduct, setIsUploadingProduct] = useState(false)
-  const [downloadURL, setDownloadURL] = useState("")
-
-  const handleInputFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const reader = new FileReader()
-      const image = e.target.files[0]
-      setFile(image)
-      reader.onload = (e) => {
-        setImageToShow(e.target!!.result)
-      }
-      reader.readAsDataURL(image)
-    }
-  }
-  const resetInputFields = () => {
-    setName("")
-    setPrice("")
-    setCategory("other")
-    setImageToShow(null)
-  }
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    setIsUploadingProduct(true)
-    if (!name || !price || !category || !file) {
-      toast.error("Por favor, preencha todos os campos obrigatórios.", {
-        autoClose: 1000,
-        position: "top-right",
-      })
-      setIsUploadingProduct(false)
-      return
-    }
-
+  const handleSubmitForm = async (data: StoreFormSchema) => {
     try {
-      const downloadurl = await uploadImageToFirebaseStorage(file, "products")
-      setDownloadURL(downloadurl)
-
-      const response = await axios.post(`/product`, {
-        name: name,
-        category: category,
-        price: price,
-        image: downloadurl,
-      })
-
-      const data = await response.data
-
-      if (!response.status) {
-        throw new Error("Erro ao adicionar produto.")
+      if (!data.image) {
+        toast.error("Insira uma imagem")
+        return
       }
 
-      toast.success(data.message, {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: true,
-      })
-    } catch (error) {
-      console.log("Erro ao adicionar produto")
-
-      toast.error("Erro ao adicionar produto.", {
-        position: "top-right",
-        autoClose: 1000,
-        hideProgressBar: true,
-      })
-    }
-    resetInputFields()
-    setIsUploadingProduct(false)
-    window.location.reload()
+      // const downloadURL = await uploadImageToFirebaseStorage(
+      //   data.image,
+      //   "products"
+      // )
+      // const product = {
+      //   title: data.title,
+      //   price: data.price,
+      //   image: "",
+      //   cateogory: "",
+      // }
+      // mutate(product)
+      console.log(data)
+      toast.error("Funcionalidade removida temporariamente")
+    } catch (error) {}
   }
 
   return (
     <form
+      onSubmit={handleSubmit(handleSubmitForm)}
       encType="multipart/form-data"
-      onSubmit={handleSubmit}
-      className="flex items-center p-2 flex-1 h-full flex-col"
+      className="flex p-2 flex-1 gap-2 h-full flex-col w-full"
     >
-      <div className="w-full flex items-center justify-center rounded-xl h-[200px] border border-dashed border-zinc-800">
-        {imageToShow ? (
-          <div className="w-full h-full flex flex-col">
-            <label htmlFor="file" className="cursor-pointer w-full h-full">
-              <img
-                src={imageToShow}
-                alt="imagem do produto"
-                className="inset-0 w-full h-full object-contain"
-              />
-            </label>
+      <img src="" alt="" />
 
-            <input
-              id="file"
-              onChange={handleInputFileChange}
-              type="file"
-              className="opacity-0"
-            />
-          </div>
-        ) : (
-          <div className="w-full flex flex-col ">
-            <div className="flex flex-col mt-6">
-              <label htmlFor="file" className="text-center cursor-pointer">
-                Adicionar imagem
-              </label>
-              <input
-                id="file"
-                onChange={handleInputFileChange}
-                type="file"
-                className="opacity-0"
-              />
-            </div>
-          </div>
+      <div className="flex flex-col w-full gap-2">
+        <Label htmlFor="image">Imagem</Label>
+        <Input type="file" id="image" {...register("image")} />
+        {errors.image && (
+          <span className="text-red-600 text-xs">{errors.image.message}</span>
+        )}
+      </div>
+      <div className="flex flex-col w-full gap-2">
+        <Label htmlFor="title">Título</Label>
+        <Input type="text" id="title" {...register("title")} />
+        {errors.title && (
+          <span className="text-red-600 text-xs">{errors.title.message}</span>
         )}
       </div>
 
-      <div className="w-full my-12 flex flex-col gap-3 items-center justify-center px-2">
-        <div className="border border-zinc-300 p-2 rounded-lg w-full">
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="text-[#1A1F10] bg-transparent placeholder:text-zinc-600 w-full text-center outline-none"
-            placeholder="Insira o nome do produto"
-          />
-        </div>
-        <div className="border border-zinc-300 p-2 rounded-lg w-full ">
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="text-[#1A1F10] bg-transparent placeholder:text-zinc-600 w-full text-center outline-none"
-            placeholder="Insira o preço do produto"
-          />
-        </div>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="border border-zinc-300 bg-transparent p-2 text-center outline-none rounded-lg w-full"
-        >
-          <option disabled value="other">
-            Escolha uma categoria
-          </option>
-          {categories.map((category) => (
-            <option key={category._id} value={category._id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
+      <div className="flex flex-col w-full gap-2">
+        <Label htmlFor="price">Preço</Label>
+        <Input type="text" id="price" {...register("price")} />
+        {errors.price && (
+          <span className="text-red-600 text-xs">{errors.price.message}</span>
+        )}
       </div>
-      <div className="flex items-center gap-x-3 self-end">
-        <DialogClose asChild>
-          <Button variant={"outline"}>Cancelar</Button>
-        </DialogClose>
-        <Button type="submit" disabled={isUploadingProduct}>
-          {isUploadingProduct ? (
-            <div className="flex items-center flex-1 justify-center gap-4">
-              Loading
-              <ClipLoader size={20} color="#FFF" />
-            </div>
-          ) : (
-            "Salvar"
-          )}
-        </Button>
-      </div>
+
+      <Button type="submit" className="w-fit">
+        Publicar produto
+      </Button>
     </form>
   )
 }

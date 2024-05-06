@@ -2,10 +2,13 @@ import {
   createClassifiedPost,
   createPost,
   createPostCategory,
+  createProduct,
   createProductCategory,
   createSchedulePost,
+  createUser,
   deleteCategory,
   deletePost,
+  deleteProduct,
   deleteProductCategory,
   deleteUser,
   updatePost,
@@ -25,6 +28,15 @@ export const useCreatePost = () => {
 export const useCreateSchedulePost = () => {
   return useMutation({
     mutationFn: createSchedulePost,
+  })
+}
+
+export const useCreateProduct = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: createProduct,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["get-all-products"] }),
   })
 }
 
@@ -121,10 +133,27 @@ export const useDeleteProductCategory = () => {
   })
 }
 
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["get-all-products"] }),
+  })
+}
+
 export const useDeleteUser = () => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: deleteUser,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["get-all-users"] }),
+  })
+}
+export const useCreateUser = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: createUser,
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["get-all-users"] }),
   })

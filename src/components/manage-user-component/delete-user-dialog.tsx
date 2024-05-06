@@ -24,7 +24,7 @@ const DeleteUserDialog = ({ user }: Props) => {
   const handleDeleteUser = async () => {
     try {
       if (user.image) {
-        deleteImageFromFirebase(user.image, "profile")
+        await deleteImageFromFirebase(user.image, "profile")
       }
 
       mutate(user._id)

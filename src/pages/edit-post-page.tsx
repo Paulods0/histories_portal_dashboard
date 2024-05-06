@@ -8,11 +8,7 @@ import ImageUploader from "quill-image-uploader"
 import "quill-image-uploader/dist/quill.imageUploader.min.css"
 import { toolbarOptions } from "@/utils/constants"
 import { uploadImageToFirebaseStorage } from "@/utils/helpers"
-import {
-  useGetAllUsers,
-  useGetCategories,
-  useGetPostById,
-} from "@/lib/react-query/queries"
+import { useGetPostById } from "@/lib/react-query/queries"
 
 import { useParams } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
@@ -33,21 +29,28 @@ const modules = {
 const EditPostPostPage = () => {
   const { id } = useParams()
 
-  const { data: categories, isLoading } = useGetCategories()
-  const { data: users, isLoading: isUsersLoading } = useGetAllUsers()
-  const { data: post, isLoading: isLoadingPost } = useGetPostById(id!!)
-
   const [content, setContent] = useState("")
   const [categoryName, setCategoryName] = useState("")
+  const [author, setAuthor] = useState("")
+
+  const { data: post, isLoading: isLoadingPost } = useGetPostById(id!!)
+
+  if (isLoadingPost) {
+    return (
+      <main className="w-full items-center justify-center h-full">
+        <ClipLoader size={32} color="#FFF" />
+      </main>
+    )
+  }
 
   return (
-    <main className="w-full grid grid-cols-1 lg:grid-cols-3 h-[85vh] place-items-center overflow-y-hidden gap-6">
+    <main className="w-full grid grid-cols-1 lg:grid-cols-3 lg:h-[85vh] place-items-center overflow-y-hidden gap-6">
       <div className="border h-[70vh] rounded-sm col-span-2 overflow-y-hidden">
         <ReactQuill
           modules={modules}
-          value={content}
+          value={post!!.content ?? content}
           onChange={(value) => setContent(value)}
-          className="h-full bg-foreground scroll-bar w-full"
+          className="h-full scroll-bar w-full"
         />
       </div>
 
@@ -60,17 +63,24 @@ const EditPostPostPage = () => {
           <div className="w-full gap-4 items-center absolute inset-0 flex-col p-4 flex">
             <SelectInputCategory
               setCategoryName={setCategoryName}
-              categories={categories!!}
               post={post!!}
             />
-            <SelectInputUser post={post!!} users={users!!} />
+            <SelectInputUser setAuthor={setAuthor} post={post!!} />
 
             {post?.category.name === "Passeios" ? (
-              <EditTourPostForm post={post!!} />
+              <EditTourPostForm
+                author={author}
+                category={categoryName}
+                post={post!!}
+              />
             ) : post?.category.name === "Agenda AO" ? (
-              ""
+              "Em processo de atualização..."
             ) : (
-              <EditPostForm post={post!!} />
+              <EditPostForm
+                author={author}
+                post={post!!}
+                category={categoryName}
+              />
             )}
           </div>
         )}

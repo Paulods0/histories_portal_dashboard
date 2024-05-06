@@ -6,19 +6,32 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { PostData, User } from "@/types/data"
+import { PostData } from "@/types/data"
 import { Label } from "../ui/label"
+import { useGetAllUsers } from "@/lib/react-query/queries"
+import { ClipLoader } from "react-spinners"
+import { SetStateAction } from "react"
 
 type Props = {
-  users: User[]
   post: PostData
+  setAuthor: React.Dispatch<SetStateAction<string>>
 }
 
-const SelectInputUser = ({ post, users }: Props) => {
+const SelectInputUser = ({ post, setAuthor }: Props) => {
+  const { data: users, isLoading } = useGetAllUsers()
+
+  if (isLoading) {
+    return (
+      <main className="w-full items-center justify-center h-full">
+        <ClipLoader size={24} color="#FFF" />
+      </main>
+    )
+  }
+
   return (
     <div className="flex flex-col w-full gap-2">
       <Label htmlFor="category">Autor</Label>
-      <Select>
+      <Select onValueChange={(value) => setAuthor(value)}>
         <SelectTrigger>
           <SelectValue
             placeholder={

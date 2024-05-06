@@ -9,17 +9,12 @@ import {
   UpdatePost,
   User,
   NewExcursionPost,
+  NewUser,
 } from "@/types/data"
 
 //############### CREATE ################
 
-export const createUser = async (user: {
-  firstname: string
-  lastname: string
-  image?: string
-  email: string
-  password: string
-}) => {
+export const createUser = async (user: NewUser) => {
   await axios.post("/auth", {
     firstname: user.firstname,
     lastname: user.lastname,
@@ -27,6 +22,15 @@ export const createUser = async (user: {
     email: user.email,
     password: user.password,
   })
+}
+
+export const createProduct = async (data: {
+  image: string
+  title: string
+  price: string
+  category: string
+}) => {
+  await axios.post("/product", data)
 }
 
 export const createPost = async (body: NewPost | NewExcursionPost) => {

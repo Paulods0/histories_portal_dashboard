@@ -1,4 +1,3 @@
-import { useAuthContext } from "../context/AuthContext"
 import PostCategoriesTable from "@/components/categories-components/post-categories-table"
 import { Tabs, TabsContent, TabsTrigger, TabsList } from "@/components/ui/tabs"
 import ProductCategoryTable from "@/components/categories-components/product-categories-table"

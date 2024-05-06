@@ -1,38 +1,31 @@
+import { useState } from "react"
+
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Button } from "../ui/button"
-import { useForm } from "react-hook-form"
 import { Textarea } from "../ui/textarea"
-import { useCreatePost } from "@/lib/react-query/mutations"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAuthContext } from "@/context/AuthContext"
-import { ChangeEvent, useState } from "react"
+import { useCreatePost } from "@/lib/react-query/mutations"
 import { PostFormSchemaType, postFormSchema } from "@/types/schema"
 
 import { toast } from "react-toastify"
+import { NewPost } from "@/types/data"
+import { uploadImageToFirebaseStorage } from "@/utils/helpers"
 
 type Props = {
+  image: File | undefined
   authorId: string
   category: string
   content: string
 }
 
-const PostForm = ({ category, authorId, content }: Props) => {
+const PostForm = ({ image, category, authorId, content }: Props) => {
   const { userId } = useAuthContext()
-  // const { mutation, isPending } = useCreatePost()
+
+  const { mutate } = useCreatePost()
   const [file, setFile] = useState("")
-
-  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const file = e.target.files[0]
-      const urlImage = URL.createObjectURL(file)
-      setFile(urlImage)
-    }
-  }
-
-  const handleCloseImage = () => {
-    setFile("")
-  }
 
   const {
     register,
@@ -42,8 +35,28 @@ const PostForm = ({ category, authorId, content }: Props) => {
     resolver: zodResolver(postFormSchema),
   })
 
-  const handleSubmitForm = (data: PostFormSchemaType) => {
-    console.log({ ...data, category, author_id: authorId ?? userId, content })
+  const handleSubmitForm = async (data: PostFormSchemaType) => {
+    try {
+      if (!image) {
+        toast.error("Insira uma imagem.")
+        return
+      }
+      const imageURL = await uploadImageToFirebaseStorage(image, "posts")
+      const postData: NewPost = {
+        mainImage: imageURL,
+        tag: data.tags,
+        content: content,
+        title: data.title,
+        category: category,
+        author_notes: data.author_notes,
+        highlighted: data.hightlight,
+        author_id: authorId!! ? authorId!! : userId!!,
+      }
+      mutate(postData)
+      toast.success("O seu post foi publicado com sucesso.🎇")
+    } catch (error) {
+      toast.error("Erro ao publicar o post, por favor tente novamente")
+    }
   }
 
   return (
@@ -58,26 +71,13 @@ const PostForm = ({ category, authorId, content }: Props) => {
             className="h-32 w-full object-contain aspect-square mx-auto"
           />
           <button
-            onClick={handleCloseImage}
+            onClick={() => setFile("")}
             className="absolute text-xs top-3 hover:text-white/20 transition-all right-10"
           >
             Fechar
           </button>
         </div>
       )}
-
-      <Label
-        className="p-3 cursor-pointer text-center border rounded-lg"
-        htmlFor="image"
-      >
-        Adicionar imagem
-        <Input
-          onChange={(e) => handleFile(e)}
-          id="image"
-          type="file"
-          className="hidden w-full"
-        />
-      </Label>
 
       <div className="flex flex-col">
         <Label htmlFor="title" className="text-xs">

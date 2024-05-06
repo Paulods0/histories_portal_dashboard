@@ -1,5 +1,4 @@
 import { Navigate, Outlet } from "react-router-dom"
-import SidebarNavigation from "./sidebar-navigation"
 import Cookies from "js-cookie"
 import Header from "./home-components/header"
 

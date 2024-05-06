@@ -1,5 +1,3 @@
-import { ChangeEvent, useState } from "react"
-import { useCreatePost } from "@/lib/react-query/mutations"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { EditTourFormSchemaType, editTourFormSchema } from "@/types/schema"
@@ -12,11 +10,14 @@ import { PostData } from "@/types/data"
 
 type Props = {
   post: PostData
+  category: string
+  author: string
 }
 
-const EditTourPostForm = ({ post }: Props) => {
+const EditTourPostForm = ({ author, category, post }: Props) => {
   const {
     register,
+    handleSubmit,
     formState: { errors },
   } = useForm<EditTourFormSchemaType>({
     resolver: zodResolver(editTourFormSchema),
@@ -28,8 +29,15 @@ const EditTourPostForm = ({ post }: Props) => {
     },
   })
 
+  const handleUpdateTourPost = (data: EditTourFormSchemaType) => {
+    console.log({ ...data, category, author })
+  }
+
   return (
-    <form className="flex flex-col gap-3 w-full">
+    <form
+      onSubmit={handleSubmit(handleUpdateTourPost)}
+      className="flex flex-col gap-3 w-full"
+    >
       <div className="relative">
         <img
           src={post.mainImage}
@@ -103,7 +111,7 @@ const EditTourPostForm = ({ post }: Props) => {
         />
       </div>
 
-      <Button className="w-fit" type="submit">
+      <Button type="submit" className="w-fit">
         Publicar
       </Button>
     </form>

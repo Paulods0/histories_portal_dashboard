@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { CategoryData, PostData } from "../types/data"
-import { getAllCategories, getAllPosts, getAllPostsByCategory } from "../api"
+import { PostData } from "../types/data"
+import { getAllPostsByCategory } from "../api"
 import AdminPostCard from "../components/admin-post-card"
 import { ClipLoader } from "react-spinners"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+
 import {
   Select,
   SelectContent,
@@ -13,19 +13,17 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { useGetAllPosts, useGetCategories } from "@/lib/react-query/queries"
 import { useQuery } from "@tanstack/react-query"
 import { FaPlusCircle } from "react-icons/fa"
 
 const PostsPage = () => {
   const location = useLocation()
-
   const path = new URLSearchParams(location.search).get("id")
 
   const { data: posts, isLoading } = useGetAllPosts()
   const { data: categories } = useGetCategories()
-
   const [category, setCategory] = useState("all")
 
   useEffect(() => {

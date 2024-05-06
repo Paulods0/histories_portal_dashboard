@@ -18,7 +18,9 @@ type Props = {
 
 const DeleteProduct = ({ productId }: Props) => {
   // const {} = useDeleteProduct()
-  const handleDeleteProduct = () => {}
+  const handleDeleteProduct = () => {
+    console.log("Deletado!: " + productId)
+  }
 
   return (
     <AlertDialog>
@@ -36,7 +38,9 @@ const DeleteProduct = ({ productId }: Props) => {
           </AlertDialogDescription>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={() => {}}>Eliminar</AlertDialogAction>
+            <AlertDialogAction onClick={handleDeleteProduct}>
+              Eliminar
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogHeader>
       </AlertDialogContent>

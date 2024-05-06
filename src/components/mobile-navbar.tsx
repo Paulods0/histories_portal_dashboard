@@ -1,4 +1,3 @@
-import { User } from "@/types/data"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import {
   Sheet,

@@ -34,9 +34,17 @@ export type NewPost = {
   content: string
   highlighted: boolean
   category: string
-  tag: string[]
-  author_notes: string
+  tag?: string[]
+  author_notes?: string
   author_id: string
+}
+
+export interface NewUser {
+  firstname: string
+  lastname: string
+  image?: string
+  email: string
+  password: string
 }
 export type NewSchedulePost = {
   title: string

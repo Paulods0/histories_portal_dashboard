@@ -1,3 +1,4 @@
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -5,46 +6,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { PostData } from "@/types/data"
-import { Label } from "../ui/label"
-import { SetStateAction } from "react"
 import { useGetCategories } from "@/lib/react-query/queries"
+import { SetStateAction } from "react"
 import { ClipLoader } from "react-spinners"
 
 type Props = {
-  post: PostData
+  setCategory: React.Dispatch<SetStateAction<string>>
   setCategoryName: React.Dispatch<SetStateAction<string>>
 }
 
-const SelectInputCategory = ({ post, setCategoryName }: Props) => {
-  const { data: categories, isLoading } = useGetCategories()
-
+const SelectCategoryInput = ({ setCategory, setCategoryName }: Props) => {
   const CLASSIFICADOS = "Classificados"
   const OVERLAND_EXPERIENCE = "Overland Experience"
 
+  const { data: categories, isLoading } = useGetCategories()
+
   if (isLoading) {
     return (
-      <main className="w-full items-center justify-center h-full">
-        <ClipLoader size={24} color="#FFF" />
-      </main>
+      <div className="w-full flex items-center justify-center p-3">
+        <ClipLoader size={20} color="#FFF" />
+      </div>
     )
   }
 
   const handleChangeCategory = (value: string) => {
-    setCategoryName(value)
+    const category = categories?.find((category) => category._id === value)
+    setCategory(category!!._id)
+    setCategoryName(category!!.name)
+
+    console.log(value)
   }
 
   return (
-    <div className="flex gap-2 w-full flex-col">
-      <Label htmlFor="category">Categoria</Label>
+    <div className="w-full ">
+      <Label htmlFor="title" className="text-xs">
+        Categoria
+      </Label>
       <Select onValueChange={(value) => handleChangeCategory(value)}>
         <SelectTrigger>
-          <SelectValue
-            defaultChecked={!!post?.category._id}
-            className="text-background"
-            placeholder={post?.category.name}
-          />
+          <SelectValue placeholder="Categoria" />
         </SelectTrigger>
+
         <SelectContent>
           {categories
             ?.filter(
@@ -53,7 +55,11 @@ const SelectInputCategory = ({ post, setCategoryName }: Props) => {
                 category.name !== OVERLAND_EXPERIENCE
             )
             .map((category) => (
-              <SelectItem value={category._id} key={category._id}>
+              <SelectItem
+                data-name={category.name}
+                key={category._id}
+                value={category._id}
+              >
                 {category.name}
               </SelectItem>
             ))}
@@ -63,4 +69,4 @@ const SelectInputCategory = ({ post, setCategoryName }: Props) => {
   )
 }
 
-export default SelectInputCategory
+export default SelectCategoryInput

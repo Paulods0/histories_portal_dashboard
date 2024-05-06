@@ -11,6 +11,7 @@ export const postFormSchema = z.object({
 })
 
 export const scheduleFormSchema = z.object({
+  title: z.string().min(1, { message: "*O título é obrigatório" }),
   file: z.custom<File[]>().refine(
     (file) => {
       if (!file[0]) {
@@ -70,6 +71,29 @@ export const editScheduleFormSchema = z.object({
   file: z.string(),
 })
 
+export const userFormSchema = z.object({
+  firstname: z.string().min(1, "Por favor preencha este campo."),
+  lastname: z.string().min(1, "Por favor preencha este campo."),
+  email: z.string().email().min(1, "Por favor insira um email válido."),
+  password: z.string().min(6, "A password deve ter no mínimo 6 caracteres."),
+})
+
+export const loginSchema = z.object({
+  email: z.string().email().min(1, "*O email é obrigatório."),
+  password: z.string().min(1, "*A password é obrigatória."),
+})
+
+export const storeFormSchema = z.object({
+  title: z.string().min(1, { message: "*O título é obrigatório" }),
+  price: z.string().min(1, { message: "*O preço é obrigatório" }),
+  image: z.custom<File>(),
+})
+
+export type LoginInSchema = z.infer<typeof loginSchema>
+
+export type StoreFormSchema = z.infer<typeof storeFormSchema>
+
+export type UserFormType = z.infer<typeof userFormSchema>
 export type PostFormSchemaType = z.infer<typeof postFormSchema>
 export type TourFormSchemaType = z.infer<typeof tourFormSchema>
 export type ScheduleFormSchemaType = z.infer<typeof scheduleFormSchema>

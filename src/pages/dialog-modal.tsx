@@ -8,7 +8,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import React from "react"
 import { ClipLoader } from "react-spinners"
 
 type DialogModalProps = {

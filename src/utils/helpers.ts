@@ -27,18 +27,14 @@ export function getImagePathFromFirebaseURL(
   return imageName
 }
 
-export function deleteImageFromFirebase(
+export async function deleteImageFromFirebase(
   image: string,
   firebaseFolder: firebaseFolder
 ) {
   const imageName = getImagePathFromFirebaseURL(image, firebaseFolder)
 
-  const imageRef = ref(storage, `${firebaseFolder}/` + imageName)
-  deleteObject(imageRef)
-    .then(() => {
-      console.log("imagem deletada")
-    })
-    .catch((err) => console.error(err + "não deletada"))
+  const imageRef = ref(storage, `${firebaseFolder}/${imageName}`)
+  await deleteObject(imageRef)
 }
 
 export function renameImageName(image: string) {

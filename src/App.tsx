@@ -18,7 +18,7 @@ import EditPostPostPage from "./pages/edit-post-page"
 
 function App() {
   return (
-    <main className="font-Poppins">
+    <main className="font-Poppins ">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 

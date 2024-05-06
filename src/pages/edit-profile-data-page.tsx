@@ -1,26 +1,24 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAuthContext } from "@/context/AuthContext"
-import { useState } from "react"
 import { Link } from "react-router-dom"
 import { FaArrowLeft } from "react-icons/fa"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
-import { ClipLoader } from "react-spinners"
+
 import { toast } from "react-toastify"
 
+const userFormSchema = z.object({
+  firstname: z.string().optional(),
+  lastname: z.string().optional(),
+  image: z.string().optional(),
+})
+
+type UserFormType = z.infer<typeof userFormSchema>
+
 const EditProfileDataPage = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const { user, userId, setUser } = useAuthContext()
-
-  const userFormSchema = z.object({
-    firstname: z.string().optional(),
-    lastname: z.string().optional(),
-    image: z.string().optional(),
-  })
-
-  type UserFormType = z.infer<typeof userFormSchema>
+  const { user, userId } = useAuthContext()
 
   const { register, handleSubmit } = useForm<UserFormType>({
     resolver: zodResolver(userFormSchema),
@@ -31,16 +29,19 @@ const EditProfileDataPage = () => {
     },
   })
 
-  const handleUpdateUser = async (data: UserFormType) => {}
+  const handleUpdateUser = async (data: UserFormType) => {
+    console.log(data)
+    toast.error("Esta função ainda não está disponível.")
+  }
 
   return (
     <section className="mt-0 w-full">
       <div className="flex items-center justify-between w-full p-3">
-        <h1 className="font-bold text-[20px] text-center">
+        <h1 className="font-bold text-sm md:text-base lg:text-xl text-center">
           Editar os dados pessoais
         </h1>
         <Button variant={"outline"} className="flex gap-x-2">
-          <FaArrowLeft size={12} />
+          <FaArrowLeft size={12} className="hidden md:inline-block" />
           <Link to={`/profile/${userId!!}`}>Voltar ao perfil</Link>
         </Button>
       </div>
@@ -60,27 +61,18 @@ const EditProfileDataPage = () => {
         </div>
         <Input
           type="text"
-          // onChange={()=> setFirstname(e.target.value)}
           {...register("firstname")}
           className="w-full p-2 rounded-md  border"
           placeholder="Nome"
         />
         <Input
           type="text"
-          // onChange={()=> setFirstname(e.target.value)}
           {...register("lastname")}
           className="w-full p-2 rounded-md border"
           placeholder="Sobrenome"
         />
-        <Button
-          disabled={isLoading}
-          className="self-start flex items-center justify-center w-[200px]"
-        >
-          {isLoading ? (
-            <ClipLoader size={22} color="#FFF" />
-          ) : (
-            "Atualizar alterações"
-          )}
+        <Button className="self-start flex items-center justify-center w-[200px]">
+          Atualizar alterações
         </Button>
       </form>
     </section>

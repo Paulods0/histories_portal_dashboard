@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/table"
 import { User } from "@/types/data"
 import { Avatar, AvatarImage } from "../ui/avatar"
-import { AvatarFallback } from "@radix-ui/react-avatar"
 import { formatDate } from "@/utils/helpers"
 import EditUserDialog from "./edit-user-dialog"
 import DeleteUserDialog from "./delete-user-dialog"
@@ -27,7 +26,7 @@ const UsersTable = ({ users }: Props) => {
             <TableHead>Nome</TableHead>
             <TableHead>Sobrenome</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead className="w-[300px]">Data de criação</TableHead>
+            <TableHead className="lg:w-[300px]">Data de criação</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -36,9 +35,7 @@ const UsersTable = ({ users }: Props) => {
             <TableRow key={user._id}>
               <TableCell>
                 <Avatar>
-                  <AvatarImage src={user?.image} />
-                  <AvatarFallback>{user.firstname[0]}</AvatarFallback>
-                  <AvatarFallback>{user.lastname[0]}</AvatarFallback>
+                  <AvatarImage src={user?.image ?? "/user.png"} />
                 </Avatar>
               </TableCell>
               <TableCell>{user.firstname}</TableCell>

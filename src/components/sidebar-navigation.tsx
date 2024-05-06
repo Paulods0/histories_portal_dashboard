@@ -1,9 +1,8 @@
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { ADMIN_DASHBOARD_NAV_LINKS } from "../utils/constants"
 import { FiLogOut } from "react-icons/fi"
 import { useAuthContext } from "../context/AuthContext"
-import { LiaToggleOffSolid } from "react-icons/lia"
-import { LiaToggleOnSolid } from "react-icons/lia"
+
 import { Button } from "./ui/button"
 
 const SidebarNavigation = () => {
@@ -14,7 +13,6 @@ const SidebarNavigation = () => {
   const handleLogout = () => logout()
   console.log(locationPath.pathname)
 
-  const HOME_LINK_PATH = "/"
   const path =
     locationPath.pathname === "/" ? "Home" : locationPath.pathname.split("/")[1]
 

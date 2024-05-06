@@ -1,9 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from "react"
+import React, { createContext, useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Cookies from "js-cookie"
 import axios from "../api/axiosConfig"
-// import { getUser } from "@/api"
-// import { IUser } from "@/interfaces"
 
 export type UserData = {
   email: string
