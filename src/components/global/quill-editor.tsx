@@ -31,7 +31,7 @@ const QuillEditor = ({ className, content, setContent }: Props) => {
   return (
     <div
       className={twMerge(
-        "lg:col-span-2 h-fit lg:h-[80vh] relative border overflow-y-auto scroll-bar w-full rounded-md",
+        "lg:col-span-2 h-fit lg:h-[85vh] relative border overflow-y-auto py-6 scroll-bar w-full rounded-md",
         className
       )}
     >
@@ -41,7 +41,7 @@ const QuillEditor = ({ className, content, setContent }: Props) => {
         value={content}
         onChange={(value) => setContent(value)}
         placeholder="Escrever post"
-        className="w-full h-full overflow-hidden"
+        className="w-full h-full overflow-hidden "
       />
     </div>
   )

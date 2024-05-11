@@ -15,35 +15,41 @@ const AddPostPage = () => {
   const [categoryName, setCategoryName] = useState("")
 
   return (
-    <main className="grid grid-cols-1 place-items-center py-6 lg:grid-cols-3 h-full">
-      <QuillEditor content={content} setContent={setContent} />
+    <main className="flex h-full justify-center items-center">
+      <section className="w-full h-full mx-auto flex lg:flex-row flex-col gap-6">
+        <QuillEditor
+          className="flex-[2]"
+          content={content}
+          setContent={setContent}
+        />
 
-      <div className="relative w-full py-2 lg:mt-0 h-full">
-        <div className="absolute inset-0 w-full h-full px-4 gap-2 flex-col flex py-2">
-          {categoryName === "Agenda AO" ? (
-            <SchedulePostForm authorId={authorId} category={category} />
-          ) : categoryName === "Passeios" ? (
+        <div className="flex-1 px-4 gap-2 flex-col flex py-2">
+          {categoryName === "Passeios" && (
             <ToursPostForm
               authorId={authorId}
               category={category}
               content={content}
             />
-          ) : (
+          )}
+
+          {categoryName !== "Agenda AO" && categoryName !== "Passeios" && (
             <PostForm
               content={content}
               authorId={authorId}
               category={category}
             />
           )}
-
           <SelectCategoryInput
             setCategory={setCategory}
             setCategoryName={setCategoryName}
           />
 
           <SelectAuthorInput setAuthorId={setAuthorId} />
+          {categoryName === "Agenda AO" && (
+            <SchedulePostForm authorId={authorId} category={category} />
+          )}
         </div>
-      </div>
+      </section>
     </main>
   )
 }

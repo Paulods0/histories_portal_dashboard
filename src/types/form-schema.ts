@@ -1,14 +1,21 @@
-import { File } from "buffer"
 import { z } from "zod"
 
 export const postFormSchema = z.object({
-  title: z.string(),
+  image: z
+    .instanceof(FileList)
+    .refine((image) => {
+      return image.item(0) !== null
+    }, "*Insira uma imagem")
+    .transform((image) => image.item(0)),
+  title: z.string().min(1, "*O título é obrigatório."),
   tags: z
     .string()
     .transform((text) => text.split(","))
     .optional(),
   author_notes: z.string().optional(),
+  content: z.string().min(1, "*Escreva alguma coisa no conteúdo"),
   hightlight: z.boolean().default(false),
+  category: z.string().min(1, "*Selecione uma categoria"),
 })
 
 export const scheduleFormSchema = z.object({
@@ -53,9 +60,9 @@ export const editPostFormSchema = z.object({
   tags: z.string().optional(),
   title: z.string().optional(),
   category: z.string().optional(),
-  coordinates: z.string().optional(),
   author_notes: z.string().optional(),
   highlighted: z.boolean().optional(),
+  image: z.union([z.string(), z.instanceof(FileList)]).optional(),
 })
 
 export const editScheduleFormSchema = z.object({

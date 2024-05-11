@@ -1,4 +1,3 @@
-import { HTMLAttributes } from "react"
 import {
   Select,
   SelectContent,
@@ -9,11 +8,11 @@ import {
 
 import { useGetAllProductCategories } from "@/lib/react-query/queries"
 import { useFormContext } from "react-hook-form"
-import { ProductData } from "@/types/data"
+import { Product } from "@/types/data"
 import { EditProductFormSchemaType } from "@/types/form-schema"
 
 type Props = {
-  product: ProductData
+  product: Product
 }
 
 const SelectCategory = ({ product }: Props) => {

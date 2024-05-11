@@ -45,16 +45,15 @@ const LoginPage = () => {
   return (
     <div className="relative w-full h-screen flex items-center justify-center">
       <div className="absolute w-[400px] h-screen flex items-center justify-center flex-col">
-        <h1 className="text-2xl text-black uppercase mb-4 font-bold">
-          Faça o login
-        </h1>
+        <img src="/logotipo-texto.png" className="h-32" />
+
         <form
           onSubmit={handleSubmit(handleLogin)}
           className="w-full flex flex-col gap-4 p-12"
         >
           <div>
             <Label htmlFor="email">Email</Label>
-            <Input id="email" {...register("email")} placeholder="Email" />
+            <Input id="email" {...register("email")} />
 
             {errors.email && (
               <span className="text-[10px] text-red-500">
@@ -62,12 +61,12 @@ const LoginPage = () => {
               </span>
             )}
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="email">Password</Label>
             <div className="relative w-full">
               <Input
                 {...register("password")}
                 type={isPasswordVisible ? "text" : "password"}
-                placeholder="Password"
               />
               <span
                 onClick={changePasswordState}
@@ -89,7 +88,7 @@ const LoginPage = () => {
           </div>
 
           <Button
-            variant={"default"}
+            variant={"secondary"}
             disabled={isLoading}
             type="submit"
             className="uppercase"

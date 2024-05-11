@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import {
   Sheet,
   SheetContent,
@@ -6,7 +6,7 @@ import {
   SheetClose,
   SheetHeader,
   SheetFooter,
-} from "./ui/sheet"
+} from "../ui/sheet"
 import { IoMenu } from "react-icons/io5"
 import { UserData } from "@/context/auth-context"
 import { ADMIN_DASHBOARD_NAV_LINKS } from "@/utils/constants"
@@ -17,6 +17,10 @@ type Props = {
 }
 
 const MobileNavbar = ({ user }: Props) => {
+  if (!user) {
+    return
+  }
+
   return (
     <Sheet>
       <SheetTrigger asChild className="cursor-pointer">
@@ -28,7 +32,7 @@ const MobileNavbar = ({ user }: Props) => {
       <SheetContent className="bg-foreground space-y-6 text-background border-white/20">
         <SheetHeader className="flex items-center">
           <Avatar>
-            <AvatarFallback>{user.firstname.charAt(0)}</AvatarFallback>
+            <AvatarFallback>{user?.firstname.charAt(0)}</AvatarFallback>
             <AvatarImage src={user.image} />
           </Avatar>
           <div className="flex items-center gap-1 text-background">

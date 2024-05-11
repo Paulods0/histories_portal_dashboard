@@ -1,90 +1,49 @@
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
-import { Textarea } from "../ui/textarea"
-import { Button } from "../ui/button"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { Post } from "@/types/data"
 import { EditPostFormSchemaType, editPostFormSchema } from "@/types/form-schema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
+import InputField from "./form-inputs/input-field"
+import InputCheckbox from "./form-inputs/input-checkbox"
+import TextAreaField from "./form-inputs/text-area-field"
 
 type Props = {
   author: string
-  post: Post
+  post: Post | undefined
   category: string
 }
 
 const EditPostForm = ({ author, category, post }: Props) => {
-  const { register, handleSubmit } = useForm<EditPostFormSchemaType>({
-    resolver: zodResolver(editPostFormSchema),
-    defaultValues: {
-      title: post.title,
-      tags: post.tag.toString(),
-      author_notes: post.author_notes,
-      coordinates: `${post.latitude},${post.longitude}`,
-    },
-  })
-
-  const handleUpdatePost = (data: EditPostFormSchemaType) => {
-    console.log({ ...data, author, category })
-  }
+  const methods: UseFormReturn<EditPostFormSchemaType> =
+    useForm<EditPostFormSchemaType>({
+      resolver: zodResolver(editPostFormSchema),
+      defaultValues: {
+        title: post?.title,
+        image: post?.mainImage,
+        tags: post?.tag.toString(),
+        category: post?.category._id,
+        highlighted: post?.highlighted,
+        author_notes: post?.author_notes,
+      },
+    })
+  const { register, getValues } = methods
+  const image = getValues("image")
 
   return (
-    <form
-      onSubmit={handleSubmit(handleUpdatePost)}
-      className="flex flex-col gap-3 w-full"
-    >
-      <div className="relative">
-        <img
-          src={post.mainImage}
-          className="h-32 w-full object-contain aspect-square mx-auto"
-        />
-      </div>
+    <>
+      <FormProvider {...methods}>
+        <form className="flex flex-col gap-3 w-full">
+          {/* <img src={image!} className="size-24" /> */}
 
-      <Label
-        className="p-3 cursor-pointer text-center border rounded-lg"
-        htmlFor="image"
-      >
-        Adicionar imagem
-        <Input id="image" type="file" className="hidden w-full" />
-      </Label>
-
-      <div>
-        <Label htmlFor="title" className="text-xs">
-          Título
-        </Label>
-        <Input type="text" {...register("title")} />
-      </div>
-
-      <div className="border flex py-2 h-10 px-2 gap-2 items-center w-fit rounded-md">
-        <Label htmlFor="checkbox" className="text-xs">
-          Destacar
-        </Label>
-        <Input id="checkbox" type="checkbox" />
-      </div>
-
-      <div>
-        <Label htmlFor="tags" className="text-xs">
-          Adicionar tags(separe-ás por vírgulas)
-        </Label>
-        <Input id="tags" type="text" {...register("tags")} />
-      </div>
-
-      <div>
-        <Label htmlFor="notes" className="text-xs">
-          Notas do autor(opcional)
-        </Label>
-        <Textarea
-          id="notes"
-          className="resize-none"
-          rows={5}
-          {...register("author_notes")}
-        />
-      </div>
-
-      <Button type="submit" className="w-fit">
-        Publicar
-      </Button>
-    </form>
+          <InputField label="Título" {...register("title")} />
+          <InputField label="Tags (opcional)" {...register("tags")} />
+          <InputCheckbox label="Destacar" {...register("highlighted")} />
+          <TextAreaField
+            label="Notas do autor (opcional)"
+            {...register("author_notes")}
+          />
+        </form>
+      </FormProvider>
+    </>
   )
 }
 

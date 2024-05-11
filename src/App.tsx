@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom"
-import Dashboard from "./components/dashboard"
+
 import CategoriesPage from "./pages/categories-page"
 import LoginPage from "./pages/login-page"
 import ManageUserPage from "./pages/manage-user-page"
@@ -16,12 +16,15 @@ import EditSecurityDataPage from "./pages/edit-security-data-page"
 import EditProfileDataPage from "./pages/edit-profile-data-page"
 import EditPostPostPage from "./pages/edit-post-page"
 
+import ProtectedRoutes from "./components/global/protected-routes"
+
 function App() {
   return (
-    <main className="font-Poppins">
+    <main className="flex flex-col gap-3">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<Dashboard />}>
+
+        <Route path="/" element={<ProtectedRoutes />}>
           <Route index element={<HomeDashboardPage />} />
           <Route path="novopost" element={<AddPostPage />} />
           <Route path="posts" element={<PostsPage />} />

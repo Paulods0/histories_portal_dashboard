@@ -11,7 +11,7 @@ import {
 import { Product } from "@/types/data"
 import { CiEdit } from "react-icons/ci"
 import { Button } from "../ui/button"
-import { FormProvider, useForm } from "react-hook-form"
+import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
 import {
   EditProductFormSchemaType,
   editProductFormSchema,
@@ -20,12 +20,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "react-toastify"
 
 import { ClipLoader } from "react-spinners"
-import InputField from "../input-field"
+
 import SelectCategory from "./select-category"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
 import { useUpdateProduct } from "@/lib/react-query/mutations"
 import { UpdateProduct } from "@/types/update"
+import InputField from "../forms/form-inputs/input-field"
 
 type Props = {
   product: Product
@@ -33,15 +34,16 @@ type Props = {
 
 const EditProduct = ({ product }: Props) => {
   const { mutate } = useUpdateProduct()
-  const editProductForm = useForm<EditProductFormSchemaType>({
-    resolver: zodResolver(editProductFormSchema),
-    defaultValues: {
-      image: product.image,
-      name: product.name,
-      price: product.price,
-      category: product.category._id,
-    },
-  })
+  const editProductForm: UseFormReturn<EditProductFormSchemaType> =
+    useForm<EditProductFormSchemaType>({
+      resolver: zodResolver(editProductFormSchema),
+      defaultValues: {
+        image: product.image,
+        name: product.name,
+        price: product.price,
+        category: product.category._id,
+      },
+    })
 
   const {
     register,
@@ -97,6 +99,7 @@ const EditProduct = ({ product }: Props) => {
 
             <InputField label="Título" {...register("name")} />
             <InputField label="Preço" {...register("price")} type="number" />
+
             <SelectCategory product={product} />
 
             <DialogFooter>

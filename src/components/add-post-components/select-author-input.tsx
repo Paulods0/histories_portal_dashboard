@@ -9,6 +9,7 @@ import { useAuthContext } from "@/context/auth-context"
 import { useGetAllUsers } from "@/lib/react-query/queries"
 import { SetStateAction } from "react"
 import { ClipLoader } from "react-spinners"
+import { Label } from "../ui/label"
 
 type Props = {
   setAuthorId: React.Dispatch<SetStateAction<string>>
@@ -30,12 +31,10 @@ const SelectAuthorInput = ({ setAuthorId }: Props) => {
 
   return (
     <div className="w-full">
-      {/* <Label htmlFor="author" className="text-xs">
-        Autor
-      </Label> */}
+      <Label>Autor</Label>
 
       <Select onValueChange={(value) => setAuthorId(value)}>
-        <SelectTrigger id="author">
+        <SelectTrigger>
           <SelectValue
             defaultValue={users?.find((user) => user._id === userId)?._id}
             placeholder={

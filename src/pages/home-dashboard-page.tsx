@@ -4,12 +4,10 @@ import HighlightedPost from "../components/home-components/highlighted-post"
 
 const HomeDashboardPage = () => {
   return (
-    <main className="w-full flex h-full flex-col gap-4 bg-background">
+    <main className="w-full flex flex-col gap-4">
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-3">
         <div className="lg:col-span-2 flex flex-col">
-          <h1 className="text-2xl font-bold text-WHITE uppercase mb-4">
-            dashboard
-          </h1>
+          <h1 className="text-2xl font-bold uppercase mb-4">dashboard</h1>
           <HomeStatsContainer />
         </div>
 

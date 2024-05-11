@@ -52,13 +52,22 @@
   }
 }
 
+body {
+  @apply bg-foreground;
+  @apply text-background;
+  @apply min-h-screen;
+}
+
 @layer base {
   * {
     @apply border-border;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
+}
+
+body {
+  @apply bg-foreground;
+  @apply text-white;
+  @apply min-h-screen;
 }
 
 .scroll-bar::-webkit-scrollbar {
@@ -95,9 +104,9 @@ body::-webkit-scrollbar-thumb {
 }
 
 .quill > .ql-container > .ql-editor.ql-blank::before {
-  font-size: 25px;
+  font-size: 25px !important;
   color: #9d9d9d !important;
-  padding: 0 18px;
+  padding: 0 18px !important;
 }
 
 .ql-toolbar {
