@@ -1,34 +1,24 @@
-import { Label } from "@radix-ui/react-dropdown-menu"
-import React from "react"
+import { InputHTMLAttributes, forwardRef } from "react"
+import { Label } from "./ui/label"
 import { Input } from "./ui/input"
+import { useFormContext } from "react-hook-form"
 
-interface InputFieldProps {
+type Props = InputHTMLAttributes<HTMLInputElement> & {
   label: string
-  type: string
-  value: string | undefined
-  onChange: React.Dispatch<React.SetStateAction<any>>
-  acceptProp?: string
+  name: string
 }
 
-const InputField = ({
-  acceptProp,
-  label,
-  onChange,
-  type,
-  value,
-}: InputFieldProps) => {
+const InputField = forwardRef<HTMLInputElement, Props>((props, ref) => {
+  const { register } = useFormContext()
+
   return (
-    <div className="w-full flex flex-col">
-      <Label className="text-[12px]">{label}</Label>
-      <Input
-        type={type}
-        className="w-full"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        accept={acceptProp}
-      />
+    <div className="flex flex-col gap-1">
+      <Label htmlFor={props.name} className="text-white">
+        {props.label}
+      </Label>
+      <Input {...props} id={props.name} {...register(props.name)} ref={ref} />
     </div>
   )
-}
+})
 
 export default InputField

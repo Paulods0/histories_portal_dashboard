@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { z } from "zod"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ChangeEvent, useState } from "react"
@@ -15,25 +14,18 @@ import {
 } from "@/utils/helpers"
 import { toast } from "react-toastify"
 import { useUpdateUser } from "@/lib/react-query/mutations"
+import { EditUserFormType, editUserFormSchema } from "@/types/form-schema"
 
 type Props = {
   user: User
 }
 
-const userFormSchema = z.object({
-  image: z.custom<File>().optional(),
-  firstname: z.string().optional(),
-  lastname: z.string().optional(),
-})
-
-type UserFormType = z.infer<typeof userFormSchema>
-
 const EditUserDialog = ({ user }: Props) => {
   const { mutate, isPending } = useUpdateUser()
   const [imageToShow, setImageToShow] = useState("")
 
-  const { register, handleSubmit, control } = useForm<UserFormType>({
-    resolver: zodResolver(userFormSchema),
+  const { register, handleSubmit, control } = useForm<EditUserFormType>({
+    resolver: zodResolver(editUserFormSchema),
   })
 
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +39,7 @@ const EditUserDialog = ({ user }: Props) => {
     setImageToShow("")
   }
 
-  const handleUpdateUser = async (data: UserFormType) => {
+  const handleUpdateUser = async (data: EditUserFormType) => {
     try {
       let downloadURL
       if (data.image) {

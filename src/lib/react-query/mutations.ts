@@ -1,22 +1,24 @@
 import {
   createClassifiedPost,
   createPost,
-  createPostCategory,
-  createProduct,
-  createProductCategory,
   createSchedulePost,
-  createUser,
-  deleteCategory,
   deletePost,
-  deleteProduct,
-  deleteProductCategory,
-  deleteUser,
   updatePost,
+} from "@/api/post"
+import {
+  createPostCategory,
+  deleteCategory,
   updatePostCategory,
+} from "@/api/post-category"
+import { createProduct, deleteProduct, updateProduct } from "@/api/product"
+import {
+  createProductCategory,
+  deleteProductCategory,
   updateProductCategory,
-  updateUser,
-} from "@/api"
-import { UpdatePost } from "@/types/data"
+} from "@/api/product-category"
+import { createUser, deleteUser, updateUser } from "@/api/user"
+import { EditProductFormSchemaType } from "@/types/form-schema"
+import { UpdatePost, UpdateProduct } from "@/types/update"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 export const useCreatePost = () => {
@@ -101,6 +103,15 @@ export const useUpdateProductCategory = () => {
       queryClient.invalidateQueries({
         queryKey: ["get-all-product-categories"],
       }),
+  })
+}
+
+export const useUpdateProduct = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: updateProduct,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["get-all-products"] }),
   })
 }
 

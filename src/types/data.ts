@@ -4,97 +4,23 @@ export type User = {
   lastname: string
   email: string
   image?: string
-  posts: PostData[]
+  posts: Post[]
   createdAt: string
 }
-export type CategoryData = {
+export type Category = {
   _id: string
   name: string
   createdAt: string
-  creator: {
-    firstname: string
-    lastname: string
-  }
-}
-export type NewExcursionPost = {
-  title: string
-  mainImage: string
-  content: string
-  highlighted: boolean
-  category: string
-  latitude: string
-  longitude: string
-  tag?: string[]
-  author_notes: string
-  author_id: string
-}
-export type NewPost = {
-  title: string
-  mainImage: string
-  content: string
-  highlighted: boolean
-  category: string
-  tag?: string[]
-  author_notes?: string
-  author_id: string
+  creator: User
 }
 
-export interface NewUser {
-  firstname: string
-  lastname: string
-  image?: string
-  email: string
-  password: string
-}
-export type NewSchedulePost = {
-  title: string
-  file: string
-  category: string
-  author: string
-}
-
-export type NewClassifiedPost = {
-  title: string
-  author: {
-    firstname: string
-    lastname: string
-    email: string
-    phone: string
-  }
-  mainImage: string
-  content: string
-  category: string
-  price: string
-  category_slug: string
-}
-
-export type Author = {
-  _id: string
-  image: string
-  firstname: string
-  lastname: string
-}
-
-export type UpdatePost = {
-  title?: string
-  mainImage?: string
-  content?: string
-  highlighted?: boolean
-  category?: string
-  latitude?: number | null
-  longitude?: number | null
-  tag?: string[]
-  author_notes?: string
-  author: string
-}
-
-export type PostData = {
+export type Post = {
   _id: string
   title: string
   mainImage: string
   content: string
   highlighted: boolean
-  category: CategoryData
+  category: Category
   createdAt: string
   latitude: string
   longitude: string
@@ -104,22 +30,14 @@ export type PostData = {
   deslikes: number
   views: number
   author_id: string
-  author: {
-    _id: string
-    image: string
-    firstname: string
-    lastname: string
-  }
+  author: User
 }
-export type ProductData = {
+export type Product = {
   _id: string
   image: string
   name: string
   price: string
   quantity: number
-  category: {
-    _id: string
-    name: string
-  }
+  category: Category
   createdAt: string
 }

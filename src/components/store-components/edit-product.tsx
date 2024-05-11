@@ -2,88 +2,122 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { useGetAllProductCategories } from "@/lib/react-query/queries"
-import { ProductData } from "@/types/data"
+
+import { Product } from "@/types/data"
 import { CiEdit } from "react-icons/ci"
-import { Input } from "../ui/input"
 import { Button } from "../ui/button"
+import { FormProvider, useForm } from "react-hook-form"
+import {
+  EditProductFormSchemaType,
+  editProductFormSchema,
+} from "@/types/form-schema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { toast } from "react-toastify"
+
+import { ClipLoader } from "react-spinners"
+import InputField from "../input-field"
+import SelectCategory from "./select-category"
+import { Label } from "../ui/label"
+import { Input } from "../ui/input"
+import { useUpdateProduct } from "@/lib/react-query/mutations"
+import { UpdateProduct } from "@/types/update"
 
 type Props = {
-  product: ProductData
+  product: Product
 }
 
 const EditProduct = ({ product }: Props) => {
-  const { data: categories } = useGetAllProductCategories()
+  const { mutate } = useUpdateProduct()
+  const editProductForm = useForm<EditProductFormSchemaType>({
+    resolver: zodResolver(editProductFormSchema),
+    defaultValues: {
+      image: product.image,
+      name: product.name,
+      price: product.price,
+      category: product.category._id,
+    },
+  })
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting, errors },
+  } = editProductForm
+
+  const handleSubmitForm = (data: EditProductFormSchemaType) => {
+    try {
+      const updatedProduct: UpdateProduct = {
+        ...data,
+        id: product._id,
+      }
+      mutate(updatedProduct)
+      console.log(updatedProduct)
+      toast.success("Atualizado com sucesso")
+      reset()
+    } catch (error) {
+      console.log("Erro: " + error)
+      toast.error("Erro ao atualizar post")
+      reset()
+    }
+  }
+
   return (
     <Dialog>
       <DialogTrigger className="cursor-pointer" onClick={() => {}}>
         <CiEdit size={24} />
       </DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Editar produto</DialogTitle>
         </DialogHeader>
 
-        <img src={product.image} className="w-14 h-14 object-cover" alt="" />
+        <FormProvider {...editProductForm}>
+          <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-2">
+            <Label htmlFor="image" className="cursor-pointer">
+              <Input
+                className="placeholder:text-white text-white"
+                type="file"
+                {...register("image")}
+                accept=".jpg, .png, .jpeg"
+                id="image"
+              />
+              {errors.image && (
+                <span className="text-xs text-red-600">
+                  {errors.image.message}
+                </span>
+              )}
+            </Label>
 
-        <div className="w-full p-2 border border-zinc-300 rounded-lg">
-          <input
-            type="text"
-            onChange={() => {}}
-            placeholder="Nome do produto"
-            className="w-full h-fullbg-transparent border-none outline-none"
-          />
-        </div>
+            <InputField label="Título" {...register("name")} />
+            <InputField label="Preço" {...register("price")} type="number" />
+            <SelectCategory product={product} />
 
-        <select
-          defaultValue={product.category._id}
-          onChange={() => {}}
-          className="w-full p-2 border border-zinc-300 rounded-lg"
-        >
-          <option
-            defaultValue={product.category._id}
-            disabled
-            className="w-full h-fullbg-transparent border-none outline-none"
-          >
-            {product.category.name}
-          </option>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant={"default"}>Cancelar</Button>
+              </DialogClose>
 
-          {categories?.map((category) => (
-            <option
-              key={category._id}
-              value={category._id}
-              className="w-full h-fullbg-transparent border-none outline-none"
-            >
-              {category.name}
-            </option>
-          ))}
-        </select>
-
-        <div className="w-full p-2 border border-zinc-300 rounded-lg">
-          <Input
-            type="number"
-            placeholder="Preço"
-            className="w-full h-fullbg-transparent border-none outline-none"
-          />
-        </div>
-
-        <div className="w-full p-2 border border-zinc-300 rounded-lg">
-          <Input
-            type="number"
-            placeholder="Quantidade"
-            className="w-full h-fullbg-transparent border-none outline-none"
-          />
-        </div>
-        <div className="flex items-center gap-x-3">
-          <DialogClose asChild>
-            <Button variant={"outline"}>Cancelar</Button>
-          </DialogClose>
-          <Button>Atualizar alterações</Button>
-        </div>
+              <Button
+                disabled={isSubmitting}
+                type="submit"
+                variant={"secondary"}
+              >
+                {isSubmitting ? (
+                  <ClipLoader size={14} />
+                ) : (
+                  "Atualizar alterações"
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   )

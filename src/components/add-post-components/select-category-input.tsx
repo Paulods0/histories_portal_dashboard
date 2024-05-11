@@ -1,4 +1,3 @@
-import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -33,15 +32,10 @@ const SelectCategoryInput = ({ setCategory, setCategoryName }: Props) => {
     const category = categories?.find((category) => category._id === value)
     setCategory(category!!._id)
     setCategoryName(category!!.name)
-
-    console.log(value)
   }
 
   return (
-    <div className="w-full ">
-      <Label htmlFor="title" className="text-xs">
-        Categoria
-      </Label>
+    <div className="w-full">
       <Select onValueChange={(value) => handleChangeCategory(value)}>
         <SelectTrigger>
           <SelectValue placeholder="Categoria" />

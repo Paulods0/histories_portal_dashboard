@@ -1,13 +1,13 @@
-import { PostData } from "../types/data"
+import { Post } from "../../types/data"
 import { Link } from "react-router-dom"
 import DeletePostDialog from "./delete-post-dialog"
 import { CiEdit } from "react-icons/ci"
 
 type PostCardProps = {
-  post: PostData
+  post: Post
 }
 
-const AdminPostCard = ({ post }: PostCardProps) => {
+const PostCard = ({ post }: PostCardProps) => {
   return (
     <div className="bg-background h-[270px] w-full flex items-center flex-col border border-secondary">
       <Link to={`/post/${post._id}`} className="relative w-full h-[160px] ">
@@ -53,4 +53,4 @@ const AdminPostCard = ({ post }: PostCardProps) => {
   )
 }
 
-export default AdminPostCard
+export default PostCard

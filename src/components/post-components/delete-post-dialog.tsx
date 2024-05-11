@@ -1,4 +1,4 @@
-import { PostData } from "@/types/data"
+import { Post } from "@/types/data"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,8 +8,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog"
-import { Button } from "./ui/button"
+} from "../ui/alert-dialog"
+import { Button } from "../ui/button"
 import { toast } from "react-toastify"
 import { deleteImageFromFirebase } from "@/utils/helpers"
 import { useDeletePost } from "@/lib/react-query/mutations"
@@ -17,7 +17,7 @@ import { ClipLoader } from "react-spinners"
 import { CiTrash } from "react-icons/ci"
 
 type Props = {
-  post: PostData
+  post: Post
 }
 
 const DeletePostDialog = ({ post }: Props) => {

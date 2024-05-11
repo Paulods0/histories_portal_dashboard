@@ -1,15 +1,15 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { EditTourFormSchemaType, editTourFormSchema } from "@/types/schema"
+import { EditTourFormSchemaType, editTourFormSchema } from "@/types/form-schema"
 
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Textarea } from "../ui/textarea"
 import { Button } from "../ui/button"
-import { PostData } from "@/types/data"
+import { Post } from "@/types/data"
 
 type Props = {
-  post: PostData
+  post: Post
   category: string
   author: string
 }

@@ -1,13 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { User } from "@/types/data"
 
 type AuthorNotesProps = {
-  author: {
-    _id: string
-    image: string
-    firstname: string
-    lastname: string
-  }
+  author: User
   notes: string
 }
 

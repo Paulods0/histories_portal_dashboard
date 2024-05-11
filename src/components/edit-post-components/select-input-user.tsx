@@ -6,14 +6,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { PostData } from "@/types/data"
+import { Post } from "@/types/data"
 import { Label } from "../ui/label"
 import { useGetAllUsers } from "@/lib/react-query/queries"
 import { ClipLoader } from "react-spinners"
 import { SetStateAction } from "react"
 
 type Props = {
-  post: PostData
+  post: Post
   setAuthor: React.Dispatch<SetStateAction<string>>
 }
 
@@ -54,7 +54,10 @@ const SelectInputUser = ({ post, setAuthor }: Props) => {
             <SelectItem key={user._id} value={user._id}>
               <div className="flex items-center gap-1">
                 <Avatar className="size-6">
-                  <AvatarFallback></AvatarFallback>
+                  <AvatarFallback>
+                    {user.firstname.charAt(0).toUpperCase()}
+                    {user.lastname.charAt(0).toUpperCase()}
+                  </AvatarFallback>
                   <AvatarImage src={user.image} />
                 </Avatar>
                 <div className="flex items-center gap-1">

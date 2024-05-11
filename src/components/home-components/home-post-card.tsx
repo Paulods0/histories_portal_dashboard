@@ -1,12 +1,12 @@
 import { LiaUser } from "react-icons/lia"
 import { BiCategory } from "react-icons/bi"
 import { CiCalendarDate } from "react-icons/ci"
-import { PostData } from "../../types/data"
+import { Post } from "../../types/data"
 
 const HomePostCard = ({
   post: { mainImage, title, createdAt, category, author },
 }: {
-  post: PostData
+  post: Post
 }) => {
   return (
     <div className="cursor-pointer bg-background text-foreground w-full hover:bg-foreground/10 mt-2 border ease-in-out duration-200 transition-all rounded-[10px] p-2 flex">

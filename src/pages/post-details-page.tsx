@@ -6,13 +6,12 @@ import { ClipLoader } from "react-spinners"
 import { SlLike, SlDislike } from "react-icons/sl"
 import { FaEye } from "react-icons/fa"
 import { Button } from "@/components/ui/button"
-import { useAuth } from "@/context/AuthContext"
+import { useAuth } from "@/context/auth-context"
 
 const PostDetailsPage = () => {
   const { id } = useParams()
   const { data, isLoading } = useGetSinglePost(id!!)
   const { userId } = useAuth()
-  console.log(data)
 
   if (isLoading) {
     return (
@@ -23,7 +22,7 @@ const PostDetailsPage = () => {
   }
 
   return (
-    <main className="w-full flex items-center overflow-y-clip scroll-bar px-8 h-full">
+    <main className="w-full flex items-center overflow-y-clip scroll-bar px-8">
       <div className="w-full mt-3 flex items-center flex-col relative">
         {userId === data?.author._id && (
           <Link to={`/edit-post/${data!!._id}`}>

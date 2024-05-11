@@ -12,7 +12,7 @@ import { CiSettings, CiUser } from "react-icons/ci"
 import { IoCalendarOutline } from "react-icons/io5"
 import { formatDate } from "@/utils/helpers"
 import { Link, useLocation } from "react-router-dom"
-import { useAuthContext } from "@/context/AuthContext"
+import { useAuthContext } from "@/context/auth-context"
 import { ADMIN_DASHBOARD_NAV_LINKS } from "@/utils/constants"
 import MobileNavbar from "../mobile-navbar"
 
@@ -24,7 +24,7 @@ const Header = () => {
   const reformatedDate = formatDate(date)
 
   return (
-    <header className="w-full sticky top-0 bg-background z-50 h-[60px] px-2 border-b pb-2 flex justify-between items-center">
+    <header className="w-full sticky top-0 bg-background border-b-zinc-800 border-b-[1px] z-50 h-[60px] px-2 pb-2 flex justify-between items-center">
       <section className="w-full flex items-center gap-x-12">
         <Link to="/">
           <img

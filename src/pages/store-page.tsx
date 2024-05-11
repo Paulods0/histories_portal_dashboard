@@ -32,8 +32,8 @@ const StorePage = () => {
           <h1>Não há nenhum produto ainda</h1>
         </div>
       ) : (
-        <section className="w-full flex flex-col mt-4 h-full items-center justify-center gap-y-2">
-          <div className="flex flex-col gap-y-3 mx-auto w-full lg:w-[800px]">
+        <section className="w-full flex flex-col h-full items-center justify-start gap-y-2">
+          <div className="flex flex-col gap-y-2 mx-auto w-full lg:w-[800px]">
             <h1 className="font-bold text-3xl">Produtos</h1>
             <div className="w-full flex items-center justify-end">
               <AddProductButton />
@@ -64,7 +64,7 @@ const StorePage = () => {
                       <TableCell className="space-x-4">
                         <EditProduct product={product} />
 
-                        <DeleteProduct productId={product._id} />
+                        <DeleteProduct product={product} />
                       </TableCell>
                     </TableRow>
                   ))}

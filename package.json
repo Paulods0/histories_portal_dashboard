@@ -44,7 +44,7 @@
     "react-spinners": "^0.13.8",
     "react-toastify": "^10.0.4",
     "recharts": "^2.12.4",
-    "tailwind-merge": "^2.2.2",
+    "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.4"
   },

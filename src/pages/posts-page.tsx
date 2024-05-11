@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { PostData } from "../types/data"
-import { getAllPostsByCategory } from "../api"
-import AdminPostCard from "../components/admin-post-card"
+import { Post } from "../types/data"
+
+import AdminPostCard from "../components/post-components/post-card"
 import { ClipLoader } from "react-spinners"
 import { Button } from "@/components/ui/button"
 
@@ -17,6 +17,7 @@ import { Link, useLocation } from "react-router-dom"
 import { useGetAllPosts, useGetCategories } from "@/lib/react-query/queries"
 import { useQuery } from "@tanstack/react-query"
 import { FaPlusCircle } from "react-icons/fa"
+import { getAllPostsByCategory } from "@/api/post"
 
 const PostsPage = () => {
   const location = useLocation()
@@ -34,7 +35,7 @@ const PostsPage = () => {
     }
   }, [location.search, path])
 
-  const { data: filteredPosts } = useQuery<PostData[]>({
+  const { data: filteredPosts } = useQuery<Post[]>({
     queryKey: ["postsByCategory", category],
     queryFn: () => getAllPostsByCategory(category),
     enabled: category !== "all",
@@ -86,7 +87,7 @@ const PostsPage = () => {
             <h1>Não há posts nada ainda.</h1>
           </main>
         ) : category !== "all" ? (
-          filteredPosts?.map((filterdPost: PostData) => (
+          filteredPosts?.map((filterdPost: Post) => (
             <div key={filterdPost._id}>
               <AdminPostCard post={filterdPost} />
             </div>

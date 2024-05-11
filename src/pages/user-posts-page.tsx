@@ -6,7 +6,7 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel"
 
-import { useAuthContext } from "@/context/AuthContext"
+import { useAuthContext } from "@/context/auth-context"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import { ClipLoader } from "react-spinners"
 import { useGetUserPosts } from "@/lib/react-query/queries"

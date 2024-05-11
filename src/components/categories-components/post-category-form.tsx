@@ -4,7 +4,7 @@ import { Input } from "../ui/input"
 import z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useAuthContext } from "@/context/AuthContext"
+import { useAuthContext } from "@/context/auth-context"
 import { toast } from "react-toastify"
 
 const formSchema = z.object({

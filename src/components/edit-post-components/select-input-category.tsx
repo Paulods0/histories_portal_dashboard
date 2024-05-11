@@ -5,14 +5,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { PostData } from "@/types/data"
+import { Post } from "@/types/data"
 import { Label } from "../ui/label"
 import { SetStateAction } from "react"
 import { useGetCategories } from "@/lib/react-query/queries"
 import { ClipLoader } from "react-spinners"
 
 type Props = {
-  post: PostData
+  post: Post
   setCategoryName: React.Dispatch<SetStateAction<string>>
 }
 

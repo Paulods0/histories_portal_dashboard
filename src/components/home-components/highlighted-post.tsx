@@ -3,8 +3,7 @@ import { ClipLoader } from "react-spinners"
 import { useGetHighlightedPost } from "@/lib/react-query/queries"
 import { FaEye } from "react-icons/fa"
 import { SlLike } from "react-icons/sl"
-
-SlLike
+import { Button } from "../ui/button"
 
 const HighlightedPost = () => {
   const { data, isLoading } = useGetHighlightedPost()
@@ -16,25 +15,36 @@ const HighlightedPost = () => {
       </main>
     )
   }
+  if (!data) {
+    return (
+      <main className="w-full gap-4 h-full flex flex-col items-center justify-center border rounded-lg">
+        <h1>Não há nenhum post em destaque.</h1>
+        <Link to="/posts">
+          <Button variant={"ghost"}>Adicionar</Button>
+        </Link>
+      </main>
+    )
+  }
 
   return (
     <Link
       to={`/post/${data?._id}`}
-      className="relative outline-none w-full rounded-[6px] border-none"
+      className="relative h-fit outline-none w-full rounded-lg border-none"
     >
       <img
         src={data?.mainImage}
         alt="imagem do post"
         className="rounded-[6px] inset-0 h-[240px] w-full object-cover"
       />
-      <div className="absolute inset-0 rounded-[6px] flex-col w-full h-full bg-zinc-800/70 hover:opacity-0 duration-300 transition-all flex items-center justify-center">
+
+      <div className="absolute gap-4 inset-0 flex flex-col items-center justify-center bg-black/50 opacity-1 hover:opacity-0 duration-200 transition-all ease-in-out">
         <span className="text-white">Post em destaque</span>
-        <div className="flex items-center mt-4 gap-x-4">
-          <span className="text-white flex items-center gap-x-1">
+        <div className="flex items-center gap-4">
+          <span className="text-white h-auto flex items-center gap-x-1">
             <FaEye size={18} />
             {data?.views}
           </span>
-          <span className="text-white flex items-center gap-x-1">
+          <span className="text-white h-auto flex items-center gap-x-1">
             <SlLike size={18} />
             {data?.rating}
           </span>

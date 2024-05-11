@@ -1,7 +1,8 @@
+import { File } from "buffer"
 import { z } from "zod"
 
 export const postFormSchema = z.object({
-  title: z.string().min(1, "*O título deve conter no mínimo 6 caracteres."),
+  title: z.string(),
   tags: z
     .string()
     .transform((text) => text.split(","))
@@ -12,39 +13,29 @@ export const postFormSchema = z.object({
 
 export const scheduleFormSchema = z.object({
   title: z.string().min(1, { message: "*O título é obrigatório" }),
-  file: z.custom<File[]>().refine(
-    (file) => {
-      if (!file[0]) {
-        return
-      }
-      return file
-    },
-    { message: "*Insira um ficheiro PDF." }
-  ),
+  file: z
+    .instanceof(FileList)
+    .refine((file) => !file.item(0), "*Insira um ficheiro PDF"),
 })
 
 export const tourFormSchema = z.object({
-  title: z.string().min(1, { message: "*O título é obrigatório." }),
-  coordinates: z
-    .string()
-    .min(1, { message: "*Insira as coordenadas geográficas" })
-    .transform((coordinates) => {
-      const currentCoordinates = coordinates.split(",")
-      return {
-        latitude: Number(currentCoordinates[0]),
-        longitude: Number(currentCoordinates[1]),
-      }
-    }),
+  title: z.string(),
+  coordinates: z.string().transform((coordinates) => {
+    const currentCoordinates = coordinates.split(",")
+    const latitude = Number(currentCoordinates[0])
+    const longitude = Number(currentCoordinates[1])
+
+    return {
+      latitude,
+      longitude,
+    }
+  }),
   tags: z
     .string()
     .transform((text) => text.split(","))
     .optional(),
   author_notes: z.string().optional(),
-  category: z
-    .string()
-    .min(1, { message: "*Selecione uma categoria." })
-    .optional(),
-  highlighted: z.boolean().default(false).optional(),
+  highlighted: z.boolean().default(false),
 })
 
 export const editTourFormSchema = z.object({
@@ -78,26 +69,46 @@ export const userFormSchema = z.object({
   password: z.string().min(6, "A password deve ter no mínimo 6 caracteres."),
 })
 
+export const editUserFormSchema = z.object({
+  image: z
+    .instanceof(FileList)
+    .transform((image) => image.item(0)!)
+    .optional(),
+  firstname: z.string().optional(),
+  lastname: z.string().optional(),
+})
+
 export const loginSchema = z.object({
   email: z.string().email().min(1, "*O email é obrigatório."),
   password: z.string().min(1, "*A password é obrigatória."),
 })
 
-export const storeFormSchema = z.object({
+export const productFormSchema = z.object({
   title: z.string().min(1, { message: "*O título é obrigatório" }),
   price: z.string().min(1, { message: "*O preço é obrigatório" }),
-  image: z.custom<File>(),
+  image: z.custom<File[]>(),
 })
 
+export const editProductFormSchema = z.object({
+  name: z.string().optional(),
+  price: z.coerce.string().optional(),
+  image: z
+    .union([
+      z.instanceof(FileList).transform((image) => image.item(0)!),
+      z.string(),
+    ])
+    .optional(),
+  category: z.string().optional(),
+})
+
+export type EditUserFormType = z.infer<typeof editUserFormSchema>
 export type LoginInSchema = z.infer<typeof loginSchema>
-
-export type StoreFormSchema = z.infer<typeof storeFormSchema>
-
 export type UserFormType = z.infer<typeof userFormSchema>
+export type ProductFormSchema = z.infer<typeof productFormSchema>
+export type EditProductFormSchemaType = z.infer<typeof editProductFormSchema>
 export type PostFormSchemaType = z.infer<typeof postFormSchema>
 export type TourFormSchemaType = z.infer<typeof tourFormSchema>
 export type ScheduleFormSchemaType = z.infer<typeof scheduleFormSchema>
-
 export type EditTourFormSchemaType = z.infer<typeof editTourFormSchema>
 export type EditPostFormSchemaType = z.infer<typeof editPostFormSchema>
 export type EditScheduleFormSchemaType = z.infer<typeof editScheduleFormSchema>

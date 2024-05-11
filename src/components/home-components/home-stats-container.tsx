@@ -1,5 +1,5 @@
 import HomeStatsCard from "./home-stats-card"
-import { useAuthContext } from "../../context/AuthContext"
+import { useAuthContext } from "../../context/auth-context"
 import { ClipLoader } from "react-spinners"
 
 import {
@@ -20,14 +20,15 @@ const HomeStatsContainer = () => {
   const totalPostsViews = posts?.reduce((total, acc) => acc.views + total, 0)
   const userPostsViews = userPosts?.reduce((total, acc) => acc.views + total, 0)
   const totalProductCategories = productCategories?.length
+
   return (
-    <div className="w-full h-full">
+    <div className="w-full">
       {isLoading ? (
         <div className="flex items-center justify-center h-full">
           <ClipLoader color="#111111" size={28} />
         </div>
       ) : (
-        <div className="flex items-center h-full w-full flex-wrap lg:flex-nowrap justify-between gap-2 ">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           <HomeStatsCard
             customStyle="bg-[#D93C3C] w-full"
             titleIcon="myPosts"

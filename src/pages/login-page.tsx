@@ -3,7 +3,7 @@ import { IoMdEye } from "react-icons/io"
 import { IoMdEyeOff } from "react-icons/io"
 import { Navigate } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
-import { useAuthContext } from "../context/AuthContext"
+import { useAuthContext } from "../context/auth-context"
 import Cookies from "js-cookie"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -11,9 +11,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { LoginInSchema, loginSchema } from "@/types/schema"
+import { LoginInSchema, loginSchema } from "@/types/form-schema"
 
-// COMPONENT ITSELF
 const LoginPage = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const { login, isLoading } = useAuthContext()

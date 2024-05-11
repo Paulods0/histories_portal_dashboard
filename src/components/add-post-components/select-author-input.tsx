@@ -1,4 +1,3 @@
-import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -6,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useAuthContext } from "@/context/AuthContext"
+import { useAuthContext } from "@/context/auth-context"
 import { useGetAllUsers } from "@/lib/react-query/queries"
 import { SetStateAction } from "react"
 import { ClipLoader } from "react-spinners"
@@ -30,10 +29,10 @@ const SelectAuthorInput = ({ setAuthorId }: Props) => {
   let currAuthor = users?.find((user) => user._id === userId)
 
   return (
-    <div className="w-full mb-3">
-      <Label htmlFor="author" className="text-xs">
+    <div className="w-full">
+      {/* <Label htmlFor="author" className="text-xs">
         Autor
-      </Label>
+      </Label> */}
 
       <Select onValueChange={(value) => setAuthorId(value)}>
         <SelectTrigger id="author">
@@ -43,7 +42,7 @@ const SelectAuthorInput = ({ setAuthorId }: Props) => {
               <span className="flex items-center gap-1">
                 <img
                   src={currAuthor?.image ?? "/user.png"}
-                  className="size-6 "
+                  className="size-6 rounded-full"
                   alt="profile-image"
                 />
                 <span>{currAuthor?.firstname}</span>

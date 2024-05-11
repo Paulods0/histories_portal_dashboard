@@ -6,10 +6,12 @@ import { ClipLoader } from "react-spinners"
 import { uploadImageToFirebaseStorage } from "@/utils/helpers"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ScheduleFormSchemaType, scheduleFormSchema } from "@/types/schema"
-import { useAuthContext } from "@/context/AuthContext"
+import { ScheduleFormSchemaType, scheduleFormSchema } from "@/types/form-schema"
+import { useAuthContext } from "@/context/auth-context"
 import { toast } from "react-toastify"
-import { NewSchedulePost } from "@/types/data"
+import { NewSchedulePost } from "@/types/create"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 type Props = {
   category: string
@@ -17,20 +19,25 @@ type Props = {
 }
 
 const SchedulePostForm = ({ authorId, category }: Props) => {
+  const navigate = useNavigate()
   const { userId } = useAuthContext()
-  const { mutate, isPending } = useCreateSchedulePost()
+  const { mutate } = useCreateSchedulePost()
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ScheduleFormSchemaType>({
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { register, handleSubmit } = useForm<ScheduleFormSchemaType>({
     mode: "all",
     resolver: zodResolver(scheduleFormSchema),
   })
 
   const handleSubmitForm = async (data: ScheduleFormSchemaType) => {
+    setIsLoading(true)
     try {
+      if (!data.file || !data.title) {
+        toast.error("Preencha todos os campos obrigatórios.")
+        setIsLoading(false)
+        return
+      }
       const file = await uploadImageToFirebaseStorage(
         data.file[0],
         "schedule-posts"
@@ -42,8 +49,11 @@ const SchedulePostForm = ({ authorId, category }: Props) => {
         file: file,
       }
       mutate(fileData)
+      setIsLoading(false)
+      navigate("/posts")
       toast.success("Publicado com sucesso")
     } catch (error) {
+      setIsLoading(false)
       console.log("Erro ao publicar")
       toast.error("Erro ao publicar")
     }
@@ -51,21 +61,23 @@ const SchedulePostForm = ({ authorId, category }: Props) => {
   }
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-3">
-      <div>
-        <Label htmlFor="doc" className="text-[12px]">
-          Título
-        </Label>
-        <Input
-          className="file:text-white "
-          id="title"
-          type="text"
-          {...register("title")}
-        />
-        {errors.title && (
-          <span className="text-xs text-red-600">{errors.title.message}</span>
-        )}
+    <form
+      onSubmit={handleSubmit(handleSubmitForm)}
+      className="h-auto space-y-3"
+    >
+      <div className="sticky top-0 w-full">
+        <Button disabled={isLoading} type="submit" className="w-full z-20">
+          {isLoading ? <ClipLoader size={14} /> : "Publicar"}
+        </Button>
       </div>
+
+      <Input
+        className="file:text-white "
+        placeholder="Título"
+        type="text"
+        {...register("title")}
+      />
+
       <div>
         <Label htmlFor="doc" className="text-[12px]">
           Documento PDF
@@ -77,14 +89,7 @@ const SchedulePostForm = ({ authorId, category }: Props) => {
           {...register("file")}
           accept="application/pdf"
         />
-        {errors.file && (
-          <span className="text-xs text-red-600">{errors.file.message}</span>
-        )}
       </div>
-
-      <Button disabled={isPending} type="submit">
-        {isPending ? <ClipLoader size={14} /> : "Publicar"}
-      </Button>
     </form>
   )
 }

@@ -12,8 +12,9 @@ const AllPostsWrapper = () => {
       </div>
     )
   }
+
   return (
-    <div className="w-full overflow-y-auto bg-background pr-2 scroll-bar absolute h-[300px]">
+    <div className="overflow-y-auto bg-background pr-2 scroll-bar h-[45vh] pb-4 w-auto">
       {data?.length === 0 || data?.length === undefined ? (
         <div className="w-full h-full flex items-center justify-center">
           <h1 className="text-black">Não há posts ainda</h1>

@@ -18,15 +18,13 @@ import EditPostPostPage from "./pages/edit-post-page"
 
 function App() {
   return (
-    <main className="font-Poppins ">
+    <main className="font-Poppins">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-
         <Route path="/" element={<Dashboard />}>
           <Route index element={<HomeDashboardPage />} />
           <Route path="novopost" element={<AddPostPage />} />
           <Route path="posts" element={<PostsPage />} />
-
           <Route path="loja" element={<StorePage />} />
           <Route path="ads" element={<GoogleAdsPage />} />
           <Route path="categorias" element={<CategoriesPage />} />

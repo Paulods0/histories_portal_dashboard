@@ -8,7 +8,7 @@ import {
   SheetFooter,
 } from "./ui/sheet"
 import { IoMenu } from "react-icons/io5"
-import { UserData } from "@/context/AuthContext"
+import { UserData } from "@/context/auth-context"
 import { ADMIN_DASHBOARD_NAV_LINKS } from "@/utils/constants"
 import { Link } from "react-router-dom"
 
@@ -20,16 +20,15 @@ const MobileNavbar = ({ user }: Props) => {
   return (
     <Sheet>
       <SheetTrigger asChild className="cursor-pointer">
-        <IoMenu size={32} />
+        <div>
+          <IoMenu size={32} />
+        </div>
       </SheetTrigger>
 
       <SheetContent className="bg-foreground space-y-6 text-background border-white/20">
         <SheetHeader className="flex items-center">
           <Avatar>
-            <AvatarFallback>
-              <span>{user.firstname[0]}</span>
-              <span>{user.lastname[0]}</span>
-            </AvatarFallback>
+            <AvatarFallback>{user.firstname.charAt(0)}</AvatarFallback>
             <AvatarImage src={user.image} />
           </Avatar>
           <div className="flex items-center gap-1 text-background">

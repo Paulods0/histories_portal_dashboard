@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
@@ -6,88 +6,107 @@ import { Button } from "../ui/button"
 import { Textarea } from "../ui/textarea"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useAuthContext } from "@/context/AuthContext"
-import { useCreatePost } from "@/lib/react-query/mutations"
-import { PostFormSchemaType, postFormSchema } from "@/types/schema"
-
+import { useAuthContext } from "@/context/auth-context"
+import { PostFormSchemaType, postFormSchema } from "@/types/form-schema"
+import InputImage from "../add-post-components/input-image"
+import { NewPost } from "@/types/create"
 import { toast } from "react-toastify"
-import { NewPost } from "@/types/data"
+import { ClipLoader } from "react-spinners"
+import { useCreatePost } from "@/lib/react-query/mutations"
 import { uploadImageToFirebaseStorage } from "@/utils/helpers"
+import { useNavigate } from "react-router-dom"
 
 type Props = {
-  image: File | undefined
-  authorId: string
-  category: string
   content: string
+  category: string
+  authorId: string
 }
 
-const PostForm = ({ image, category, authorId, content }: Props) => {
+const PostForm = ({ content, authorId, category }: Props) => {
+  const navigate = useNavigate()
+  const { mutate } = useCreatePost()
   const { userId } = useAuthContext()
 
-  const { mutate } = useCreatePost()
-  const [file, setFile] = useState("")
+  const [image, setImage] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [file, setFile] = useState<File | undefined>(undefined)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<PostFormSchemaType>({
+  const { register, handleSubmit } = useForm<PostFormSchemaType>({
     resolver: zodResolver(postFormSchema),
   })
 
+  const handleSetImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const img = e.target.files[0]
+      const imageURL = URL.createObjectURL(img)
+      setFile(img)
+      setImage(imageURL)
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setFile(undefined)
+  }
+
   const handleSubmitForm = async (data: PostFormSchemaType) => {
+    setIsLoading(true)
     try {
-      if (!image) {
-        toast.error("Insira uma imagem.")
+      if (!data.title || !category || !file || !content) {
+        toast.error("Preencha todos os dados obrigatórios.")
+        setIsLoading(false)
         return
       }
-      const imageURL = await uploadImageToFirebaseStorage(image, "posts")
-      const postData: NewPost = {
-        mainImage: imageURL,
+
+      const imageURL = await uploadImageToFirebaseStorage(file, "posts")
+
+      const post: NewPost = {
         tag: data.tags,
         content: content,
+        mainImage: imageURL,
         title: data.title,
         category: category,
-        author_notes: data.author_notes,
         highlighted: data.hightlight,
-        author_id: authorId!! ? authorId!! : userId!!,
+        author_notes: data.author_notes,
+        author_id: authorId ? authorId : userId!!,
       }
-      mutate(postData)
-      toast.success("O seu post foi publicado com sucesso.🎇")
+
+      mutate(post)
+      setIsLoading(false)
+      toast.success("Publicado com sucesso")
+      navigate("/posts")
+      console.log(post)
     } catch (error) {
-      toast.error("Erro ao publicar o post, por favor tente novamente")
+      setIsLoading(false)
+      toast.error("Erro ao publicar o post")
+      console.log("Erro: " + error)
     }
   }
 
   return (
     <form
       onSubmit={handleSubmit(handleSubmitForm)}
-      className="flex flex-col gap-3"
+      className="flex flex-col gap-3 w-full h-auto"
     >
-      {file && (
-        <div className="relative">
-          <img
-            src={file}
-            className="h-32 w-full object-contain aspect-square mx-auto"
-          />
-          <button
-            onClick={() => setFile("")}
-            className="absolute text-xs top-3 hover:text-white/20 transition-all right-10"
-          >
-            Fechar
-          </button>
-        </div>
-      )}
+      <Button disabled={isLoading} type="submit" className="sticky z-20 top-0">
+        {isLoading ? <ClipLoader size={14} /> : "Publicar"}
+      </Button>
 
-      <div className="flex flex-col">
-        <Label htmlFor="title" className="text-xs">
-          Título
-        </Label>
-        <Input type="text" {...register("title")} />
-        {errors.title && (
-          <span className="text-xs text-red-600">{errors.title.message}</span>
-        )}
-      </div>
+      <>
+        {file ? (
+          <img
+            src={image}
+            className="w-40 h-36 object-cover aspect-square mx-auto"
+          />
+        ) : null}
+      </>
+
+      <InputImage
+        file={file}
+        handleSetImage={handleSetImage}
+        handleRemoveImage={handleRemoveImage}
+      />
+
+      <Input placeholder="*Título" type="text" {...register("title")} />
 
       <div className="border flex py-2 h-10 px-2 gap-2 items-center w-fit rounded-md">
         <Label htmlFor="checkbox" className="text-xs">
@@ -96,28 +115,14 @@ const PostForm = ({ image, category, authorId, content }: Props) => {
         <Input id="checkbox" type="checkbox" {...register("hightlight")} />
       </div>
 
-      <div>
-        <Label htmlFor="tags" className="text-xs">
-          Adicionar tags(separe-ás por vírgulas)
-        </Label>
-        <Input id="tags" type="text" {...register("tags")} />
-      </div>
+      <Input placeholder="Tags(opcional)" type="text" {...register("tags")} />
 
-      <div>
-        <Label htmlFor="notes" className="text-xs">
-          Notas do autor(opcional)
-        </Label>
-        <Textarea
-          id="notes"
-          className="resize-none"
-          rows={5}
-          {...register("author_notes")}
-        />
-      </div>
-
-      <Button className="w-fit" type="submit">
-        Publicar
-      </Button>
+      <Textarea
+        placeholder="Notas do autor(opcional)"
+        className="resize-none"
+        rows={8}
+        {...register("author_notes")}
+      />
     </form>
   )
 }

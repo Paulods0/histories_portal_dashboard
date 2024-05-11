@@ -11,15 +11,28 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { useDeleteProduct } from "@/lib/react-query/mutations"
+import { Product } from "@/types/data"
+import { toast } from "react-toastify"
+import { deleteImageFromFirebase } from "@/utils/helpers"
 
 type Props = {
-  productId: string
+  product: Product
 }
 
-const DeleteProduct = ({ productId }: Props) => {
-  // const {} = useDeleteProduct()
-  const handleDeleteProduct = () => {
-    console.log("Deletado!: " + productId)
+const DeleteProduct = ({ product }: Props) => {
+  const { mutate } = useDeleteProduct()
+
+  const handleDeleteProduct = async () => {
+    try {
+      await deleteImageFromFirebase(product.image, "products")
+      mutate(product._id)
+      toast.success("Produto removido com sucesso")
+      console.log("Deletado!: " + product)
+    } catch (error) {
+      toast.error("Erro ao remover produto")
+      console.error("Error: " + error)
+    }
   }
 
   return (

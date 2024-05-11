@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Cookies from "js-cookie"
-import axios from "../api/axiosConfig"
+import axios from "../config/axios-config"
 
 export type UserData = {
   email: string

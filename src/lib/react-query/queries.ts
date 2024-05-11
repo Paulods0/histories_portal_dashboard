@@ -1,32 +1,27 @@
-import {
-  getAllCategories,
-  getAllPosts,
-  getAllProducts,
-  getAllProdutCategories,
-  getAllUsers,
-  getHighlightedPost,
-  getSinglePost,
-  getUserPosts,
-} from "@/api"
-import { CategoryData, PostData, ProductData, User } from "@/types/data"
+import { getAllPosts, getHighlightedPost, getSinglePost } from "@/api/post"
+import { getAllCategories } from "@/api/post-category"
+import { getAllProducts } from "@/api/product"
+import { getAllProdutCategories } from "@/api/product-category"
+import { getAllUsers, getUserPosts } from "@/api/user"
+import { Category, Post, Product, User } from "@/types/data"
 import { useQuery } from "@tanstack/react-query"
 
 export const useGetAllPosts = () => {
-  return useQuery<PostData[]>({
+  return useQuery<Post[]>({
     queryKey: ["get-all-posts"],
     queryFn: getAllPosts,
   })
 }
 
 export const useGetUserPosts = (user_id: string) => {
-  return useQuery<PostData[]>({
+  return useQuery<Post[]>({
     queryKey: ["get-user-posts"],
     queryFn: () => getUserPosts(user_id),
   })
 }
 
 export const useGetAllProducts = () => {
-  return useQuery<ProductData[]>({
+  return useQuery<Product[]>({
     queryKey: ["get-all-products"],
     queryFn: getAllProducts,
   })
@@ -40,7 +35,7 @@ export const useGetAllUsers = () => {
 }
 
 export const useGetAllProductCategories = () => {
-  return useQuery<CategoryData[]>({
+  return useQuery<Category[]>({
     queryKey: ["get-all-product-categories"],
     queryFn: getAllProdutCategories,
   })
@@ -54,14 +49,14 @@ export const useGetHighlightedPost = () => {
 }
 
 export const useGetCategories = () => {
-  return useQuery<CategoryData[]>({
+  return useQuery<Category[]>({
     queryKey: ["get-categories"],
     queryFn: getAllCategories,
   })
 }
 
 export const useGetSinglePost = (id: string) => {
-  return useQuery<PostData>({
+  return useQuery<Post>({
     queryKey: ["single-post", id],
     queryFn: () => getSinglePost(id),
     enabled: true,

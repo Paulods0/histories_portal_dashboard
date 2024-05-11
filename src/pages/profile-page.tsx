@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { useAuthContext } from "@/context/AuthContext"
+import { useAuthContext } from "@/context/auth-context"
 import { useEffect, useState } from "react"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import { CiSettings } from "react-icons/ci"

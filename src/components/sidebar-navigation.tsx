@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom"
 import { ADMIN_DASHBOARD_NAV_LINKS } from "../utils/constants"
 import { FiLogOut } from "react-icons/fi"
-import { useAuthContext } from "../context/AuthContext"
+import { useAuthContext } from "../context/auth-context"
 
 import { Button } from "./ui/button"
 

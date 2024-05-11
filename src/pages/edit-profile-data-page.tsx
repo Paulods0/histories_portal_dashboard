@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useAuthContext } from "@/context/AuthContext"
+import { useAuthContext } from "@/context/auth-context"
 import { Link } from "react-router-dom"
 import { FaArrowLeft } from "react-icons/fa"
 import { useForm } from "react-hook-form"

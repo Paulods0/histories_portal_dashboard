@@ -4,12 +4,12 @@ import { Textarea } from "../ui/textarea"
 import { Button } from "../ui/button"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PostData } from "@/types/data"
-import { EditPostFormSchemaType, editPostFormSchema } from "@/types/schema"
+import { Post } from "@/types/data"
+import { EditPostFormSchemaType, editPostFormSchema } from "@/types/form-schema"
 
 type Props = {
   author: string
-  post: PostData
+  post: Post
   category: string
 }
 

@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom"
 import Cookies from "js-cookie"
 import Header from "./home-components/header"
+import Container from "./global/container"
 
 const Dashboard = () => {
   const token = Cookies.get("token")
@@ -9,11 +10,12 @@ const Dashboard = () => {
   }
 
   return (
-    <main className="w-full bg-background flex flex-col overflow-y-hidden dark text-foreground min-h-screen">
+    <main className="w-full flex flex-col dark text-foreground">
       <Header />
-      <section className="w-full px-4 h-full overflow-y-hidden py-2">
+
+      <Container className="pt-2 bg-background h-screen">
         <Outlet />
-      </section>
+      </Container>
     </main>
   )
 }
