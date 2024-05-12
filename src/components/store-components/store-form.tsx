@@ -1,15 +1,14 @@
-import { useForm } from "react-hook-form"
-import { ProductFormSchema, productFormSchema } from "@/types/form-schema"
+import { FormProvider, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Input } from "../ui/input"
+// import { useCreateProduct } from "@/lib/react-query/mutations"
+import { ProductFormSchema, productFormSchema } from "@/types/form-schema"
+
+// import { NewProduct } from "@/types/create"
 import { Label } from "../ui/label"
-import { Button } from "../ui/button"
-import { toast } from "react-toastify"
-import { uploadImageToFirebaseStorage } from "@/utils/helpers"
-import { useCreateProduct } from "@/lib/react-query/mutations"
-import { useState } from "react"
-import { ClipLoader } from "react-spinners"
-import { useGetAllProductCategories } from "@/lib/react-query/queries"
+import { Input } from "../ui/input"
+import InputField from "../forms/form-ui/input-field"
+import FormButton from "../forms/form-ui/form-button"
+import { ChangeEvent, useState } from "react"
 import {
   Select,
   SelectContent,
@@ -17,111 +16,108 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
-import { NewProduct } from "@/types/data"
+import { useGetAllProductCategories } from "@/lib/react-query/queries"
 
 const StoreForm = () => {
-  const { mutate } = useCreateProduct()
-  const { data, isLoading: loadingCategories } = useGetAllProductCategories()
+  // const { mutate } = useCreateProduct()
+  const { data: categories, isLoading } = useGetAllProductCategories()
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [category, setCategory] = useState("")
+  const [image, setImage] = useState<string | null>(null)
 
-  const handleChangCategory = (value: string) => {
-    setCategory(value)
-  }
-
-  const {
-    handleSubmit,
-    formState: { errors },
-    register,
-  } = useForm<ProductFormSchema>({
+  const methods = useForm<ProductFormSchema>({
     resolver: zodResolver(productFormSchema),
   })
 
-  const handleSubmitForm = async (data: ProductFormSchema) => {
-    setIsLoading(true)
-    try {
-      if (!data.image[0] || !category) {
-        toast.error("Preencha todos os dados")
-        setIsLoading(false)
-        return
-      }
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = methods
 
-      const downloadURL = await uploadImageToFirebaseStorage(
-        data.image[0],
-        "products"
-      )
-
-      const product: NewProduct = {
-        name: data.title,
-        price: data.price,
-        image: downloadURL,
-        category: category,
-      }
-
-      mutate(product)
-      setIsLoading(false)
-      toast.success("Produto adicionado")
-      // console.log(product)
-    } catch (error) {
-      toast.error("Erro ao adicionar produto")
-      console.log("Erro: " + error)
-      setIsLoading(false)
+  const handleImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target?.files) {
+      const file = e.target.files[0]
+      const imageURL = URL.createObjectURL(file)
+      setImage(imageURL)
     }
   }
 
+  const handleCategory = (value: ProductFormSchema["category"]) => {
+    setValue("category", value)
+  }
+
+  function handleSubmitForm(data: ProductFormSchema) {
+    console.log(data)
+  }
+
   return (
-    <form
-      onSubmit={handleSubmit(handleSubmitForm)}
-      encType="multipart/form-data"
-      className="flex p-2 flex-1 gap-2 h-full flex-col w-full"
-    >
-      <img src="" alt="" />
+    <FormProvider {...methods}>
+      <form
+        onSubmit={handleSubmit(handleSubmitForm)}
+        encType="multipart/form-data"
+        className="flex p-2 flex-1 gap-2 h-full flex-col w-full"
+      >
+        {image ? <img src={image} className="size-24 object-contain" /> : null}
 
-      {loadingCategories ? (
-        <ClipLoader size={14} />
-      ) : (
-        <Select onValueChange={handleChangCategory}>
-          <SelectTrigger>
-            <SelectValue placeholder="Categoria" />
-          </SelectTrigger>
-          <SelectContent>
-            {data?.map((category) => (
-              <SelectItem key={category._id} value={category._id}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
+        <>
+          <Label htmlFor="image">
+            <Input
+              type="file"
+              className="bg-background file:text-black"
+              accept=".jpg, .png, .jpeg"
+              {...register("image")}
+              onChange={handleImage}
+            />
+          </Label>
+          {errors.image && (
+            <span className="text-red-600 text-xs">{errors.image.message}</span>
+          )}
+        </>
 
-      <div className="flex flex-col w-full gap-2">
-        <Label htmlFor="image">Imagem</Label>
-        <Input type="file" id="image" {...register("image")} />
-        {errors.image && (
-          <span className="text-red-600 text-xs">{errors.image.message}</span>
-        )}
-      </div>
-      <div className="flex flex-col w-full gap-2">
-        <Label htmlFor="title">Título</Label>
-        <Input type="text" id="title" {...register("title")} />
-        {errors.title && (
-          <span className="text-red-600 text-xs">{errors.title.message}</span>
-        )}
-      </div>
+        <InputField
+          className="bg-foreground"
+          label="Nome"
+          {...register("title")}
+          error={errors.title}
+        />
+        <InputField
+          type="number"
+          className="bg-foreground"
+          label="Preço"
+          {...register("price")}
+          error={errors.price}
+        />
 
-      <div className="flex flex-col w-full gap-2">
-        <Label htmlFor="price">Preço</Label>
-        <Input type="number" id="price" {...register("price")} />
-        {errors.price && (
-          <span className="text-red-600 text-xs">{errors.price.message}</span>
-        )}
-      </div>
+        <>
+          <Select onValueChange={handleCategory}>
+            <SelectTrigger className="bg-foreground text-background">
+              <SelectValue placeholder="Categoria" />
+            </SelectTrigger>
 
-      <Button disabled={isLoading} type="submit" className="w-fit">
-        {isLoading ? <ClipLoader size={14} /> : "Publicar produto"}
-      </Button>
-    </form>
+            <SelectContent>
+              {categories?.map((category) => (
+                <SelectItem key={category._id} value={category._id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {errors.category && (
+            <span className="text-xs text-red-600">
+              {errors.category.message}
+            </span>
+          )}
+        </>
+
+        <FormButton
+          text="Salvar produto"
+          buttonColor="#111"
+          isSubmitting={isSubmitting}
+        />
+      </form>
+    </FormProvider>
   )
 }
 

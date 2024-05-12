@@ -9,6 +9,8 @@ import { useParams } from "react-router-dom"
 import LoaderSpinner from "@/components/global/loader-spinner"
 import EditPostForm from "@/components/forms/edit-post-form"
 import EditTourPostForm from "@/components/forms/edit-tour-post.form"
+import SelectAuthorInput from "@/components/add-post-components/select-author-input"
+import SelectCategoryInput from "@/components/add-post-components/select-category-input"
 
 const EditPostPostPage = () => {
   const { id } = useParams()
@@ -38,6 +40,7 @@ const EditPostPostPage = () => {
   if (isLoading) {
     return <LoaderSpinner />
   }
+
   return (
     <main className="flex h-full justify-center items-center">
       <section className="w-full h-full mx-auto flex lg:flex-row flex-col gap-6">
@@ -58,6 +61,12 @@ const EditPostPostPage = () => {
           {categoryName !== "Passeios" && categoryName !== "Agenda AO" && (
             <EditPostForm author={authorId} category={category} post={post} />
           )}
+
+          <SelectAuthorInput setAuthorId={setAuthorId} />
+          <SelectCategoryInput
+            setCategory={setCategory}
+            setCategoryName={setCategoryName}
+          />
         </div>
       </section>
     </main>

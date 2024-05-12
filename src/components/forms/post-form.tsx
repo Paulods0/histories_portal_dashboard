@@ -7,13 +7,12 @@ import { PostFormSchemaType, postFormSchema } from "@/types/form-schema"
 
 // import { useNavigate } from "react-router-dom"
 import { Button } from "../ui/button"
-import InputField from "./form-inputs/input-field"
-import InputCheckbox from "./form-inputs/input-checkbox"
+import InputField from "./form-ui/input-field"
+import InputCheckbox from "./form-ui/input-checkbox"
 
-import TextAreaField from "./form-inputs/text-area-field"
+import TextAreaField from "./form-ui/text-area-field"
 import { useAuthContext } from "@/context/auth-context"
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
+
 import { ClipLoader } from "react-spinners"
 
 type Props = {
@@ -36,7 +35,7 @@ const PostForm = ({ content, category, authorId }: Props) => {
   const {
     handleSubmit,
     register,
-    formState: { errors,  isSubmitting },
+    formState: { errors, isSubmitting },
     setValue,
   } = postFormProvider
 

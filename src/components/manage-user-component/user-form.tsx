@@ -100,6 +100,7 @@ const UserForm = () => {
           <span className="text-xs text-red-600">{errors.email.message}</span>
         )}
       </div>
+      
       <div className="w-full flex flex-col">
         <div className="relative flex items-center w-full">
           <Input

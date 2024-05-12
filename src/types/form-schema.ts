@@ -57,12 +57,15 @@ export const editTourFormSchema = z.object({
 })
 
 export const editPostFormSchema = z.object({
-  tags: z.string().optional(),
+  tags: z
+    .string()
+    .optional()
+    .transform((tag) => (tag ? tag.split(",") : "")),
   title: z.string().optional(),
   category: z.string().optional(),
-  author_notes: z.string().optional(),
   highlighted: z.boolean().optional(),
-  image: z.union([z.string(), z.instanceof(FileList)]).optional(),
+  author_notes: z.string().optional(),
+  image: z.union([z.string(), z.custom<File>()]).optional(),
 })
 
 export const editScheduleFormSchema = z.object({
@@ -91,9 +94,13 @@ export const loginSchema = z.object({
 })
 
 export const productFormSchema = z.object({
-  title: z.string().min(1, { message: "*O título é obrigatório" }),
   price: z.string().min(1, { message: "*O preço é obrigatório" }),
-  image: z.custom<File[]>(),
+  title: z.string().min(1, { message: "*O título é obrigatório" }),
+  category: z.string().min(1, { message: "*Selecione uma categoria" }),
+  image: z
+    .instanceof(FileList)
+    .refine((image) => image.item(0) !== null, "*Insira uma imagem")
+    .transform((image) => image.item(0)),
 })
 
 export const editProductFormSchema = z.object({

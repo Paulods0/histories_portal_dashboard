@@ -25,7 +25,7 @@ const SelectCategory = ({ product }: Props) => {
         setValue("category", value, { shouldValidate: true })
       }
     >
-      <SelectTrigger>
+      <SelectTrigger className="text-background bg-foreground">
         <SelectValue placeholder={product.category.name} />
       </SelectTrigger>
 

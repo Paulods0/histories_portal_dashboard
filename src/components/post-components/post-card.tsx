@@ -13,6 +13,7 @@ const PostCard = ({ post }: PostCardProps) => {
       <Link to={`/post/${post._id}`} className="relative w-full h-[160px] ">
         <img
           src={post.mainImage}
+          loading="lazy"
           className=" w-full h-full absolute inset-0 object-cover "
           alt="Main photo"
         />

@@ -24,8 +24,8 @@ export type Post = {
   createdAt: string
   latitude: string
   longitude: string
-  tag: string[]
-  author_notes: string
+  tag?: string | string[]
+  author_notes?: string
   rating: string
   deslikes: number
   views: number

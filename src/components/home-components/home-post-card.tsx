@@ -14,7 +14,8 @@ const HomePostCard = ({
         <img
           src={mainImage}
           className="absolute rounded-[8px] inset-0 w-full aspect-square h-full object-cover"
-          alt=""
+          alt="imagem do post"
+          loading="lazy"
         />
         <h1 className="absolute bottom-4 text-base p-2 flex lg:hidden font-bold line-clamp-1">
           {title}

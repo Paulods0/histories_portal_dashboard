@@ -6,7 +6,7 @@ type Props = {
   author: string
 }
 
-const EditTourPostForm = ({ author, category, post }: Props) => {
+const EditTourPostForm = ({}: Props) => {
   return (
     <form className="flex flex-col gap-3 w-full">
       <h1>edit tour form</h1>
