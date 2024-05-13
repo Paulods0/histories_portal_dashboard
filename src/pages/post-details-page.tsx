@@ -24,13 +24,6 @@ const PostDetailsPage = () => {
   return (
     <main className="w-full flex items-center overflow-y-clip scroll-bar px-8">
       <div className="w-full mt-3 flex items-center flex-col relative">
-        {userId === data?.author._id && (
-          <Link to={`/edit-post/${data!!._id}`}>
-            <Button variant={"outline"} className="absolute right-2 top-12">
-              Editar
-            </Button>
-          </Link>
-        )}
         <h1 className="font-bold text-4xl mb-6 text-center text-foreground">
           {data?.title}
         </h1>
@@ -44,24 +37,24 @@ const PostDetailsPage = () => {
         </div>
         <img
           src={data?.mainImage}
-          className="lg:w-[700px] lg:h-[400px] object-cover"
-          alt=""
+          className="lg:w-[700px] w-full lg:h-[400px] object-contain lg:object-cover"
+          alt="imagem principal"
         />
-        <div className="w-[950px] pb-3 mt-3 mx-auto">
-          <p
-            className="text-base mt-4 text-zinc-400"
-            dangerouslySetInnerHTML={{ __html: data!!.content }}
+        <div className="w-full lg:w-[950px] pb-3 mt-3 mx-auto">
+          <div
+            className="text-base mt-4 text-white"
+            dangerouslySetInnerHTML={{ __html: data?.content ?? "" }}
           />
           <hr className="w-full bg-zinc-400 my-8" />
 
-          <div className="w-full flex my-8 items-center justify-between">
+          <div className="w-full flex flex-col lg:flex-row gap-4 lg:gap-0 my-8 lg:items-center lg:justify-between">
             <div className="flex items-center">
               <h3 className="font-bold capitalize text-[18px] mr-3">tags:</h3>
-              {data!!.tag.map((tag, index) => (
+              {data!!.tag!!.map((eachTag, index) => (
                 <span
                   className="text-zinc-400 text-sm italic"
                   key={index}
-                >{`#${tag} `}</span>
+                >{`#${eachTag} `}</span>
               ))}
             </div>
 
@@ -83,7 +76,7 @@ const PostDetailsPage = () => {
             </div>
           </div>
 
-          <AuthorNotes author={data!!.author} notes={data!!.author_notes} />
+          <AuthorNotes author={data?.author} notes={data?.author_notes} />
         </div>
       </div>
     </main>

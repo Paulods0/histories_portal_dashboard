@@ -3,8 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { User } from "@/types/data"
 
 type AuthorNotesProps = {
-  author: User
-  notes: string
+  author?: User
+  notes?: string
 }
 
 const AuthorNotes = ({ author, notes }: AuthorNotesProps) => {
@@ -13,14 +13,14 @@ const AuthorNotes = ({ author, notes }: AuthorNotesProps) => {
       <CardHeader className="flex flex-row items-center gap-x-2">
         <Avatar className="w-24 h-24">
           <AvatarFallback>
-            {author.firstname.charAt(0).toUpperCase()}
+            {author?.firstname.charAt(0).toUpperCase()}
           </AvatarFallback>
-          <AvatarImage src={author.image} />
+          <AvatarImage src={author?.image} />
         </Avatar>
 
         <CardTitle className="space-x-1">
-          <span>{author.firstname}</span>
-          <span>{author.lastname}</span>
+          <span>{author?.firstname}</span>
+          <span>{author?.lastname}</span>
         </CardTitle>
         {/* <CardDescription>{author.email}</CardDescription> */}
       </CardHeader>

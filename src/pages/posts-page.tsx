@@ -18,8 +18,10 @@ import { useGetAllPosts, useGetCategories } from "@/lib/react-query/queries"
 import { useQuery } from "@tanstack/react-query"
 import { FaPlusCircle } from "react-icons/fa"
 import { getAllPostsByCategory } from "@/api/post"
+import { useAuthContext } from "@/context/auth-context"
 
 const PostsPage = () => {
+  const { user } = useAuthContext()
   const location = useLocation()
   const path = new URLSearchParams(location.search).get("id")
 
@@ -72,11 +74,13 @@ const PostsPage = () => {
           </SelectContent>
         </Select>
 
-        <Link to={"/novopost"}>
-          <Button variant={"default"} className="gap-x-2 flex">
-            <FaPlusCircle size={12} /> Novo
-          </Button>
-        </Link>
+        {user!!.role !== "store-manager" && (
+          <Link to={"/novopost"}>
+            <Button variant={"default"} className="gap-x-2 flex">
+              <FaPlusCircle size={12} /> Novo
+            </Button>
+          </Link>
+        )}
       </div>
 
       <hr className="w-full my-3" />

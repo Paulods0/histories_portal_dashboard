@@ -1,136 +1,169 @@
-import { useForm } from "react-hook-form"
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
+import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { EyeIcon, EyeOff } from "lucide-react"
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { UserFormType, userFormSchema } from "@/types/form-schema"
 import { useCreateUser } from "@/lib/react-query/mutations"
 import { toast } from "react-toastify"
 import { NewUser } from "@/types/create"
 import { uploadImageToFirebaseStorage } from "@/utils/helpers"
-import { ClipLoader } from "react-spinners"
+import { Input } from "../ui/input"
+import InputField from "../forms/form-ui/input-field"
+import FormButton from "../forms/form-ui/form-button"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select"
 
 const UserForm = () => {
   const { mutate } = useCreateUser()
 
-  const [image, setImage] = useState<any>()
   const [showPass, setShowPass] = useState(false)
-  const [isLoading, setisLoading] = useState(false)
+  const [image, setImage] = useState<string | null>(null)
 
-  const show = () => {
-    setShowPass(true)
-  }
-  const hide = () => {
-    setShowPass(false)
-  }
-
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm<UserFormType>({
-    resolver: zodResolver(userFormSchema),
-  })
-
-  const handleSaveUser = async (data: UserFormType) => {
-    setisLoading(true)
-    try {
-      let useData: NewUser
-
-      if (image) {
-        const url = await uploadImageToFirebaseStorage(image, "profile")
-        useData = {
-          firstname: data.firstname,
-          lastname: data.lastname,
-          password: data.password,
-          email: data.email,
-          image: url,
-        }
-      } else {
-        useData = {
-          firstname: data.firstname,
-          lastname: data.lastname,
-          password: data.password,
-          email: data.email,
-          image: undefined,
-        }
-      }
-
-      mutate(useData)
-      setisLoading(false)
-      toast.success("Usuário adicionado com sucesso")
-      console.log(useData)
-    } catch (error) {
-      console.log("Erro ao criar usuário :" + error)
-      toast.error("Erro ao criar usuário, tente novamente")
-      setisLoading(false)
+  const handleImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const file = e.target.files[0]
+      const imageURL = URL.createObjectURL(file)
+      setImage(imageURL)
     }
   }
 
+  const showPassword = () => {
+    setShowPass(true)
+  }
+
+  const hidePassword = () => {
+    setShowPass(false)
+  }
+
+  const methods: UseFormReturn<UserFormType> = useForm<UserFormType>({
+    resolver: zodResolver(userFormSchema),
+  })
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+    setValue,
+  } = methods
+
+  const handleSelectRole = (value: UserFormType["role"]) => {
+    setValue("role", value)
+  }
+
+  const handleSaveUser = async (data: UserFormType) => {
+    console.log(data)
+    // try {
+    //   let useData: NewUser
+    //   if (image) {
+    //     const url = await uploadImageToFirebaseStorage(image, "profile")
+    //     useData = {
+    //       firstname: data.firstname,
+    //       lastname: data.lastname,
+    //       password: data.password,
+    //       email: data.email,
+    //       image: url,
+    //     }
+    //   } else {
+    //     useData = {
+    //       firstname: data.firstname,
+    //       lastname: data.lastname,
+    //       password: data.password,
+    //       email: data.email,
+    //       image: undefined,
+    //     }
+    //   }
+    //   mutate(useData)
+    //   setisLoading(false)
+    //   toast.success("Usuário adicionado com sucesso")
+    //   console.log(useData)
+    // } catch (error) {
+    //   console.log("Erro ao criar usuário :" + error)
+    //   toast.error("Erro ao criar usuário, tente novamente")
+    //   setisLoading(false)
+    // }
+  }
+
   return (
-    <form onSubmit={handleSubmit(handleSaveUser)} className="space-y-4">
-      <Input
-        onChange={(e) => setImage(e.target.files ? e.target.files[0] : "")}
-        placeholder="Imagem"
-        type="file"
-      />
-
-      <div className="w-full flex flex-col">
-        <Input {...register("firstname")} type="text" placeholder="Nome" />
-        {errors.firstname && (
-          <span className="text-xs text-red-600">
-            {errors.firstname.message}
-          </span>
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(handleSaveUser)} className="space-y-4">
+        {image && (
+          <img src={image} className="size-32 object-contain aspect-ratio" />
         )}
-      </div>
 
-      <div className="w-full flex flex-col">
-        <Input {...register("lastname")} type="text" placeholder="Sobrenome" />
-        {errors.lastname && (
-          <span className="text-xs text-red-600">
-            {errors.lastname.message}
-          </span>
-        )}
-      </div>
+        <Input
+          type="file"
+          accept=".jpg, .png, .jpeg"
+          {...register("image")}
+          onChange={handleImage}
+          className="file:text-white"
+        />
 
-      <div className="w-full flex flex-col">
-        <Input {...register("email")} placeholder="Email" />
-        {errors.email && (
-          <span className="text-xs text-red-600">{errors.email.message}</span>
-        )}
-      </div>
-      
-      <div className="w-full flex flex-col">
-        <div className="relative flex items-center w-full">
-          <Input
-            {...register("password")}
+        <InputField
+          className="bg-foreground text-background"
+          label="Nome"
+          {...register("firstname")}
+          error={errors.firstname}
+        />
+
+        <InputField
+          className="bg-foreground text-background"
+          label="Sobrenome"
+          {...register("lastname")}
+          error={errors.lastname}
+        />
+
+        <InputField
+          className="bg-foreground text-background"
+          label="Email"
+          {...register("email")}
+          error={errors.email}
+        />
+
+        <div className="relative">
+          <InputField
             type={showPass ? "text" : "password"}
-            placeholder="Password"
-            className="w-full"
+            className="bg-foreground text-background"
+            label="Password"
+            {...register("password")}
+            error={errors.password}
           />
-          {showPass ? (
-            <button type="button" onClick={hide} className="absolute right-2">
-              <EyeOff />
-            </button>
-          ) : (
-            <button type="button" onClick={show} className="absolute right-2">
-              <EyeIcon />
-            </button>
+          <div
+            onClick={() => setShowPass((prev) => !prev)}
+            className="absolute right-2 top-1/2 "
+          >
+            {showPass ? <EyeOff /> : <EyeIcon />}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <Select onValueChange={handleSelectRole}>
+            <SelectTrigger className="bg-foreground text-background">
+              <SelectValue placeholder="Role" />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="store-manager">Gestor de loja</SelectItem>
+              <SelectItem value="publicator">Publicador</SelectItem>
+            </SelectContent>
+          </Select>
+          {errors.role && (
+            <span className="text-xs text-red-600">{errors.role.message}</span>
           )}
         </div>
 
-        {errors.password && (
-          <span className="text-xs text-red-600">
-            {errors.password.message}
-          </span>
-        )}
-      </div>
-
-      <Button disabled={isLoading} type="submit" variant={"secondary"}>
-        {isLoading ? <ClipLoader size={16} /> : "Criar"}
-      </Button>
-    </form>
+        <FormButton
+          variant="secondary"
+          isSubmitting={isSubmitting}
+          text="Salvar"
+          buttonColor="#111111"
+        />
+      </form>
+    </FormProvider>
   )
 }
 

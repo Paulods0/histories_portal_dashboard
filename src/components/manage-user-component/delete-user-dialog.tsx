@@ -14,24 +14,29 @@ import { Button } from "../ui/button"
 import { User } from "@/types/data"
 import { deleteImageFromFirebase } from "@/utils/helpers"
 import { useDeleteUser } from "@/lib/react-query/mutations"
+import { useState } from "react"
 
 type Props = {
   user: User
 }
 const DeleteUserDialog = ({ user }: Props) => {
-  const { mutate, isPending } = useDeleteUser()
+  const { mutate } = useDeleteUser()
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleDeleteUser = async () => {
+    setIsLoading(true)
     try {
-      if (user.image) {
-        await deleteImageFromFirebase(user.image, "profile")
-      }
+      // if (user.image) {
+      //   await deleteImageFromFirebase(user.image, "profile")
+      // }
 
       mutate(user._id)
+      setIsLoading(false)
       toast.success("Usuário removido com sucesso")
     } catch (error) {
       console.log(error)
       toast.error("Erro ao remover usuário, por favor tente novamente")
+      setIsLoading(false)
     }
   }
   return (
@@ -52,11 +57,11 @@ const DeleteUserDialog = ({ user }: Props) => {
         <AlertDialogFooter>
           <AlertDialogAction asChild>
             <Button
-              disabled={isPending}
+              disabled={isLoading}
               onClick={handleDeleteUser}
               variant={"destructive"}
             >
-              {isPending ? "Removendo..." : "Remover"}
+              {isLoading ? "Removendo..." : "Remover"}
             </Button>
           </AlertDialogAction>
           <AlertDialogCancel asChild>

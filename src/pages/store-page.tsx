@@ -13,8 +13,10 @@ import AddProductButton from "@/components/store-components/add-product-button"
 import EditProduct from "@/components/store-components/edit-product"
 import DeleteProduct from "@/components/store-components/delete-product"
 import { useGetAllProducts } from "@/lib/react-query/queries"
+import { useAuthContext } from "@/context/auth-context"
 
 const StorePage = () => {
+  const { user } = useAuthContext()
   const { data: products, isLoading } = useGetAllProducts()
 
   if (isLoading) {
@@ -35,9 +37,11 @@ const StorePage = () => {
         <section className="w-full flex flex-col h-full items-center justify-start gap-y-2">
           <div className="flex flex-col gap-y-2 mx-auto w-full lg:w-[800px]">
             <h1 className="font-bold text-3xl">Produtos</h1>
-            <div className="w-full flex items-center justify-end">
-              <AddProductButton />
-            </div>
+            {user?.role !== "publicator" && (
+              <div className="w-full flex items-center justify-end">
+                <AddProductButton />
+              </div>
+            )}
 
             <div className="border h-[60vh] overflow-y-auto scroll-bar relative rounded-lg p-6 w-full">
               <Table>
@@ -61,11 +65,12 @@ const StorePage = () => {
                       <TableCell>{product.category.name}</TableCell>
                       <TableCell>{product.price} kz</TableCell>
 
-                      <TableCell className="space-x-4">
-                        <EditProduct product={product} />
-
-                        <DeleteProduct product={product} />
-                      </TableCell>
+                      {user?.role !== "publicator" && (
+                        <TableCell className="space-x-4">
+                          <EditProduct product={product} />
+                          <DeleteProduct product={product} />
+                        </TableCell>
+                      )}
                     </TableRow>
                   ))}
                 </TableBody>

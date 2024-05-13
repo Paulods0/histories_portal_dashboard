@@ -2,12 +2,15 @@ import { Post } from "../../types/data"
 import { Link } from "react-router-dom"
 import DeletePostDialog from "./delete-post-dialog"
 import { CiEdit } from "react-icons/ci"
+import { useAuthContext } from "@/context/auth-context"
 
 type PostCardProps = {
   post: Post
 }
 
 const PostCard = ({ post }: PostCardProps) => {
+  const { user } = useAuthContext()
+
   return (
     <div className="bg-background h-[270px] w-full flex items-center flex-col border border-secondary">
       <Link to={`/post/${post._id}`} className="relative w-full h-[160px] ">
@@ -40,13 +43,15 @@ const PostCard = ({ post }: PostCardProps) => {
               </span>
             </div>
 
-            <div className="flex items-center gap-3">
-              <Link to={`/edit-post/${post._id}`}>
-                <CiEdit size={22} />
-              </Link>
+            {user!!.role !== "store-manager" && (
+              <div className="flex items-center gap-3">
+                <Link to={`/edit-post/${post._id}`}>
+                  <CiEdit size={22} />
+                </Link>
 
-              <DeletePostDialog post={post} />
-            </div>
+                <DeletePostDialog post={post} />
+              </div>
+            )}
           </div>
         </div>
       </div>

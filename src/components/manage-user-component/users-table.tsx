@@ -11,12 +11,14 @@ import { Avatar, AvatarImage } from "../ui/avatar"
 import { formatDate } from "@/utils/helpers"
 import EditUserDialog from "./edit-user-dialog"
 import DeleteUserDialog from "./delete-user-dialog"
+import { useAuthContext } from "@/context/auth-context"
 
 type Props = {
   users: User[] | undefined
 }
 
 const UsersTable = ({ users }: Props) => {
+  const { user: currentUser, userId } = useAuthContext()
   return (
     <div className="w-full h-[75vh] overflow-auto scroll-bar mx-auto rounded-lg border p-4">
       <Table>
@@ -43,8 +45,14 @@ const UsersTable = ({ users }: Props) => {
               <TableCell>{user.email}</TableCell>
               <TableCell>{formatDate(user.createdAt)}</TableCell>
               <TableCell className="flex items-center gap-3">
-                <EditUserDialog user={user} />
-                <DeleteUserDialog user={user} />
+                
+                {currentUser!!.role === "admin" && (
+                  <EditUserDialog user={user} />
+                )}
+
+                {currentUser!!.role === "admin" && (
+                  <DeleteUserDialog user={user} />
+                )}
               </TableCell>
             </TableRow>
           ))}

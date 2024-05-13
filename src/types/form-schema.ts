@@ -73,10 +73,21 @@ export const editScheduleFormSchema = z.object({
 })
 
 export const userFormSchema = z.object({
-  firstname: z.string().min(1, "Por favor preencha este campo."),
-  lastname: z.string().min(1, "Por favor preencha este campo."),
-  email: z.string().email().min(1, "Por favor insira um email válido."),
-  password: z.string().min(6, "A password deve ter no mínimo 6 caracteres."),
+  image: z
+    .union([z.instanceof(FileList), z.undefined()])
+    .transform((image) =>
+      image?.item(0) !== null ? image?.item(0) : undefined
+    )
+    .optional(),
+  firstname: z.string().min(1, "*Por favor preencha este campo."),
+  lastname: z.string().min(1, "*Por favor preencha este campo."),
+  password: z.string().min(6, "*A password deve ter no mínimo 6 caracteres."),
+  email: z.string().email().min(1, "*Por favor insira um email válido."),
+  role: z.enum(["admin", "store-manager", "publicator"], {
+    errorMap: () => ({
+      message: "*Selecione uma role para este usuário",
+    }),
+  }),
 })
 
 export const editUserFormSchema = z.object({

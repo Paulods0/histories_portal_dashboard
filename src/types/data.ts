@@ -1,3 +1,5 @@
+export type Role = "admin" | "store-manager" | "publicator"
+
 export type User = {
   _id: string
   firstname: string
@@ -6,6 +8,7 @@ export type User = {
   image?: string
   posts: Post[]
   createdAt: string
+  role: Role
 }
 export type Category = {
   _id: string
@@ -24,7 +27,7 @@ export type Post = {
   createdAt: string
   latitude: string
   longitude: string
-  tag?: string | string[]
+  tag?: string[]
   author_notes?: string
   rating: string
   deslikes: number
@@ -32,6 +35,15 @@ export type Post = {
   author_id: string
   author: User
 }
+
+export type SchedulePost = {
+  author: User
+  file: string
+  title: string
+  category: string
+  createdAt: string
+}
+
 export type Product = {
   _id: string
   image: string

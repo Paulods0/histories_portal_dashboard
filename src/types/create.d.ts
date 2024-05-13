@@ -1,3 +1,5 @@
+import { Role } from "./data"
+
 export type NewExcursionPost = {
   title: string
   mainImage: string
@@ -38,6 +40,7 @@ export interface NewUser {
   image?: string
   email: string
   password: string
+  role:Role
 }
 export type NewSchedulePost = {
   title: string

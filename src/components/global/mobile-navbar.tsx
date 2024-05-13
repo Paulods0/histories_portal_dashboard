@@ -8,15 +8,18 @@ import {
   SheetFooter,
 } from "../ui/sheet"
 import { IoMenu } from "react-icons/io5"
-import { UserData } from "@/context/auth-context"
+import { UserData, useAuthContext } from "@/context/auth-context"
 import { ADMIN_DASHBOARD_NAV_LINKS } from "@/utils/constants"
 import { Link } from "react-router-dom"
+import { Button } from "../ui/button"
+import { LogOutIcon } from "lucide-react"
 
 type Props = {
   user: UserData
 }
 
 const MobileNavbar = ({ user }: Props) => {
+  const { logout } = useAuthContext()
   if (!user) {
     return
   }
@@ -56,6 +59,15 @@ const MobileNavbar = ({ user }: Props) => {
             </li>
           ))}
         </ul>
+
+        <Button
+          className="w-full space-x-4"
+          variant="destructive"
+          onClick={logout}
+        >
+          <p>Sair</p>
+          <LogOutIcon size={18} />
+        </Button>
         <SheetFooter>
           <img
             src="logotipo-texto.png"
