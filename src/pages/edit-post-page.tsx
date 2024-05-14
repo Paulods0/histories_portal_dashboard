@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 import QuillEditor from "@/components/global/quill-editor"
 
-import { Post } from "@/types/data"
+import { Post, SchedulePost } from "@/types/data"
 import { getSinglePost } from "@/api/post"
 
 import { useParams } from "react-router-dom"
@@ -11,6 +11,7 @@ import EditPostForm from "@/components/forms/edit-post-form"
 import EditTourPostForm from "@/components/forms/edit-tour-post.form"
 import SelectAuthorInput from "@/components/add-post-components/select-author-input"
 import SelectCategoryInput from "@/components/add-post-components/select-category-input"
+import EditSchedulePostForm from "@/components/forms/edit-schedule-post-form"
 
 const EditPostPostPage = () => {
   const { id } = useParams()
@@ -45,7 +46,7 @@ const EditPostPostPage = () => {
     <main className="flex h-full justify-center items-center">
       <section className="w-full h-full mx-auto flex lg:flex-row flex-col gap-6">
         <QuillEditor
-          className="flex-[2] bg-zinc-200"
+          className="flex-[2] "
           content={content}
           setContent={setContent}
         />
@@ -58,6 +59,15 @@ const EditPostPostPage = () => {
               post={post}
             />
           )}
+
+          {/* {categoryName === "Agenda AO" && (
+            <EditSchedulePostForm
+              author={authorId}
+              category={category}
+              post={post}
+            />
+          )} */}
+
           {categoryName !== "Passeios" && categoryName !== "Agenda AO" && (
             <EditPostForm author={authorId} category={category} post={post} />
           )}

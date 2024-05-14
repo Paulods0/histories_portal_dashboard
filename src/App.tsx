@@ -17,6 +17,8 @@ import EditProfileDataPage from "./pages/edit-profile-data-page"
 import EditPostPostPage from "./pages/edit-post-page"
 
 import ProtectedRoutes from "./components/global/protected-routes"
+import SchedulePostsPage from "./pages/schedule-posts-page"
+import ClassifiedPostsPage from "./pages/classified-posts-page"
 
 function App() {
   return (
@@ -25,15 +27,17 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         <Route path="/" element={<ProtectedRoutes />}>
-          <Route index element={<HomeDashboardPage />} />
-          <Route path="novopost" element={<AddPostPage />} />
-          <Route path="posts" element={<PostsPage />} />
           <Route path="loja" element={<StorePage />} />
+          <Route path="posts" element={<PostsPage />} />
+          <Route index element={<HomeDashboardPage />} />
           <Route path="ads" element={<GoogleAdsPage />} />
-          <Route path="categorias" element={<CategoriesPage />} />
+          <Route path="novopost" element={<AddPostPage />} />
           <Route path="usuarios" element={<ManageUserPage />} />
-          <Route path="edit-post/:id" element={<EditPostPostPage />} />
           <Route path="post/:id" element={<PostDetailsPage />} />
+          <Route path="categorias" element={<CategoriesPage />} />
+          <Route path="edit-post/:id" element={<EditPostPostPage />} />
+          <Route path="posts/agenda-ao" element={<SchedulePostsPage />} />
+          <Route path="posts/classificados" element={<ClassifiedPostsPage />} />
 
           <Route path="profile/:id/" element={<ProfilePage />}>
             <Route index element={<UserPostsPage />} />

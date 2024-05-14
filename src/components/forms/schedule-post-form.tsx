@@ -1,17 +1,14 @@
 import { useCreateSchedulePost } from "@/lib/react-query/mutations"
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
-import { ClipLoader } from "react-spinners"
 import { uploadImageToFirebaseStorage } from "@/utils/helpers"
-import { useForm } from "react-hook-form"
+import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ScheduleFormSchemaType, scheduleFormSchema } from "@/types/form-schema"
 import { useAuthContext } from "@/context/auth-context"
 import { toast } from "react-toastify"
 import { NewSchedulePost } from "@/types/create"
-import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import InputField from "./form-ui/input-field"
+import FormButton from "./form-ui/form-button"
 
 type Props = {
   category: string
@@ -23,23 +20,21 @@ const SchedulePostForm = ({ authorId, category }: Props) => {
   const { userId } = useAuthContext()
   const { mutate } = useCreateSchedulePost()
 
-  const [isLoading, setIsLoading] = useState(false)
-
-  const { register, handleSubmit } = useForm<ScheduleFormSchemaType>({
-    mode: "all",
-    resolver: zodResolver(scheduleFormSchema),
-  })
+  const methods: UseFormReturn<ScheduleFormSchemaType> =
+    useForm<ScheduleFormSchemaType>({
+      mode: "all",
+      resolver: zodResolver(scheduleFormSchema),
+    })
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = methods
 
   const handleSubmitForm = async (data: ScheduleFormSchemaType) => {
-    setIsLoading(true)
     try {
-      if (!data.file || !data.title) {
-        toast.error("Preencha todos os campos obrigatórios.")
-        setIsLoading(false)
-        return
-      }
       const file = await uploadImageToFirebaseStorage(
-        data.file[0],
+        data.file!!,
         "schedule-posts"
       )
       const fileData: NewSchedulePost = {
@@ -49,48 +44,42 @@ const SchedulePostForm = ({ authorId, category }: Props) => {
         file: file,
       }
       mutate(fileData)
-      setIsLoading(false)
-      navigate("/posts")
       toast.success("Publicado com sucesso")
+      navigate("/posts")
     } catch (error) {
-      setIsLoading(false)
       console.log("Erro ao publicar")
       toast.error("Erro ao publicar")
     }
-    console.log({ ...data, category, author_id: authorId ? authorId : userId })
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(handleSubmitForm)}
-      className="h-auto space-y-3"
-    >
-      <div className="sticky top-0 w-full">
-        <Button disabled={isLoading} type="submit" className="w-full z-20">
-          {isLoading ? <ClipLoader size={14} /> : "Publicar"}
-        </Button>
-      </div>
-
-      <Input
-        className="file:text-white "
-        placeholder="Título"
-        type="text"
-        {...register("title")}
-      />
-
-      <div>
-        <Label htmlFor="doc" className="text-[12px]">
-          Documento PDF
-        </Label>
-        <Input
-          className="file:text-white "
-          id="doc"
-          type="file"
-          {...register("file")}
-          accept="application/pdf"
+    <FormProvider {...methods}>
+      <form
+        onSubmit={handleSubmit(handleSubmitForm)}
+        className="h-auto space-y-3"
+      >
+        <InputField
+          label="Título"
+          {...register("title")}
+          error={errors.title}
         />
-      </div>
-    </form>
+
+        <InputField
+          className="file:text-white"
+          type="file"
+          accept=".pdf"
+          label="Documento PDF"
+          {...register("file")}
+          error={errors.file}
+        />
+
+        <FormButton
+          isSubmitting={isSubmitting}
+          text="Publicar"
+          buttonColor="#111111"
+        />
+      </form>
+    </FormProvider>
   )
 }
 

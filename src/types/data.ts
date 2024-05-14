@@ -1,4 +1,6 @@
 export type Role = "admin" | "store-manager" | "publicator"
+export type ClassifiedStatus = "active" | "suspended" | "inactive"
+export type ClassifiedType = "buy" | "sell"
 
 export type User = {
   _id: string
@@ -13,8 +15,8 @@ export type User = {
 export type Category = {
   _id: string
   name: string
-  createdAt: string
   creator: User
+  createdAt: string
 }
 
 export type Post = {
@@ -34,14 +36,34 @@ export type Post = {
   views: number
   author_id: string
   author: User
+  category_slug: string
 }
 
 export type SchedulePost = {
+  _id: string
   author: User
   file: string
   title: string
   category: string
   createdAt: string
+}
+
+export type ClassifiedPost = {
+  _id: string
+  title: string
+  author: {
+    firstname: string
+    lastname: string
+    email: string
+    phone: string
+  }
+  mainImage: string
+  content: string
+  category: Category
+  price: string
+  category_slug: string
+  status: ClassifiedStatus
+  type: ClassifiedType
 }
 
 export type Product = {

@@ -22,7 +22,8 @@ export const scheduleFormSchema = z.object({
   title: z.string().min(1, { message: "*O título é obrigatório" }),
   file: z
     .instanceof(FileList)
-    .refine((file) => !file.item(0), "*Insira um ficheiro PDF"),
+    .refine((file) => file.item(0) !== null, "*Insira um ficheiro PDF")
+    .transform((file) => file.item(0)),
 })
 
 export const tourFormSchema = z.object({
@@ -69,7 +70,15 @@ export const editPostFormSchema = z.object({
 })
 
 export const editScheduleFormSchema = z.object({
-  file: z.string(),
+  title: z.string().optional(),
+  file: z
+    .union([
+      z.string(),
+      z
+        .instanceof(FileList)
+        .transform((file) => file.item(0) !== null && file.item(0)),
+    ])
+    .optional(),
 })
 
 export const userFormSchema = z.object({

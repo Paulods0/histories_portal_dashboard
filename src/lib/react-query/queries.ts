@@ -1,9 +1,22 @@
-import { getAllPosts, getHighlightedPost, getSinglePost } from "@/api/post"
+import {
+  getAllPosts,
+  getClassifiedPosts,
+  getHighlightedPost,
+  getSchedulePosts,
+  getSinglePost,
+} from "@/api/post"
 import { getAllCategories } from "@/api/post-category"
 import { getAllProducts } from "@/api/product"
 import { getAllProdutCategories } from "@/api/product-category"
 import { getAllUsers, getUserPosts } from "@/api/user"
-import { Category, Post, Product, User } from "@/types/data"
+import {
+  Category,
+  ClassifiedPost,
+  Post,
+  Product,
+  SchedulePost,
+  User,
+} from "@/types/data"
 import { useQuery } from "@tanstack/react-query"
 
 export const useGetAllPosts = () => {
@@ -67,5 +80,19 @@ export const useGetPostById = (id: string) => {
   return useQuery({
     queryKey: ["get-post-by-id", id],
     queryFn: () => getSinglePost(id),
+  })
+}
+
+export const useGetSchedulePosts = () => {
+  return useQuery<SchedulePost[]>({
+    queryKey: ["get-schedule-posts"],
+    queryFn: getSchedulePosts,
+  })
+}
+
+export const useGetClassifiedPosts = () => {
+  return useQuery<ClassifiedPost[]>({
+    queryKey: ["get-classified-posts"],
+    queryFn: getClassifiedPosts,
   })
 }
