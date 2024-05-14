@@ -3,12 +3,14 @@ import { formatDate } from "@/utils/helpers"
 import { MdOutlineRemoveRedEye } from "react-icons/md"
 import { Button } from "../ui/button"
 import EditSchedulePostDialog from "./edit-schedule-post-dialog"
+import { useAuthContext } from "@/context/auth-context"
 
 type Props = {
   post: SchedulePost
 }
 
 const SchedulePostCard = ({ post }: Props) => {
+  const { user } = useAuthContext()
   return (
     <div className="h-auto flex flex-col w-full lg:w-auto p-4 border rounded-md hover:bg-zinc-900 transition-all duration-200 ease-in-out">
       <img
@@ -26,7 +28,9 @@ const SchedulePostCard = ({ post }: Props) => {
         </div>
 
         <div className="flex items-center gap-2 mt-4">
-          <EditSchedulePostDialog post={post} />
+          {user?.role !== "store-manager" && (
+            <EditSchedulePostDialog post={post} />
+          )}
 
           <Button
             variant={"secondary"}

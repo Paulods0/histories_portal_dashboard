@@ -58,6 +58,13 @@ export const updatePost = async (id: string, data: UpdatePost) => {
   await axios.put(`/post/${id}`, data)
 }
 
+export const updateClassifiedPost = async (
+  id: string,
+  newStatus: string
+) => {
+  await axios.put(`/classified-post/${id}`, newStatus)
+}
+
 export const deletePost = async (id: string) => {
   await axios.delete(`/post/${id}`)
 }

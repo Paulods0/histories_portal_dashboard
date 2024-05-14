@@ -2,10 +2,12 @@ import LoaderSpinner from "@/components/global/loader-spinner"
 import AddSchedulePost from "@/components/schedule-post-components/add-schedule-post"
 import SchedulePostCard from "@/components/schedule-post-components/schedule-post-card"
 import { Button } from "@/components/ui/button"
+import { useAuthContext } from "@/context/auth-context"
 import { useGetSchedulePosts } from "@/lib/react-query/queries"
 import { FaPlusCircle } from "react-icons/fa"
 
 const SchedulePostsPage = () => {
+  const { user } = useAuthContext()
   const { data, isLoading } = useGetSchedulePosts()
 
   if (isLoading) {
@@ -15,7 +17,7 @@ const SchedulePostsPage = () => {
   return (
     <main className="w-full h-full flex flex-col">
       <div className="flex mb-4 w-full items-end justify-end">
-        <AddSchedulePost/>
+        {user?.role !== "store-manager" && <AddSchedulePost />}
       </div>
       <>
         {data?.length === 0 ? (

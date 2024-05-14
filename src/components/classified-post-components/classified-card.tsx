@@ -1,5 +1,7 @@
 import { ClassifiedPost } from "@/types/data"
 
+import ClassifiedDialog from "./classified-dialog"
+
 type Props = {
   post: ClassifiedPost | undefined
 }
@@ -16,7 +18,7 @@ const ClassifiedCard = ({ post }: Props) => {
       <div className="flex w-full flex-col p-3 border-t">
         <h1 className="text-xl capitalize font-semibold">{post?.title}</h1>
         <div className="flex flex-col w-full">
-          <div className="w-full flex items-start gap-4 text-sm">
+          <div className="w-full flex items- justify-between gap-4 text-sm">
             <div className="flex flex-col gap-1">
               <p>
                 Autor:
@@ -27,23 +29,13 @@ const ClassifiedCard = ({ post }: Props) => {
             </div>
 
             <div className="flex flex-col gap-1">
-              <p>
-                Estado:
-                <span
-                  className={`${
-                    post?.status === "active"
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {post?.status}
-                </span>
-              </p>
-              <p>Tipo: {post?.type === "sell" ? "À venda" : "Comprar"}</p>
+              <ClassifiedDialog post={post} />
+              <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-center">
+                {post?.type === "sell" ? "À venda" : "Comprar"}
+              </div>
             </div>
           </div>
-
-          <p className="w-full">Email:{`${post?.author.email}`}</p>
+          {/* <p className="w-full">Email:{`${post?.author.email}`}</p> */}
         </div>
       </div>
     </div>

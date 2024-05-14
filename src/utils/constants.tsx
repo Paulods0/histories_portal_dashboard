@@ -72,3 +72,31 @@ export const toolbarOptions = [
 
   ["clean"], // remove formatting button
 ]
+
+export const CLASSIFIED_FILTERS = [
+  {
+    id: 1,
+    name: "À venda",
+    value: "sell",
+  },
+  {
+    id: 2,
+    name: "Comprar",
+    value: "buy",
+  },
+  {
+    id: 3,
+    name: "Activo",
+    value: "active",
+  },
+  {
+    id: 4,
+    name: "Suspenso",
+    value: "suspended",
+  },
+  {
+    id: 5,
+    name: "Inativo",
+    value: "inactive",
+  },
+]

@@ -3,6 +3,7 @@ import {
   createPost,
   createSchedulePost,
   deletePost,
+  updateClassifiedPost,
   updatePost,
 } from "@/api/post"
 import {
@@ -112,6 +113,15 @@ export const useUpdateProduct = () => {
     mutationFn: updateProduct,
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["get-all-products"] }),
+  })
+}
+
+export const useUpdateClassifiedPost = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (data:{id:string, newStatus:string})=> updateClassifiedPost(data.id,data.newStatus),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["get-classified-posts"] }),
   })
 }
 

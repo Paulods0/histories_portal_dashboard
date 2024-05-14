@@ -5,35 +5,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { SetURLSearchParams } from "react-router-dom"
 
-const CLASSIFIED_FILTERS = [
-  {
-    id: 1,
-    name: "À venda",
-    value: "sell",
-  },
-  {
-    id: 2,
-    name: "Comprar",
-    value: "buy",
-  },
-  {
-    id: 3,
-    name: "Activo",
-    value: "active",
-  },
-  {
-    id: 4,
-    name: "Suspenso",
-    value: "suspended",
-  },
-  {
-    id: 5,
-    name: "Inativo",
-    value: "inactive",
-  },
-]
+import { CLASSIFIED_FILTERS } from "@/utils/constants"
+import { SetURLSearchParams } from "react-router-dom"
 
 type Props = {
   setFilter: SetURLSearchParams
@@ -46,6 +20,7 @@ const ClassifiedFilter = ({ setFilter }: Props) => {
       return prev
     })
   }
+
   return (
     <Select onValueChange={handleFilter} defaultValue="all">
       <SelectTrigger className="w-fit">
