@@ -18,7 +18,6 @@ import {
   updateProductCategory,
 } from "@/api/product-category"
 import { createUser, deleteUser, updateUser } from "@/api/user"
-import { UpdatePost, UpdateProduct } from "@/types/update"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 export const useCreatePost = () => {
