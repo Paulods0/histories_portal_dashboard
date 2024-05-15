@@ -20,23 +20,25 @@ const SelectAuthorInput = ({ setAuthorId }: Props) => {
   const { data: users, isLoading: isLoadingUsers } = useGetAllUsers()
 
   if (isLoadingUsers) {
-    return (      
+    return (
       <div className="w-full items-center justify-center">
         <ClipLoader size={20} color="#FFF" />
       </div>
     )
   }
 
-  let currAuthor = users?.find((user) => user._id === userId)
+  let currAuthor = users!!.find((user) => user._id === userId)!!
 
   return (
     <div className="w-full">
       <Label>Autor</Label>
 
-      <Select onValueChange={(value) => setAuthorId(value)}>
+      <Select
+        defaultValue={currAuthor._id}
+        onValueChange={(value) => setAuthorId(value)}
+      >
         <SelectTrigger className="bg-foreground text-background">
           <SelectValue
-            defaultValue={users?.find((user) => user._id === userId)?._id}
             placeholder={
               <span className="flex items-center gap-1">
                 <img

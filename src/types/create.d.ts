@@ -1,22 +1,25 @@
 import { Role } from "./data"
 
-export type NewExcursionPost = {
+export type NewTourPost = {
   title: string
-  mainImage: string
   content: string
-  highlighted: boolean
+  tag?: string[] | string
   category: string
-  latitude: number
-  longitude: number
-  tag?: string[]
-  author_notes?: string
-  author_id: string
+  mainImage: string
+  highlighted: boolean
+  author: string
+  latitude: string
+  longitude: string
+  category_slug?: string
+  author_notes: author_notes
 }
 export type NewPost = {
   title: string
   mainImage: string
   content: string
   highlighted: boolean
+  latitude?: string
+  longitude: string
   category: string
   tag?: string[]
   author_notes?: string
@@ -40,7 +43,7 @@ export interface NewUser {
   image?: string
   email: string
   password: string
-  role:Role
+  role: Role
 }
 export type NewSchedulePost = {
   title: string

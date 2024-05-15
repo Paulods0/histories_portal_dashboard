@@ -6,7 +6,10 @@ import ImageUploader from "quill-image-uploader"
 import "quill-image-uploader/dist/quill.imageUploader.min.css"
 
 import { toolbarOptions } from "@/utils/constants"
-import { uploadImageToFirebaseStorage } from "@/utils/helpers"
+import {
+  handleImageUpload,
+  uploadImageToFirebaseStorage,
+} from "@/utils/helpers"
 import { SetStateAction } from "react"
 import { twMerge } from "tailwind-merge"
 
@@ -16,7 +19,11 @@ const modules = {
   toolbar: toolbarOptions,
   imageUploader: {
     upload: async (file: File) => {
-      return await uploadImageToFirebaseStorage(file, "posts-content")
+      const compressedImage = await handleImageUpload(file)!!
+      return await uploadImageToFirebaseStorage(
+        compressedImage!!,
+        "posts-content"
+      )
     },
   },
 }

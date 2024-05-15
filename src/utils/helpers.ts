@@ -8,6 +8,7 @@ import { storage } from "../config/firebase"
 import { toast } from "react-toastify"
 import { format } from "date-fns"
 import { pt } from "date-fns/locale"
+import imageCompression from "browser-image-compression"
 
 type firebaseFolder =
   | "posts"
@@ -89,5 +90,24 @@ export const validateInputFields = (...inputs: string[]) => {
   if (!inputs) {
     toast.error("Por favor preencha todos os campos obrigatórios.")
     return
+  }
+}
+
+export async function handleImageUpload(img: File) {
+  const imageFile = img
+  console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`)
+
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1024,
+    useWebWorker: true,
+  }
+  
+  try {
+    const compressedFile = await imageCompression(imageFile, options)
+    console.log(`newFile size ${compressedFile.size / 1024 / 1024} MB`)
+    return compressedFile
+  } catch (error) {
+    console.log(error)
   }
 }

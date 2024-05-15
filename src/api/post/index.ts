@@ -1,6 +1,6 @@
 import {
   NewClassifiedPost,
-  NewExcursionPost,
+  NewTourPost,
   NewPost,
   NewSchedulePost,
 } from "@/types/create"
@@ -8,7 +8,7 @@ import axios from "../../config/axios-config"
 import { ClassifiedPost, Post, SchedulePost } from "@/types/data"
 import { UpdatePost } from "@/types/update"
 
-export const createPost = async (body: NewPost | NewExcursionPost) => {
+export const createPost = async (body: NewPost) => {
   return await axios.post("/post", body)
 }
 
@@ -54,15 +54,17 @@ export const getClassifiedPosts = async (): Promise<ClassifiedPost[]> => {
   return response.data.data
 }
 
-export const updatePost = async (id: string, data: UpdatePost) => {
-  await axios.put(`/post/${id}`, data)
+export const updatePost = async (data: { id: string; data: UpdatePost }) => {
+  await axios.put(`/post/${data.id}`, data.data)
 }
 
-export const updateClassifiedPost = async (
-  id: string,
+export const updateClassifiedPost = async (data: {
+  id: string
   newStatus: string
-) => {
-  await axios.put(`/classified-post/${id}`, newStatus)
+}) => {
+  await axios.put(`/classified-post/${data.id}`, {
+    newStatus: data.newStatus,
+  })
 }
 
 export const deletePost = async (id: string) => {

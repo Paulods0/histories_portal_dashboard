@@ -1,11 +1,6 @@
 import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-// import { useAuthContext } from "@/context/auth-context"
 import { PostFormSchemaType, postFormSchema } from "@/types/form-schema"
-
-// import { useCreatePost } from "@/lib/react-query/mutations"
-
-// import { useNavigate } from "react-router-dom"
 import { Button } from "../ui/button"
 import InputField from "./form-ui/input-field"
 import InputCheckbox from "./form-ui/input-checkbox"
@@ -14,6 +9,12 @@ import TextAreaField from "./form-ui/text-area-field"
 import { useAuthContext } from "@/context/auth-context"
 
 import { ClipLoader } from "react-spinners"
+import { NewPost } from "@/types/create"
+import { uploadImageToFirebaseStorage } from "@/utils/helpers"
+import { toast } from "react-toastify"
+import { useNavigate } from "react-router-dom"
+import { useCreatePost } from "@/lib/react-query/mutations"
+import { ChangeEvent, useState } from "react"
 
 type Props = {
   content: string
@@ -22,9 +23,19 @@ type Props = {
 }
 
 const PostForm = ({ content, category, authorId }: Props) => {
-  // const navigate = useNavigate()
-  // const { mutate } = useCreatePost()
+  const navigate = useNavigate()
+  const { mutate } = useCreatePost()
+
   const { userId } = useAuthContext()
+  const [imageToShow, setImageToShow] = useState<string | null>(null)
+
+  const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const file = e.target.files[0]
+      const imageURL = URL.createObjectURL(file)
+      setImageToShow(imageURL)
+    }
+  }
 
   const postFormProvider: UseFormReturn<PostFormSchemaType> =
     useForm<PostFormSchemaType>({
@@ -44,37 +55,30 @@ const PostForm = ({ content, category, authorId }: Props) => {
 
   const handleSubmitForm = async (data: PostFormSchemaType) => {
     console.log({ ...data, author_id: authorId ? authorId : userId })
-    // setIsLoading(true)
-    // try {
-    //   if (!data.title || !category || !file || !content) {
-    //     toast.error("Preencha todos os dados obrigatórios.")
-    //     setIsLoading(false)
-    //     return
-    //   }
+    try {
+      const imageURL = await uploadImageToFirebaseStorage(data.image!!, "posts")
 
-    //   const imageURL = await uploadImageToFirebaseStorage(file, "posts")
+      const post: NewPost = {
+        tag: data.tags,
+        content: content,
+        mainImage: imageURL,
+        title: data.title,
+        category: category,
+        highlighted: data.hightlight,
+        author_notes: data.author_notes,
+        author_id: authorId ? authorId : userId!!,
+        longitude: "",
+        latitude: "",
+      }
 
-    //   const post: NewPost = {
-    //     tag: data.tags,
-    //     content: content,
-    //     mainImage: imageURL,
-    //     title: data.title,
-    //     category: category,
-    //     highlighted: data.hightlight,
-    //     author_notes: data.author_notes,
-    //     author_id: authorId ? authorId : userId!!,
-    //   }
-
-    //   mutate(post)
-    //   setIsLoading(false)
-    //   toast.success("Publicado com sucesso")
-    //   navigate("/posts")
-    //   console.log(post)
-    // } catch (error) {
-    //   setIsLoading(false)
-    //   toast.error("Erro ao publicar o post")
-    //   console.log("Erro: " + error)
-    // }
+      mutate(post)
+      toast.success("Publicado com sucesso")
+      navigate("/posts")
+      console.log(post)
+    } catch (error) {
+      toast.error("Erro ao publicar o post")
+      console.log("Erro: " + error)
+    }
   }
 
   return (
@@ -99,12 +103,22 @@ const PostForm = ({ content, category, authorId }: Props) => {
           </span>
         )}
 
+        {imageToShow && (
+          <img
+            loading="lazy"
+            src={imageToShow}
+            alt="post-image"
+            className="size-24 object-contain aspect-square"
+          />
+        )}
+
         <InputField
           type="file"
           className="file:text-zinc-400"
           error={errors.image}
           label="Adicionar imagem"
           {...register("image")}
+          onChange={handleChangeImage}
         />
 
         <InputField

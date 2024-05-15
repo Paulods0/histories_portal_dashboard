@@ -8,19 +8,26 @@ import TextAreaField from "./form-ui/text-area-field"
 import InputField from "./form-ui/input-field"
 import FormButton from "./form-ui/form-button"
 import { Post } from "@/types/data"
-
-import { Label } from "../ui/label"
-import { Input } from "../ui/input"
 import LoaderSpinner from "../global/loader-spinner"
+import { toast } from "react-toastify"
+import {
+  deleteImageFromFirebase,
+  uploadImageToFirebaseStorage,
+} from "@/utils/helpers"
+import { Button } from "../ui/button"
+import { UpdatePost } from "@/types/update"
+import { useUpdatePost } from "@/lib/react-query/mutations"
 
 type Props = {
-  author: string
+  authorId: string
   post: Post | undefined
   category: string
+  content: string
 }
 
-const EditPostForm = ({ post, category, author }: Props) => {
-  const [imageToShow, setImageToShow] = useState("")
+const EditPostForm = ({ authorId, post, content, category }: Props) => {
+  const { mutate } = useUpdatePost()
+  const [imageToShow, setImageToShow] = useState<string | null>(null)
 
   if (!post) {
     return <LoaderSpinner color="#111" />
@@ -31,7 +38,7 @@ const EditPostForm = ({ post, category, author }: Props) => {
       resolver: zodResolver(editPostFormSchema),
       defaultValues: {
         title: post?.title,
-        image: post?.mainImage,
+        image: post!!.mainImage,
         category: post?.category._id,
         highlighted: post?.highlighted,
         author_notes: post?.author_notes,
@@ -46,20 +53,51 @@ const EditPostForm = ({ post, category, author }: Props) => {
     formState: { isSubmitting },
   } = methods
 
-  function handleSubmitForm(data: EditPostFormSchemaType) {
-    console.log({
-      ...data,
-      category: category,
-      author_id: author ? author : post!!.author._id,
-    })
-  }
+  setValue("category", category)
 
   function handleImage(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
       const file = e.target.files[0]
       const imageURL = URL.createObjectURL(file)
       setImageToShow(imageURL)
-      setValue("image", file)
+    }
+  }
+
+  function handleRemoveImage() {
+    setImageToShow(null)
+    setValue("image", post!!.mainImage)
+  }
+
+  const handleSubmitForm = async (data: EditPostFormSchemaType) => {
+    try {
+      let imageURL: Promise<string> | string | null = null
+      if (imageToShow !== null) {
+        await deleteImageFromFirebase(post!!.mainImage, "posts")
+        imageURL = uploadImageToFirebaseStorage(data.image!! as File, "posts")
+        console.log("Deletado do firebase")
+        imageURL = imageURL
+      }
+
+      const payload = {
+        id: post!!._id,
+        data: {
+          title: data.title,
+          author_id: authorId,
+          author_notes: data.author_notes,
+          category: data.category,
+          content: content,
+          tag: data.tags,
+          highlighted: data.highlighted,
+          mainImage: imageURL ? imageURL : post!.mainImage,
+        } as UpdatePost,
+      }
+
+      mutate(payload)
+      console.log(payload)
+      toast.success("Atualizado com sucesso")
+    } catch (error) {
+      toast.error("Erro ao publicar o post")
+      console.log(error)
     }
   }
 
@@ -70,20 +108,38 @@ const EditPostForm = ({ post, category, author }: Props) => {
           onSubmit={handleSubmit(handleSubmitForm)}
           className="flex flex-col gap-3 w-full"
         >
-          <Label htmlFor="image">
+          {imageToShow ? (
+            <>
+              <img
+                src={imageToShow}
+                className="w-full h-32 object-contain"
+                loading="lazy"
+              />
+              <Button
+                type="button"
+                onClick={handleRemoveImage}
+                variant={"destructive"}
+                className="capitalize w-fit text-xs self-center"
+              >
+                remover imagem
+              </Button>
+            </>
+          ) : (
             <img
-              src={imageToShow ? imageToShow : post!!.mainImage}
-              className="size-24 object-contain"
+              src={post!!.mainImage}
+              className="w-full h-32 object-contain"
+              loading="lazy"
             />
-            <Input
-              id="image"
-              type="file"
-              accept=".jpg,.png,.jpeg"
-              {...register("image")}
-              onChange={handleImage}
-              className="hidden"
-            />
-          </Label>
+          )}
+
+          <InputField
+            label="Imagem"
+            type="file"
+            accept=".jpg,.png,.jpeg"
+            {...register("image")}
+            onChange={handleImage}
+            className="file:text-white"
+          />
 
           <FormButton
             isSubmitting={isSubmitting}

@@ -8,15 +8,28 @@ export type UpdateProduct = {
 
 export type UpdateUser = {}
 
-export type UpdatePost = {
+export type EditPost = {
   title?: string
   mainImage?: string
   content?: string
   highlighted?: boolean
+  latitude?: string
+  longitude: string
   category?: string
-  latitude?: number | null
-  longitude?: number | null
   tag?: string[]
+  author_notes?: string
+  author_id?: string
+}
+
+export type UpdatePost = {
+  title?: string
+  mainImage?: string | false | File | null
+  content?: string
+  highlighted?: boolean
+  category?: string
+  latitude?: string
+  longitude?: string
+  tag?: string[] | string
   author_notes?: string
   author_id: string
 }

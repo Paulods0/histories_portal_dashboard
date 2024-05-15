@@ -1,3 +1,4 @@
+import { handleImageUpload } from "@/utils/helpers"
 import { z } from "zod"
 
 export const postFormSchema = z.object({
@@ -6,7 +7,11 @@ export const postFormSchema = z.object({
     .refine((image) => {
       return image.item(0) !== null
     }, "*Insira uma imagem")
-    .transform((image) => image.item(0)),
+    .transform((image) => {
+      if (image.item(0) !== null) {
+        return handleImageUpload(image.item(0)!!)
+      }
+    }),
   title: z.string().min(1, "*O título é obrigatório."),
   tags: z
     .string()
@@ -27,17 +32,19 @@ export const scheduleFormSchema = z.object({
 })
 
 export const tourFormSchema = z.object({
-  title: z.string(),
-  coordinates: z.string().transform((coordinates) => {
-    const currentCoordinates = coordinates.split(",")
-    const latitude = Number(currentCoordinates[0])
-    const longitude = Number(currentCoordinates[1])
-
-    return {
-      latitude,
-      longitude,
-    }
-  }),
+  content: z.string().min(1, "*Escreva alguma história"),
+  image: z
+    .instanceof(FileList)
+    .refine((image) => image.item(0) !== null, "*Insira uma imagem")
+    .transform((image) => {
+      if (image.item(0) !== null) {
+        return handleImageUpload(image.item(0)!!)
+      }
+    }),
+  title: z.string().min(1, "O titlo é obrigatório"),
+  coordinates: z
+    .string()
+    .min(1, { message: "*Insira as coordenadas geográficas" }),
   tags: z
     .string()
     .transform((text) => text.split(","))
@@ -47,11 +54,23 @@ export const tourFormSchema = z.object({
 })
 
 export const editTourFormSchema = z.object({
+  image: z
+    .union([
+      z.string(),
+      z.instanceof(FileList).transform((file) => {
+        if (file.item(0) !== null) {
+          return handleImageUpload(file.item(0)!!)
+        }
+      }),
+    ])
+    .optional(),
   title: z.string().optional(),
   coordinates: z.string().optional(),
-  tags: z
-    .string()
-    .transform((text) => text.split(","))
+  tag: z
+    .union([
+      z.string().transform((tag) => tag && tag.split(",")),
+      z.array(z.string()),
+    ])
     .optional(),
   author_notes: z.string().optional(),
   highlighted: z.boolean().optional(),
@@ -66,7 +85,16 @@ export const editPostFormSchema = z.object({
   category: z.string().optional(),
   highlighted: z.boolean().optional(),
   author_notes: z.string().optional(),
-  image: z.union([z.string(), z.custom<File>()]).optional(),
+  image: z
+    .union([
+      z.string(),
+      z.instanceof(FileList).transform((image) => {
+        if (image.item(0) !== null) {
+          return handleImageUpload(image.item(0)!!)
+        }
+      }),
+    ])
+    .optional(),
 })
 
 export const editScheduleFormSchema = z.object({
@@ -83,10 +111,14 @@ export const editScheduleFormSchema = z.object({
 
 export const userFormSchema = z.object({
   image: z
-    .union([z.instanceof(FileList), z.undefined()])
-    .transform((image) =>
-      image?.item(0) !== null ? image?.item(0) : undefined
-    )
+    .union([
+      z.instanceof(FileList).transform((image) => {
+        if (image.item(0) !== null) {
+          return handleImageUpload(image.item(0)!!)
+        }
+      }),
+      z.undefined(),
+    ])
     .optional(),
   firstname: z.string().min(1, "*Por favor preencha este campo."),
   lastname: z.string().min(1, "*Por favor preencha este campo."),
@@ -102,7 +134,11 @@ export const userFormSchema = z.object({
 export const editUserFormSchema = z.object({
   image: z
     .instanceof(FileList)
-    .transform((image) => image.item(0)!)
+    .transform((image) => {
+      if (image.item(0) !== null) {
+        return handleImageUpload(image.item(0)!!)
+      }
+    })
     .optional(),
   firstname: z.string().optional(),
   lastname: z.string().optional(),
@@ -120,7 +156,11 @@ export const productFormSchema = z.object({
   image: z
     .instanceof(FileList)
     .refine((image) => image.item(0) !== null, "*Insira uma imagem")
-    .transform((image) => image.item(0)),
+    .transform((image) => {
+      if (image.item(0) !== null) {
+        return handleImageUpload(image.item(0)!!)
+      }
+    }),
 })
 
 export const editProductFormSchema = z.object({
@@ -128,7 +168,11 @@ export const editProductFormSchema = z.object({
   price: z.coerce.string().optional(),
   image: z
     .union([
-      z.instanceof(FileList).transform((image) => image.item(0)!),
+      z.instanceof(FileList).transform((image) => {
+        if (image.item(0) !== null) {
+          return handleImageUpload(image.item(0)!!)
+        }
+      }),
       z.string(),
     ])
     .optional(),

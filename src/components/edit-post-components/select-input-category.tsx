@@ -5,18 +5,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Post } from "@/types/data"
 import { Label } from "../ui/label"
 import { SetStateAction } from "react"
 import { useGetCategories } from "@/lib/react-query/queries"
 import { ClipLoader } from "react-spinners"
 
 type Props = {
-  post: Post
+  category: string
+  categoryName: string
   setCategoryName: React.Dispatch<SetStateAction<string>>
+  setCategory: React.Dispatch<SetStateAction<string>>
 }
 
-const SelectInputCategory = ({ post, setCategoryName }: Props) => {
+const SelectInputCategory = ({
+  category,
+  setCategory,
+  categoryName,
+  setCategoryName,
+}: Props) => {
   const { data: categories, isLoading } = useGetCategories()
 
   const CLASSIFICADOS = "Classificados"
@@ -31,20 +37,19 @@ const SelectInputCategory = ({ post, setCategoryName }: Props) => {
   }
 
   const handleChangeCategory = (value: string) => {
-    setCategoryName(value)
+    const category = categories?.find((category) => category._id === value)
+    setCategory(category!!._id)
+    setCategoryName(category!!.name)
   }
 
   return (
     <div className="flex gap-2 w-full flex-col">
       <Label htmlFor="category">Categoria</Label>
-      <Select onValueChange={(value) => handleChangeCategory(value)}>
+      <Select defaultValue={category} onValueChange={handleChangeCategory}>
         <SelectTrigger>
-          <SelectValue
-            defaultChecked={!!post?.category._id}
-            className="text-background"
-            placeholder={post?.category.name}
-          />
+          <SelectValue placeholder={categoryName} />
         </SelectTrigger>
+
         <SelectContent>
           {categories
             ?.filter(
@@ -53,7 +58,7 @@ const SelectInputCategory = ({ post, setCategoryName }: Props) => {
                 category.name !== OVERLAND_EXPERIENCE
             )
             .map((category) => (
-              <SelectItem value={category._id} key={category._id}>
+              <SelectItem key={category._id} value={category._id}>
                 {category.name}
               </SelectItem>
             ))}

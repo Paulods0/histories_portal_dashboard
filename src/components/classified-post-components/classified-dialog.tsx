@@ -25,7 +25,6 @@ import { useState } from "react"
 import { useUpdateClassifiedPost } from "@/lib/react-query/mutations"
 import { toast } from "react-toastify"
 import LoaderSpinner from "../global/loader-spinner"
-import axiosConfig from "@/config/axios-config"
 
 type Props = {
   post: ClassifiedPost | undefined
@@ -47,9 +46,7 @@ const ClassifiedDialog = ({ post }: Props) => {
         id: post!!._id,
         newStatus: selected,
       }
-      // mutate(data)
-      // console.log(data)
-      await axiosConfig.put(`classified-post/${post!!._id}`, data)
+      mutate(data)
       setIsLoading(false)
       toast.success("Atualizado com sucesso")
     } catch (error) {

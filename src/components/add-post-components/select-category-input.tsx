@@ -6,9 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useGetCategories } from "@/lib/react-query/queries"
-import { PostFormSchemaType } from "@/types/form-schema"
 import { SetStateAction } from "react"
-import { useFormContext } from "react-hook-form"
 import { ClipLoader } from "react-spinners"
 
 type Props = {

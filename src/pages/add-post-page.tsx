@@ -66,6 +66,7 @@ const AddPostPage = () => {
           />
 
           <SelectAuthorInput setAuthorId={setAuthorId} />
+          
           {categoryName === "Agenda AO" && (
             <SchedulePostForm authorId={authorId} category={category} />
           )}
