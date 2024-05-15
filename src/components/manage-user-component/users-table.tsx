@@ -18,7 +18,7 @@ type Props = {
 }
 
 const UsersTable = ({ users }: Props) => {
-  const { user: currentUser, userId } = useAuthContext()
+  const { user: currentUser } = useAuthContext()
   return (
     <div className="w-full h-[75vh] overflow-auto scroll-bar mx-auto rounded-lg border p-4">
       <Table>
@@ -28,7 +28,7 @@ const UsersTable = ({ users }: Props) => {
             <TableHead>Nome</TableHead>
             <TableHead>Sobrenome</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead className="lg:w-[300px]">Data de criação</TableHead>
+            <TableHead className="lg:w-[300px]">Role</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -43,9 +43,14 @@ const UsersTable = ({ users }: Props) => {
               <TableCell>{user.firstname}</TableCell>
               <TableCell>{user.lastname}</TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell>{formatDate(user.createdAt)}</TableCell>
+              <TableCell>
+                {user.role === "admin"
+                  ? "Administrador"
+                  : user.role === "publicator"
+                  ? "Publicador"
+                  : "Gestor de Loja"}
+              </TableCell>
               <TableCell className="flex items-center gap-3">
-                
                 {currentUser!!.role === "admin" && (
                   <EditUserDialog user={user} />
                 )}

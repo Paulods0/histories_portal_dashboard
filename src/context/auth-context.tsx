@@ -2,15 +2,13 @@ import React, { createContext, useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Cookies from "js-cookie"
 import axios from "../config/axios-config"
-import { Role } from "@/types/data"
-
 
 export type UserData = {
   email: string
   firstname: string
   lastname: string
   image: string
-  role: Role
+  role: string
 }
 
 type AuthContextType = {

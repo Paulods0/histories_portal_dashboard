@@ -19,8 +19,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "react-toastify"
 
-import { ClipLoader } from "react-spinners"
-
 import SelectCategory from "./select-category"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
@@ -29,13 +27,17 @@ import { UpdateProduct } from "@/types/update"
 import InputField from "../forms/form-ui/input-field"
 import FormButton from "../forms/form-ui/form-button"
 import { ChangeEvent, useState } from "react"
+import {
+  deleteImageFromFirebase,
+  uploadImageToFirebaseStorage,
+} from "@/utils/helpers"
 
 type Props = {
   product: Product
 }
 
 const EditProduct = ({ product }: Props) => {
-  // const { mutate } = useUpdateProduct()
+  const { mutate } = useUpdateProduct()
   const [imageToShow, setImageToShow] = useState("")
 
   const editProductForm: UseFormReturn<EditProductFormSchemaType> =
@@ -53,6 +55,7 @@ const EditProduct = ({ product }: Props) => {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
+    reset,
   } = editProductForm
 
   const handleImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,22 +66,48 @@ const EditProduct = ({ product }: Props) => {
     }
   }
 
-  const handleSubmitForm = (data: EditProductFormSchemaType) => {
-    console.log(data)
-    // try {
-    //   const updatedProduct: UpdateProduct = {
-    //     ...data,
-    //     id: product._id,
-    //   }
-    //   mutate(updatedProduct)
-    //   console.log(updatedProduct)
-    //   toast.success("Atualizado com sucesso")
-    //   reset()
-    // } catch (error) {
-    //   console.log("Erro: " + error)
-    //   toast.error("Erro ao atualizar post")
-    //   reset()
-    // }
+  const handleSubmitForm = async (data: EditProductFormSchemaType) => {
+    try {
+      let updatedProduct: UpdateProduct
+      if (imageToShow) {
+        if (!product.image) {
+          const newImageURL = await uploadImageToFirebaseStorage(
+            data.image!! as File,
+            "products"
+          )
+          updatedProduct = {
+            ...data,
+            image: newImageURL,
+            id: product._id,
+          }
+        } else {
+          await deleteImageFromFirebase(product.image, "products")
+
+          const newImageURL = await uploadImageToFirebaseStorage(
+            data.image!! as File,
+            "products"
+          )
+          updatedProduct = {
+            ...data,
+            image: newImageURL,
+            id: product._id,
+          }
+        }
+      } else {
+        updatedProduct = {
+          ...data,
+          id: product._id,
+        }
+      }
+      mutate(updatedProduct)
+      toast.success("Atualizado com sucesso")
+      console.log(updatedProduct)
+      reset()
+    } catch (error) {
+      console.log("Erro: " + error)
+      toast.error("Erro ao atualizar post")
+      reset()
+    }
   }
 
   return (
@@ -139,7 +168,7 @@ const EditProduct = ({ product }: Props) => {
               <FormButton
                 variant="secondary"
                 isSubmitting={isSubmitting}
-                buttonColor="#111"
+                buttonColor="#FFF"
                 text="Atualizar alterações"
               />
             </DialogFooter>

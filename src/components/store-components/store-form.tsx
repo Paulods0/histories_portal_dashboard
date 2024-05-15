@@ -1,9 +1,7 @@
 import { FormProvider, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-// import { useCreateProduct } from "@/lib/react-query/mutations"
 import { ProductFormSchema, productFormSchema } from "@/types/form-schema"
 
-// import { NewProduct } from "@/types/create"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
 import InputField from "../forms/form-ui/input-field"
@@ -17,10 +15,14 @@ import {
   SelectValue,
 } from "../ui/select"
 import { useGetAllProductCategories } from "@/lib/react-query/queries"
+import { NewProduct } from "@/types/create"
+import { uploadImageToFirebaseStorage } from "@/utils/helpers"
+import { toast } from "react-toastify"
+import { useCreateProduct } from "@/lib/react-query/mutations"
 
 const StoreForm = () => {
-  // const { mutate } = useCreateProduct()
-  const { data: categories, isLoading } = useGetAllProductCategories()
+  const { mutate } = useCreateProduct()
+  const { data: categories } = useGetAllProductCategories()
 
   const [image, setImage] = useState<string | null>(null)
 
@@ -33,6 +35,7 @@ const StoreForm = () => {
     handleSubmit,
     setValue,
     formState: { errors, isSubmitting },
+    reset,
   } = methods
 
   const handleImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,8 +50,28 @@ const StoreForm = () => {
     setValue("category", value)
   }
 
-  function handleSubmitForm(data: ProductFormSchema) {
-    console.log(data)
+  async function handleSubmitForm(data: ProductFormSchema) {
+    try {
+      const downloadURL = await uploadImageToFirebaseStorage(
+        data.image!!,
+        "products"
+      )
+      const newProduct: NewProduct = {
+        name: data.title,
+        image: downloadURL,
+        price: data.price,
+        category: data.category,
+      }
+
+      mutate(newProduct)
+      toast.success("Produto adicionado")
+      console.log(data)
+      reset()
+    } catch (error) {
+      console.log(error)
+      toast.error("Erro ao adicionar o produto")
+      reset()
+    }
   }
 
   return (
@@ -113,7 +136,7 @@ const StoreForm = () => {
 
         <FormButton
           text="Salvar produto"
-          buttonColor="#111"
+          buttonColor="#FFF"
           isSubmitting={isSubmitting}
         />
       </form>

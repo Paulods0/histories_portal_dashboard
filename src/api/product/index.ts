@@ -2,7 +2,6 @@ import { NewProduct } from "@/types/create"
 import axios from "../../config/axios-config"
 import { Product } from "@/types/data"
 import { UpdateProduct } from "@/types/update"
-import { EditProductFormSchemaType } from "@/types/form-schema"
 
 export const createProduct = async (data: NewProduct) => {
   await axios.post("/product", data)

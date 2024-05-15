@@ -43,7 +43,7 @@ export interface NewUser {
   image?: string
   email: string
   password: string
-  role: Role
+  role: string
 }
 export type NewSchedulePost = {
   title: string

@@ -1,4 +1,4 @@
-import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { EyeIcon, EyeOff } from "lucide-react"
 import { ChangeEvent, useState } from "react"
@@ -32,15 +32,11 @@ const UserForm = () => {
     }
   }
 
-  const showPassword = () => {
-    setShowPass(true)
+  const togglePassword = () => {
+    setShowPass((prev) => !prev)
   }
 
-  const hidePassword = () => {
-    setShowPass(false)
-  }
-
-  const methods: UseFormReturn<UserFormType> = useForm<UserFormType>({
+  const methods = useForm<UserFormType>({
     resolver: zodResolver(userFormSchema),
   })
   const {
@@ -48,6 +44,7 @@ const UserForm = () => {
     register,
     formState: { errors, isSubmitting },
     setValue,
+    reset,
   } = methods
 
   const handleSelectRole = (value: UserFormType["role"]) => {
@@ -56,35 +53,38 @@ const UserForm = () => {
 
   const handleSaveUser = async (data: UserFormType) => {
     console.log(data)
-    // try {
-    //   let useData: NewUser
-    //   if (image) {
-    //     const url = await uploadImageToFirebaseStorage(image, "profile")
-    //     useData = {
-    //       firstname: data.firstname,
-    //       lastname: data.lastname,
-    //       password: data.password,
-    //       email: data.email,
-    //       image: url,
-    //     }
-    //   } else {
-    //     useData = {
-    //       firstname: data.firstname,
-    //       lastname: data.lastname,
-    //       password: data.password,
-    //       email: data.email,
-    //       image: undefined,
-    //     }
-    //   }
-    //   mutate(useData)
-    //   setisLoading(false)
-    //   toast.success("Usuário adicionado com sucesso")
-    //   console.log(useData)
-    // } catch (error) {
-    //   console.log("Erro ao criar usuário :" + error)
-    //   toast.error("Erro ao criar usuário, tente novamente")
-    //   setisLoading(false)
-    // }
+    try {
+      let useData: NewUser
+      if (image) {
+        const url = await uploadImageToFirebaseStorage(data.image!!, "profile")
+        useData = {
+          firstname: data.firstname,
+          lastname: data.lastname,
+          password: data.password,
+          email: data.email,
+          image: url,
+          role: data.role,
+        }
+        console.log(data)
+      } else {
+        useData = {
+          firstname: data.firstname,
+          lastname: data.lastname,
+          password: data.password,
+          email: data.email,
+          role: data.role,
+          image: undefined,
+        }
+      }
+      mutate(useData)
+      toast.success("Usuário adicionado com sucesso")
+      console.log(useData)
+      reset()
+    } catch (error) {
+      toast.error("Erro ao criar usuário, tente novamente")
+      console.log("Erro ao criar usuário :" + error)
+      reset()
+    }
   }
 
   return (
@@ -131,10 +131,7 @@ const UserForm = () => {
             {...register("password")}
             error={errors.password}
           />
-          <div
-            onClick={() => setShowPass((prev) => !prev)}
-            className="absolute right-2 top-1/2 "
-          >
+          <div onClick={togglePassword} className="absolute right-2 top-1/2 ">
             {showPass ? <EyeOff /> : <EyeIcon />}
           </div>
         </div>

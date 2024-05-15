@@ -16,16 +16,35 @@ import { toast } from "react-toastify"
 import { useUpdateUser } from "@/lib/react-query/mutations"
 import { EditUserFormType, editUserFormSchema } from "@/types/form-schema"
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select"
+import { UpdateUser } from "@/types/update"
+import FormButton from "../forms/form-ui/form-button"
+
 type Props = {
   user: User
 }
 
 const EditUserDialog = ({ user }: Props) => {
-  const { mutate, isPending } = useUpdateUser()
+  const { mutate } = useUpdateUser()
   const [imageToShow, setImageToShow] = useState("")
 
-  const { register, handleSubmit, control } = useForm<EditUserFormType>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm<EditUserFormType>({
     resolver: zodResolver(editUserFormSchema),
+    defaultValues: {
+      role: user.role,
+    },
   })
 
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -39,27 +58,29 @@ const EditUserDialog = ({ user }: Props) => {
     setImageToShow("")
   }
 
+  const handleSelectRole = (value: EditUserFormType["role"]) => {
+    setValue("role", value)
+  }
+
   const handleUpdateUser = async (data: EditUserFormType) => {
     try {
-      let downloadURL
-      if (data.image) {
-        if (user.image) {
-          deleteImageFromFirebase(user.image, "products")
-        }
-        downloadURL = await uploadImageToFirebaseStorage(data.image, "profile")
-      }
-      const formData = {
+      let newUser: UpdateUser = {
         id: user._id,
-        user: { ...data, image: downloadURL },
+        firstname: data.firstname,
+        image: data.image,
+        lastname: data.lastname,
+        role: data.role,
       }
-
-      mutate(formData)
+      mutate(newUser)
       toast.success("Atualizado com sucesso")
     } catch (error) {
       toast.error("Erro ao atualizar usuário")
     }
   }
 
+  // const handleUpdateUser = async (data: EditUserFormType) => {
+  //   console.log(data)
+  // }
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -118,14 +139,23 @@ const EditUserDialog = ({ user }: Props) => {
               <Input {...register("firstname")} defaultValue={user.firstname} />
               <Input {...register("lastname")} defaultValue={user.lastname} />
 
-              <div className="flex my-4 self-start gap-4">
-                <Button disabled={isPending} type="submit" variant={"default"}>
-                  {isPending ? "Salvando..." : "Salvar alterações"}
-                </Button>
-                <DialogClose asChild>
-                  <Button variant={"destructive"}>Cancelar</Button>
-                </DialogClose>
-              </div>
+              <Select defaultValue={user.role} onValueChange={handleSelectRole}>
+                <SelectTrigger className="bg-foreground text-background">
+                  <SelectValue placeholder={user.role} />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="store-manager">Gestor de loja</SelectItem>
+                  <SelectItem value="publicator">Publicador</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <FormButton
+                isSubmitting={isSubmitting}
+                text="Atualizar"
+                buttonColor="#FFF"
+              />
             </form>
           </CardContent>
         </Card>

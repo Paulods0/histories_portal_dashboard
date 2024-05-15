@@ -124,11 +124,7 @@ export const userFormSchema = z.object({
   lastname: z.string().min(1, "*Por favor preencha este campo."),
   password: z.string().min(6, "*A password deve ter no mínimo 6 caracteres."),
   email: z.string().email().min(1, "*Por favor insira um email válido."),
-  role: z.enum(["admin", "store-manager", "publicator"], {
-    errorMap: () => ({
-      message: "*Selecione uma role para este usuário",
-    }),
-  }),
+  role: z.string().min(1, "*Selecione uma role para este usuário"),
 })
 
 export const editUserFormSchema = z.object({
@@ -142,6 +138,7 @@ export const editUserFormSchema = z.object({
     .optional(),
   firstname: z.string().optional(),
   lastname: z.string().optional(),
+  role: z.string().optional(),
 })
 
 export const loginSchema = z.object({

@@ -6,7 +6,13 @@ export type UpdateProduct = {
   category?: string
 }
 
-export type UpdateUser = {}
+export type UpdateUser = {
+  id: string
+  image?: File | undefined
+  firstname?: string | undefined
+  lastname?: string | undefined
+  role?: string | undefined
+}
 
 export type EditPost = {
   title?: string
