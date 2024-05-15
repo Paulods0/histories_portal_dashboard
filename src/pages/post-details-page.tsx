@@ -1,17 +1,16 @@
 import AuthorNotes from "@/components/post-details-components/author-notes"
 import { formatDate } from "@/utils/helpers"
 import { useGetSinglePost } from "@/lib/react-query/queries"
-import { Link, useParams } from "react-router-dom"
+import {  useParams } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
 import { SlLike, SlDislike } from "react-icons/sl"
 import { FaEye } from "react-icons/fa"
-import { Button } from "@/components/ui/button"
-import { useAuth } from "@/context/auth-context"
+// import { useAuth } from "@/context/auth-context"
 
 const PostDetailsPage = () => {
   const { id } = useParams()
   const { data, isLoading } = useGetSinglePost(id!!)
-  const { userId } = useAuth()
+  // const { userId } = useAuth()
 
   if (isLoading) {
     return (

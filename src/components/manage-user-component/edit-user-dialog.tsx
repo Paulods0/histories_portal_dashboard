@@ -1,17 +1,17 @@
 import { User } from "@/types/data"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog"
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
 import { Input } from "../ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ChangeEvent, useState } from "react"
 import { AiOutlineClose } from "react-icons/ai"
-import {
-  deleteImageFromFirebase,
-  uploadImageToFirebaseStorage,
-} from "@/utils/helpers"
+// import {
+//   deleteImageFromFirebase,
+//   uploadImageToFirebaseStorage,
+// } from "@/utils/helpers"
 import { toast } from "react-toastify"
 import { useUpdateUser } from "@/lib/react-query/mutations"
 import { EditUserFormType, editUserFormSchema } from "@/types/form-schema"

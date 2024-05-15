@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 import QuillEditor from "@/components/global/quill-editor"
 
-import { Post, SchedulePost } from "@/types/data"
+import { Post } from "@/types/data"
 import { getSinglePost } from "@/api/post"
 
 import { useParams } from "react-router-dom"

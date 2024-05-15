@@ -1,9 +1,4 @@
-import {
-  NewClassifiedPost,
-  NewTourPost,
-  NewPost,
-  NewSchedulePost,
-} from "@/types/create"
+import { NewClassifiedPost, NewPost, NewSchedulePost } from "@/types/create"
 import axios from "../../config/axios-config"
 import { ClassifiedPost, Post, SchedulePost } from "@/types/data"
 import { UpdatePost } from "@/types/update"

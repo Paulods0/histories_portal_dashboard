@@ -28,6 +28,7 @@ type Props = {
 
 function EditSchedulePostForm({ post }: Props) {
   const [authorId, setAuthorId] = useState("")
+  console.log(authorId)
 
   const methods: UseFormReturn<EditScheduleFormSchemaType> =
     useForm<EditScheduleFormSchemaType>({

@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/table"
 import { User } from "@/types/data"
 import { Avatar, AvatarImage } from "../ui/avatar"
-import { formatDate } from "@/utils/helpers"
 import EditUserDialog from "./edit-user-dialog"
 import DeleteUserDialog from "./delete-user-dialog"
 import { useAuthContext } from "@/context/auth-context"
