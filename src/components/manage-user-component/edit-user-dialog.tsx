@@ -8,10 +8,7 @@ import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ChangeEvent, useState } from "react"
 import { AiOutlineClose } from "react-icons/ai"
-// import {
-//   deleteImageFromFirebase,
-//   uploadImageToFirebaseStorage,
-// } from "@/utils/helpers"
+
 import { toast } from "react-toastify"
 import { useUpdateUser } from "@/lib/react-query/mutations"
 import { EditUserFormType, editUserFormSchema } from "@/types/form-schema"
@@ -86,10 +83,10 @@ const EditUserDialog = ({ user }: Props) => {
       <DialogTrigger asChild>
         <Button variant={"outline"}>Editar</Button>
       </DialogTrigger>
-      <DialogContent className="border-white/15 bg-foreground">
-        <Card className="border-none bg-foreground shadow-none">
+      <DialogContent className="border-white/15 bg-background">
+        <Card className="border-none bg-background shadow-none">
           <CardHeader>
-            <CardTitle className="text-white">Editar usuário</CardTitle>
+            <CardTitle className="text-foreground">Editar usuário</CardTitle>
           </CardHeader>
           <CardContent>
             <form
@@ -140,7 +137,7 @@ const EditUserDialog = ({ user }: Props) => {
               <Input {...register("lastname")} defaultValue={user.lastname} />
 
               <Select defaultValue={user.role} onValueChange={handleSelectRole}>
-                <SelectTrigger className="bg-foreground text-background">
+                <SelectTrigger>
                   <SelectValue placeholder={user.role} />
                 </SelectTrigger>
 
@@ -152,6 +149,7 @@ const EditUserDialog = ({ user }: Props) => {
               </Select>
 
               <FormButton
+                className="self-start"
                 isSubmitting={isSubmitting}
                 text="Atualizar"
                 buttonColor="#FFF"

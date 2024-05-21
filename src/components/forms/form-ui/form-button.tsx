@@ -12,16 +12,23 @@ type Props = {
     | "outline"
     | "link"
     | "destructive"
+  className?: string
 }
 
 const FormButton = ({
   variant = "default",
   isSubmitting,
   text,
+  className,
   buttonColor = "#FFF",
 }: Props) => {
   return (
-    <Button variant={variant} type="submit" disabled={isSubmitting}>
+    <Button
+      variant={variant}
+      type="submit"
+      disabled={isSubmitting}
+      className={`${className} text-foreground`}
+    >
       {isSubmitting ? <LoaderSpinner color={buttonColor} size={18} /> : text}
     </Button>
   )

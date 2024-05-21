@@ -19,10 +19,12 @@ import EditPostPostPage from "./pages/edit-post-page"
 import ProtectedRoutes from "./components/global/protected-routes"
 import SchedulePostsPage from "./pages/schedule-posts-page"
 import ClassifiedPostsPage from "./pages/classified-posts-page"
+import { useThemeContext } from "@/context/theme-context"
 
 function App() {
+  const { theme } = useThemeContext()
   return (
-    <main className="flex flex-col gap-3">
+    <main className={`flex flex-col gap-3 bg-background text-foreground min-h-screen ${theme}`}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 

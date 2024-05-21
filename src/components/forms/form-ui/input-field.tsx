@@ -23,7 +23,7 @@ const InputField = forwardRef<HTMLInputElement, Props>((props, ref) => {
         {...register(props.name)}
         ref={ref}
         {...props}
-        className={twMerge("bg-background text-white", props.className)}
+        className={twMerge("bg-background text-foreground", props.className)}
       />
       {props.error && (
         <span className="text-xs text-red-600">{props.error.message}</span>

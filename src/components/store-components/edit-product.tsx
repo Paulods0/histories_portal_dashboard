@@ -146,17 +146,8 @@ const EditProduct = ({ product }: Props) => {
               </Label>
             </>
 
-            <InputField
-              className="bg-foreground text-background"
-              label="Título"
-              {...register("name")}
-            />
-            <InputField
-              className="bg-foreground text-background"
-              label="Preço"
-              {...register("price")}
-              type="number"
-            />
+            <InputField label="Título" {...register("name")} />
+            <InputField label="Preço" {...register("price")} type="number" />
 
             <SelectCategory product={product} />
 

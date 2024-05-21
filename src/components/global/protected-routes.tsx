@@ -5,6 +5,7 @@ import Header from "./header"
 
 const ProtectedRoutes = () => {
   const token = Cookies.get("token")
+
   if (!token) {
     return <Navigate to={"/login"} />
   }
@@ -12,7 +13,7 @@ const ProtectedRoutes = () => {
   return (
     <>
       <Header />
-      <Container className="w-full flex flex-col dark">
+      <Container className="w-full flex flex-col">
         <Outlet />
       </Container>
     </>

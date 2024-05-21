@@ -35,7 +35,8 @@ const Menu = ({ logout, user, userId }: Props) => {
           </Avatar>
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="p-4 text-white bg-foreground border-white/20 mr-4">
+      
+      <DropdownMenuContent className="p-4 text-foreground bg-background border-white/20 mr-4">
         <DropdownMenuLabel className="text-lg ">Menu</DropdownMenuLabel>
         <DropdownMenuLabel className="text-zinc-500 font-normal flex items-center gap-x-1">
           <span>{user?.firstname}</span>

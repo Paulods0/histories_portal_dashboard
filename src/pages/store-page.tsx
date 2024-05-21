@@ -28,7 +28,7 @@ const StorePage = () => {
   }
 
   return (
-    <main className="w-full p-2 h-full flex-col items-center flex">
+    <main className="w-full p-2 flex-col items-center flex">
       {products?.length === 0 || !products || products === null ? (
         <div className="w-full h-full flex items-center justify-center col-span-3">
           <h1>Não há nenhum produto ainda</h1>

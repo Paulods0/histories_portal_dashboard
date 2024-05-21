@@ -13,13 +13,16 @@ type Props = {
 }
 export const ThemeContextProvider = ({ children }: Props) => {
   const [theme, setTheme] = useState<Theme>(() => {
-    const theme = localStorage.getItem("theme")
-    return theme ? JSON.parse(theme) : "dark"
+    const currTheme: Theme = localStorage.getItem("theme") as Theme
+    return currTheme ? currTheme : "dark"
   })
 
   const toggleTheme = () => {
-    setTheme(() => (theme === "light" ? "dark" : "light"))
-    localStorage.setItem("theme", JSON.stringify(theme))
+    setTheme(() => {
+      const currTheme = theme === "dark" ? "light" : "dark"
+      localStorage.setItem("theme", currTheme)
+      return currTheme
+    })
   }
 
   return (
