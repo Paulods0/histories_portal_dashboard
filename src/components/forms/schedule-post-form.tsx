@@ -33,24 +33,40 @@ const SchedulePostForm = ({ authorId, category }: Props) => {
 
   const handleSubmitForm = async (data: ScheduleFormSchemaType) => {
     try {
-      const file = await uploadImageToFirebaseStorage(
-        data.file!!,
-        "schedule-posts"
-      )
       const fileData: NewSchedulePost = {
         title: data.title,
         author: authorId ?? userId!!,
         category: category,
-        file: file,
+        file: "file",
       }
-      mutate(fileData)
+
+      console.log(fileData)
       toast.success("Publicado com sucesso")
-      navigate("/posts")
     } catch (error) {
       console.log("Erro ao publicar")
       toast.error("Erro ao publicar")
     }
   }
+  // const handleSubmitForm = async (data: ScheduleFormSchemaType) => {
+  //   try {
+  //     const file = await uploadImageToFirebaseStorage(
+  //       data.file!!,
+  //       "schedule-posts"
+  //     )
+  //     const fileData: NewSchedulePost = {
+  //       title: data.title,
+  //       author: authorId ?? userId!!,
+  //       category: category,
+  //       file: file,
+  //     }
+  //     mutate(fileData)
+  //     toast.success("Publicado com sucesso")
+  //     navigate("/posts")
+  //   } catch (error) {
+  //     console.log("Erro ao publicar")
+  //     toast.error("Erro ao publicar")
+  //   }
+  // }
 
   return (
     <FormProvider {...methods}>
@@ -73,11 +89,7 @@ const SchedulePostForm = ({ authorId, category }: Props) => {
           error={errors.file}
         />
 
-        <FormButton
-          isSubmitting={isSubmitting}
-          text="Publicar"
-          buttonColor="#111111"
-        />
+        <FormButton isSubmitting={isSubmitting} text="Publicar" />
       </form>
     </FormProvider>
   )

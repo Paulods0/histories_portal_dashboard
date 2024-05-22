@@ -12,12 +12,16 @@ import {
 const HomeStatsContainer = () => {
   const { userId } = useAuthContext()
 
-  const { data: posts, isLoading } = useGetAllPosts()
+  const { data: postsData, isLoading } = useGetAllPosts(1)
   const { data: products } = useGetAllProducts()
   const { data: userPosts } = useGetUserPosts(userId!!)
   const { data: productCategories } = useGetAllProductCategories()
 
-  const totalPostsViews = posts?.reduce((total, acc) => acc.views + total, 0)
+  console.log(postsData?.pages)
+  const totalPostsViews = postsData?.posts?.reduce(
+    (total, acc) => acc.views + total,
+    0
+  )
   const userPostsViews = userPosts?.reduce((total, acc) => acc.views + total, 0)
   const totalProductCategories = productCategories?.length
 
@@ -43,7 +47,7 @@ const HomeStatsContainer = () => {
             customStyle="bg-[#423B94] w-full"
             titleIcon="posts"
             title="Total de posts"
-            amount={posts?.length.toString()}
+            amount={postsData?.total.toString()}
             description="posts no total"
             footerIcon="views"
             footerText="views"

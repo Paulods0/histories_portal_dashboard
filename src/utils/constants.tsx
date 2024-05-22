@@ -33,11 +33,11 @@ export const ADMIN_DASHBOARD_NAV_LINKS = [
   //   icon: <SiGoogleanalytics size={20} />,
   //   link: "/ads",
   // },
-  {
-    name: "Categorias",
-    icon: <BiSolidGrid size={20} />,
-    link: "/categorias",
-  },
+  // {
+  //   name: "Categorias",
+  //   icon: <BiSolidGrid size={20} />,
+  //   link: "/categorias",
+  // },
   {
     name: "Usuários",
     icon: <BiUser size={20} />,
@@ -98,5 +98,68 @@ export const CLASSIFIED_FILTERS = [
     id: 5,
     name: "Inativo",
     value: "inactive",
+  },
+]
+
+export const CATEGORIES = [
+  "reviews",
+  "jornal overland",
+  "histórias",
+  "passeios",
+  "agenda ao",
+  "classificados",
+  "overland experience",
+]
+
+export const CATEGORIES_SLUG = [
+  {
+    label: "reviews",
+    slug: "reviews",
+  },
+  {
+    label: "jornal overland",
+    slug: "jornal-overland",
+  },
+  {
+    label: "histórias",
+    slug: "histórias",
+  },
+  {
+    label: "passeios",
+    slug: "passeios",
+  },
+  {
+    label: "agenda ao",
+    slug: "agenda-ao",
+  },
+  {
+    label: "classificados",
+    slug: "classificados",
+  },
+  {
+    label: "overland experience",
+    slug: "overland-experience",
+  },
+]
+export const PRODUCT_CATEGORIES = [
+  {
+    label: "merchandising",
+    slug: "merchandising",
+  },
+  {
+    label: "camping gear",
+    slug: "camping-gear",
+  },
+  {
+    label: "car gear",
+    slug: "car-gear",
+  },
+  {
+    label: "vestuário",
+    slug: "vestuário",
+  },
+  {
+    label: "cursos",
+    slug: "cursos",
   },
 ]

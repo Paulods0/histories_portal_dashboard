@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 type Props = {
   isSubmitting: boolean
   text: string
-  buttonColor?: string
+
   variant?:
     | "default"
     | "ghost"
@@ -20,16 +20,15 @@ const FormButton = ({
   isSubmitting,
   text,
   className,
-  buttonColor = "#FFF",
 }: Props) => {
   return (
     <Button
       variant={variant}
       type="submit"
       disabled={isSubmitting}
-      className={`${className} text-foreground`}
+      className={`${className} text-background`}
     >
-      {isSubmitting ? <LoaderSpinner color={buttonColor} size={18} /> : text}
+      {isSubmitting ? <LoaderSpinner size={18} /> : text}
     </Button>
   )
 }

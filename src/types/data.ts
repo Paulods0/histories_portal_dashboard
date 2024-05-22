@@ -25,7 +25,7 @@ export type Post = {
   mainImage: string
   content: string
   highlighted: boolean
-  category: Category
+  category: string
   createdAt: string
   latitude: string
   longitude: string
@@ -59,7 +59,7 @@ export type ClassifiedPost = {
   }
   mainImage: string
   content: string
-  category: Category
+  category: string
   price: string
   category_slug: string
   status: ClassifiedStatus
@@ -72,6 +72,6 @@ export type Product = {
   name: string
   price: string
   quantity: number
-  category: Category
+  category: string
   createdAt: string
 }

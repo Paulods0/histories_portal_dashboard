@@ -15,6 +15,7 @@ import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
 import { useCreatePost } from "@/lib/react-query/mutations"
 import { ChangeEvent, useState } from "react"
+import FormButton from "./form-ui/form-button"
 
 type Props = {
   content: string
@@ -23,8 +24,8 @@ type Props = {
 }
 
 const PostForm = ({ content, category, authorId }: Props) => {
-  const navigate = useNavigate()
-  const { mutate } = useCreatePost()
+  // const navigate = useNavigate()
+  // const { mutate } = useCreatePost()
 
   const { userId } = useAuthContext()
   const [imageToShow, setImageToShow] = useState<string | null>(null)
@@ -54,14 +55,11 @@ const PostForm = ({ content, category, authorId }: Props) => {
   setValue("category", category)
 
   const handleSubmitForm = async (data: PostFormSchemaType) => {
-    console.log({ ...data, author_id: authorId ? authorId : userId })
     try {
-      const imageURL = await uploadImageToFirebaseStorage(data.image!!, "posts")
-
       const post: NewPost = {
         tag: data.tags,
         content: content,
-        mainImage: imageURL,
+        mainImage: "imageURL",
         title: data.title,
         category: category,
         highlighted: data.hightlight,
@@ -70,16 +68,40 @@ const PostForm = ({ content, category, authorId }: Props) => {
         longitude: "",
         latitude: "",
       }
-
-      mutate(post)
       toast.success("Publicado com sucesso")
-      navigate("/posts")
       console.log(post)
     } catch (error) {
       toast.error("Erro ao publicar o post")
       console.log("Erro: " + error)
     }
   }
+  // const handleSubmitForm = async (data: PostFormSchemaType) => {
+  //   console.log({ ...data, author_id: authorId ? authorId : userId })
+  //   try {
+  //     const imageURL = await uploadImageToFirebaseStorage(data.image!!, "posts")
+
+  //     const post: NewPost = {
+  //       tag: data.tags,
+  //       content: content,
+  //       mainImage: imageURL,
+  //       title: data.title,
+  //       category: category,
+  //       highlighted: data.hightlight,
+  //       author_notes: data.author_notes,
+  //       author_id: authorId ? authorId : userId!!,
+  //       longitude: "",
+  //       latitude: "",
+  //     }
+
+  //     mutate(post)
+  //     toast.success("Publicado com sucesso")
+  //     navigate("/posts")
+  //     console.log(post)
+  //   } catch (error) {
+  //     toast.error("Erro ao publicar o post")
+  //     console.log("Erro: " + error)
+  //   }
+  // }
 
   return (
     <FormProvider {...postFormProvider}>
@@ -87,9 +109,7 @@ const PostForm = ({ content, category, authorId }: Props) => {
         onSubmit={handleSubmit(handleSubmitForm)}
         className="flex flex-col gap-3 w-full h-auto"
       >
-        <Button disabled={isSubmitting} type="submit" className="sticky top-0">
-          {isSubmitting ? <ClipLoader size={14} /> : "Publicar"}
-        </Button>
+        <FormButton isSubmitting={isSubmitting} text="Publicar" />
 
         {errors.content && (
           <span className="text-xs text-red-600 self-end ">

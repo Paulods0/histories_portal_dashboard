@@ -6,33 +6,32 @@ import {
   SelectValue,
 } from "../ui/select"
 
-import { useGetAllProductCategories } from "@/lib/react-query/queries"
 import { useFormContext } from "react-hook-form"
 import { Product } from "@/types/data"
 import { EditProductFormSchemaType } from "@/types/form-schema"
+import { PRODUCT_CATEGORIES } from "@/utils/constants"
 
 type Props = {
   product: Product
 }
 
 const SelectCategory = ({ product }: Props) => {
-  const { data: categories } = useGetAllProductCategories()
   const { setValue } = useFormContext()
   return (
     <Select
-      defaultValue={product.category._id}
+      defaultValue={product.category}
       onValueChange={(value: EditProductFormSchemaType["category"]) =>
         setValue("category", value, { shouldValidate: true })
       }
     >
-      <SelectTrigger>
-        <SelectValue placeholder={product.category.name} />
+      <SelectTrigger className="text-background bg-foreground">
+        <SelectValue placeholder={product.category} />
       </SelectTrigger>
 
       <SelectContent>
-        {categories?.map((category) => (
-          <SelectItem key={category._id} value={category._id}>
-            {category.name}
+        {PRODUCT_CATEGORIES.map((category, index) => (
+          <SelectItem key={index} value={category.label} className="capitalize">
+            {category.label}
           </SelectItem>
         ))}
       </SelectContent>

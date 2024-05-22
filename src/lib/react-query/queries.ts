@@ -1,11 +1,11 @@
 import {
+  PostsDataResponse,
   getAllPosts,
   getClassifiedPosts,
   getHighlightedPost,
   getSchedulePosts,
   getSinglePost,
 } from "@/api/post"
-import { getAllCategories } from "@/api/post-category"
 import { getAllProducts } from "@/api/product"
 import { getAllProdutCategories } from "@/api/product-category"
 import { getAllUsers, getUserPosts } from "@/api/user"
@@ -19,10 +19,14 @@ import {
 } from "@/types/data"
 import { useQuery } from "@tanstack/react-query"
 
-export const useGetAllPosts = () => {
-  return useQuery<Post[]>({
-    queryKey: ["get-all-posts"],
-    queryFn: getAllPosts,
+export const useGetAllPosts = (
+  page: number,
+  category?: string,
+  limit?: number
+) => {
+  return useQuery<PostsDataResponse>({
+    queryKey: ["get-all-posts", page, category, limit],
+    queryFn: () => getAllPosts(page, category, limit),
   })
 }
 
@@ -33,10 +37,14 @@ export const useGetUserPosts = (user_id: string) => {
   })
 }
 
-export const useGetAllProducts = () => {
-  return useQuery<Product[]>({
-    queryKey: ["get-all-products"],
-    queryFn: getAllProducts,
+export const useGetAllProducts = (
+  page: number = 1,
+  category: string = "",
+  limit: number = 100
+) => {
+  return useQuery({
+    queryKey: ["get-all-products", page, category, limit],
+    queryFn: () => getAllProducts(page, category, limit),
   })
 }
 
@@ -61,12 +69,12 @@ export const useGetHighlightedPost = () => {
   })
 }
 
-export const useGetCategories = () => {
-  return useQuery<Category[]>({
-    queryKey: ["get-categories"],
-    queryFn: getAllCategories,
-  })
-}
+// export const useGetCategories = () => {
+//   return useQuery<Category[]>({
+//     queryKey: ["get-categories"],
+//     queryFn: getAllCategories,
+//   })
+// }
 
 export const useGetSinglePost = (id: string) => {
   return useQuery<Post>({
@@ -83,10 +91,10 @@ export const useGetPostById = (id: string) => {
   })
 }
 
-export const useGetSchedulePosts = () => {
-  return useQuery<SchedulePost[]>({
-    queryKey: ["get-schedule-posts"],
-    queryFn: getSchedulePosts,
+export const useGetSchedulePosts = (page: number) => {
+  return useQuery({
+    queryKey: ["get-schedule-posts", page],
+    queryFn: () => getSchedulePosts(page),
   })
 }
 

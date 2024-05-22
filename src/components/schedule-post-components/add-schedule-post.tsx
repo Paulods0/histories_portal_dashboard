@@ -64,11 +64,7 @@ function AddSchedulePost({}: Props) {
               error={errors.file}
             />
 
-            <FormButton
-              text="Salvar"
-              buttonColor="#111111"
-              isSubmitting={isSubmitting}
-            />
+            <FormButton text="Salvar" isSubmitting={isSubmitting} />
           </form>
         </FormProvider>
       </DialogContent>

@@ -11,37 +11,48 @@ import {
 } from "@/components/ui/select"
 
 import { Link, useSearchParams } from "react-router-dom"
-import { useGetAllPosts, useGetCategories } from "@/lib/react-query/queries"
+import { useGetAllPosts } from "@/lib/react-query/queries"
 
 import { FaPlusCircle } from "react-icons/fa"
 import { useAuthContext } from "@/context/auth-context"
+import { CATEGORIES_SLUG } from "@/utils/constants"
+import Pagination from "@/components/global/pagination"
 
 const PostsPage = () => {
   const { user } = useAuthContext()
 
-  const { data: posts, isLoading } = useGetAllPosts()
-  const { data: categories } = useGetCategories()
+  const [filter, setFilter] = useSearchParams({
+    page: "1",
+    category: "",
+    limit: "2",
+  })
 
-  const [searchParams, setSearchParams] = useSearchParams({ category: "" })
+  const page = filter.get("page")!!
+  const cat = filter.get("category")!!
+  const limit = filter.get("limit")!!
+
+  const { data: posts, isLoading } = useGetAllPosts(
+    parseInt(page),
+    cat,
+    parseInt(limit)
+  )
+
+  const handleChangePage = (newPage: number) => {
+    setFilter((prev) => {
+      prev.set("page", newPage.toString())
+      return prev
+    })
+  }
 
   const handleFilter = (value: string) => {
-    setSearchParams((prev) => {
+    setFilter((prev) => {
       prev.set("category", value)
       return prev
     })
   }
 
-  const category = searchParams.get("category")
-  const filterdPosts =
-    category === "all" || category === ""
-      ? posts
-      : posts?.filter((post) => post.category_slug === category)
-
-  const filteredCategories = categories?.filter(
-    (cat) =>
-      cat.name !== "Agenda AO" &&
-      cat.name !== "Classificados" &&
-      cat.name !== "Overland Experience"
+  const filteredCategories = CATEGORIES_SLUG.filter(
+    (cat) => cat.label !== "agenda ao" && cat.label !== "classificados"
   )
 
   if (isLoading) {
@@ -56,18 +67,15 @@ const PostsPage = () => {
     <main className="w-full h-full flex-col px-1 flex">
       <div className="gap-x-2 flex w-full justify-between items-center">
         <div className="flex items-center gap-6 w-fit">
-          <Select defaultValue="all" onValueChange={handleFilter}>
+          <Select defaultValue={cat} onValueChange={handleFilter}>
             <SelectTrigger className="w-fit">
-              <SelectValue />
+              <SelectValue placeholder={cat ?? "Todos"} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              {filteredCategories?.map((category) => (
-                <SelectItem
-                  key={category._id}
-                  value={category.name.toLowerCase()}
-                >
-                  {category.name}
+              <SelectItem value="#">Todos</SelectItem>
+              {filteredCategories?.map((category, index) => (
+                <SelectItem key={index} value={category.slug}>
+                  {category.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -94,17 +102,21 @@ const PostsPage = () => {
       <hr className="w-full my-3" />
 
       <div className="w-full relative gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 scroll-bar overflow-y-auto h-[calc(90vh-80px)]">
-        {filterdPosts?.length === 0 ? (
+        {posts?.posts.length === 0 ? (
           <main className="w-full h-full flex items-center col-span-4 justify-center">
             <h1>Não há posts nada ainda.</h1>
           </main>
         ) : (
-          filterdPosts?.map((post) => (
-            <div key={post._id}>
-              <AdminPostCard post={post} />
-            </div>
+          posts?.posts.map((post) => (
+            <AdminPostCard key={post._id} post={post} />
           ))
         )}
+
+        <Pagination
+          currentPage={1}
+          onPageChange={handleChangePage}
+          totalPages={posts!!.pages}
+        />
       </div>
     </main>
   )

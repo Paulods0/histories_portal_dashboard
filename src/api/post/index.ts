@@ -15,13 +15,21 @@ export const createClassifiedPost = async (body: NewClassifiedPost) => {
   return await axios.post("/classified-post", body)
 }
 
-export const getAllPosts = async (): Promise<Post[] | []> => {
-  try {
-    const posts = await axios.get("/post")
-    return posts.data
-  } catch (error) {
-    return []
-  }
+export type PostsDataResponse = {
+  total: number
+  pages: number
+  posts: Post[]
+}
+
+export const getAllPosts = async (
+  page: number,
+  category?: string,
+  limit?: number
+): Promise<PostsDataResponse> => {
+  const posts = await axios.get(
+    `/post?page=${page}&category=${category}&limit=${limit}`
+  )
+  return posts.data
 }
 
 export const getHighlightedPost = async (): Promise<Post> => {
@@ -34,8 +42,15 @@ export const getAllPostsByCategory = async (category_slug: string) => {
   return response.data.data
 }
 
-export const getSchedulePosts = async (): Promise<SchedulePost[]> => {
-  const response = await axios.get("/schedule-post/")
+type SchedulePostResponse = {
+  posts: SchedulePost[]
+  page: number
+}
+
+export const getSchedulePosts = async (
+  page: number
+): Promise<SchedulePostResponse> => {
+  const response = await axios.get(`/schedule-post?page=${page}`)
   return response.data.data
 }
 

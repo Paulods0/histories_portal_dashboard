@@ -14,15 +14,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
-import { useGetAllProductCategories } from "@/lib/react-query/queries"
 import { NewProduct } from "@/types/create"
 import { uploadImageToFirebaseStorage } from "@/utils/helpers"
 import { toast } from "react-toastify"
 import { useCreateProduct } from "@/lib/react-query/mutations"
+import { PRODUCT_CATEGORIES } from "@/utils/constants"
 
 const StoreForm = () => {
   const { mutate } = useCreateProduct()
-  const { data: categories } = useGetAllProductCategories()
 
   const [image, setImage] = useState<string | null>(null)
 
@@ -87,7 +86,6 @@ const StoreForm = () => {
           <Label htmlFor="image">
             <Input
               type="file"
-              className="bg-background file:text-black"
               accept=".jpg, .png, .jpeg"
               {...register("image")}
               onChange={handleImage}
@@ -98,15 +96,9 @@ const StoreForm = () => {
           )}
         </>
 
-        <InputField
-          className="bg-foreground"
-          label="Nome"
-          {...register("title")}
-          error={errors.title}
-        />
+        <InputField label="Nome" {...register("title")} error={errors.title} />
         <InputField
           type="number"
-          className="bg-foreground"
           label="Preço"
           {...register("price")}
           error={errors.price}
@@ -114,14 +106,18 @@ const StoreForm = () => {
 
         <>
           <Select onValueChange={handleCategory}>
-            <SelectTrigger className="bg-foreground text-background">
+            <SelectTrigger>
               <SelectValue placeholder="Categoria" />
             </SelectTrigger>
 
             <SelectContent>
-              {categories?.map((category) => (
-                <SelectItem key={category._id} value={category._id}>
-                  {category.name}
+              {PRODUCT_CATEGORIES.map((category, index) => (
+                <SelectItem
+                  key={index}
+                  value={category.label}
+                  className="capitalize"
+                >
+                  {category.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -134,11 +130,7 @@ const StoreForm = () => {
           )}
         </>
 
-        <FormButton
-          text="Salvar produto"
-          buttonColor="#FFF"
-          isSubmitting={isSubmitting}
-        />
+        <FormButton text="Salvar produto" isSubmitting={isSubmitting} />
       </form>
     </FormProvider>
   )

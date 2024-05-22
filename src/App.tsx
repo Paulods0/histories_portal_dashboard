@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom"
 
-import CategoriesPage from "./pages/categories-page"
 import LoginPage from "./pages/login-page"
 import ManageUserPage from "./pages/manage-user-page"
 import UserPostsPage from "./pages/user-posts-page"
@@ -24,7 +23,9 @@ import { useThemeContext } from "@/context/theme-context"
 function App() {
   const { theme } = useThemeContext()
   return (
-    <main className={`flex flex-col gap-3 bg-background text-foreground min-h-screen ${theme}`}>
+    <main
+      className={`flex flex-col gap-3 bg-background text-foreground min-h-screen ${theme}`}
+    >
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
@@ -36,7 +37,6 @@ function App() {
           <Route path="novopost" element={<AddPostPage />} />
           <Route path="usuarios" element={<ManageUserPage />} />
           <Route path="post/:id" element={<PostDetailsPage />} />
-          <Route path="categorias" element={<CategoriesPage />} />
           <Route path="edit-post/:id" element={<EditPostPostPage />} />
           <Route path="posts/agenda-ao" element={<SchedulePostsPage />} />
           <Route path="posts/classificados" element={<ClassifiedPostsPage />} />

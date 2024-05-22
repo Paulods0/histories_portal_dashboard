@@ -47,7 +47,7 @@ const EditProduct = ({ product }: Props) => {
         image: product.image,
         name: product.name,
         price: product.price,
-        category: product.category._id,
+        category: product.category,
       },
     })
 
@@ -116,9 +116,9 @@ const EditProduct = ({ product }: Props) => {
         <CiEdit size={24} />
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="bg-foreground">
         <DialogHeader>
-          <DialogTitle>Editar produto</DialogTitle>
+          <DialogTitle className="text-background">Editar produto</DialogTitle>
         </DialogHeader>
 
         <FormProvider {...editProductForm}>
@@ -153,13 +153,11 @@ const EditProduct = ({ product }: Props) => {
 
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant={"default"}>Cancelar</Button>
+                <Button variant={"destructive"}>Cancelar</Button>
               </DialogClose>
 
               <FormButton
-                variant="secondary"
                 isSubmitting={isSubmitting}
-                buttonColor="#FFF"
                 text="Atualizar alterações"
               />
             </DialogFooter>

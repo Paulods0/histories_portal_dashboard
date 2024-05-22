@@ -29,9 +29,9 @@ const HomePostCard = ({
             <div className="flex gap-1">
               <div className="flex items-center gap-1">
                 <BiCategory size={12} />
-                <span className="text-[12px] font-semibold">Tópico:</span>
+                <span className="text-[12px] font-semibold">Categoria:</span>
               </div>
-              <span className="text-[12px]">{category?.name}</span>
+              <span className="text-[12px] capitalize">{category}</span>
             </div>
 
             <div className="flex gap-1">

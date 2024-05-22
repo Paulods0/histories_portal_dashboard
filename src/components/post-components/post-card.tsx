@@ -28,9 +28,7 @@ const PostCard = ({ post }: PostCardProps) => {
         <div className="flex flex-col items-start w-full justify-between mt-2">
           <div className="flex">
             <span className="text-[12px] text-foreground mr-1">Categoria:</span>
-            <span className="text-[12px] text-foreground">
-              {post.category?.name}
-            </span>
+            <span className="text-[12px] text-foreground capitalize">{post.category}</span>
           </div>
 
           <div className="flex items-center w-full text-[12px] justify-between">

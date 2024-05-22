@@ -6,11 +6,11 @@ import {
   updateClassifiedPost,
   updatePost,
 } from "@/api/post"
-import {
-  createPostCategory,
-  deleteCategory,
-  updatePostCategory,
-} from "@/api/post-category"
+// import {
+//   createPostCategory,
+//   deleteCategory,
+//   updatePostCategory,
+// } from "@/api/post-category"
 import { createProduct, deleteProduct, updateProduct } from "@/api/product"
 import {
   createProductCategory,
@@ -44,14 +44,14 @@ export const useCreateProduct = () => {
   })
 }
 
-export const useCreatePostCategory = () => {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: createPostCategory,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["get-categories"] }),
-  })
-}
+// export const useCreatePostCategory = () => {
+//   const queryClient = useQueryClient()
+//   return useMutation({
+//     mutationFn: createPostCategory,
+//     onSuccess: () =>
+//       queryClient.invalidateQueries({ queryKey: ["get-categories"] }),
+//   })
+// }
 
 export const useCreateProductCategory = () => {
   const queryClient = useQueryClient()
@@ -88,14 +88,14 @@ export const useUpdateUser = () => {
   })
 }
 
-export const useUpdatePostCategory = () => {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: updatePostCategory,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["get-categories"] }),
-  })
-}
+// export const useUpdatePostCategory = () => {
+//   const queryClient = useQueryClient()
+//   return useMutation({
+//     mutationFn: updatePostCategory,
+//     onSuccess: () =>
+//       queryClient.invalidateQueries({ queryKey: ["get-categories"] }),
+//   })
+// }
 
 export const useUpdateProductCategory = () => {
   const queryClient = useQueryClient()
@@ -126,14 +126,14 @@ export const useUpdateClassifiedPost = () => {
   })
 }
 
-export const useDeletePostCategory = () => {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: deleteCategory,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["get-categories"] }),
-  })
-}
+// export const useDeletePostCategory = () => {
+//   const queryClient = useQueryClient()
+//   return useMutation({
+//     mutationFn: deleteCategory,
+//     onSuccess: () =>
+//       queryClient.invalidateQueries({ queryKey: ["get-categories"] }),
+//   })
+// }
 
 export const useDeletePost = () => {
   const queryClient = useQueryClient()

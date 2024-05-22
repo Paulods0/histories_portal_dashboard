@@ -29,7 +29,7 @@ const StorePage = () => {
 
   return (
     <main className="w-full p-2 flex-col items-center flex">
-      {products?.length === 0 || !products || products === null ? (
+      {products?.products.length === 0 || !products || products === null ? (
         <div className="w-full h-full flex items-center justify-center col-span-3">
           <h1>Não há nenhum produto ainda</h1>
         </div>
@@ -53,7 +53,7 @@ const StorePage = () => {
                 </TableHeader>
 
                 <TableBody>
-                  {products?.map((product) => (
+                  {products?.products.map((product) => (
                     <TableRow key={product._id}>
                       <TableCell>
                         <img
@@ -62,8 +62,8 @@ const StorePage = () => {
                         />
                       </TableCell>
                       <TableCell>{product.name}</TableCell>
-                      <TableCell>{product.category.name}</TableCell>
-                      <TableCell>{product.price} kz</TableCell>
+                      <TableCell>{product.category}</TableCell>
+                      <TableCell>{product.price}</TableCell>
 
                       {user?.role !== "publicator" && (
                         <TableCell className="space-x-4">

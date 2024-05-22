@@ -19,7 +19,6 @@ const EditPostPostPage = () => {
   const [authorId, setAuthorId] = useState("")
   const [category, setCategory] = useState("")
   const [isLoading, setIsLoading] = useState(true)
-  const [categoryName, setCategoryName] = useState("")
   const [post, setPost] = useState<Post | undefined>(undefined)
 
   useEffect(() => {
@@ -27,9 +26,8 @@ const EditPostPostPage = () => {
       const post = await getSinglePost(id!!)
       setPost(post)
       setContent(post?.content)
+      setCategory(post.category)
       setAuthorId(post?.author._id)
-      setCategory(post.category._id)
-      setCategoryName(post.category.name)
 
       setIsLoading(false)
     }
@@ -50,7 +48,7 @@ const EditPostPostPage = () => {
         />
 
         <div className="flex-1 h-full gap-4 w-full flex flex-col">
-          {categoryName === "Passeios" && (
+          {category === "passeios" && (
             <EditTourPostForm
               content={content}
               author={authorId}
@@ -59,7 +57,7 @@ const EditPostPostPage = () => {
             />
           )}
 
-          {categoryName !== "Passeios" && categoryName !== "Agenda AO" && (
+          {category !== "passeios" && category !== "agenda ao" && (
             <EditPostForm
               content={content}
               authorId={authorId}
@@ -69,12 +67,7 @@ const EditPostPostPage = () => {
           )}
 
           <SelectAuthorInput setAuthorId={setAuthorId} />
-          <SelectInputCategory
-            category={category}
-            setCategory={setCategory}
-            categoryName={categoryName}
-            setCategoryName={setCategoryName}
-          />
+          <SelectInputCategory category={category} setCategory={setCategory} />
         </div>
       </section>
     </main>

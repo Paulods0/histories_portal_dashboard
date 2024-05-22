@@ -69,6 +69,28 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
       toast.error("Erro ao atualizar o post")
     }
   }
+  // const handleSubmitForm = (data: EditTourFormSchemaType) => {
+  //   try {
+  //     const newCoords = data.coordinates?.split(",")
+  //     const updatedPost: UpdatePost = {
+  //       author_id: author ? author : post!!.author._id,
+  //       category: category,
+  //       content: content,
+  //       highlighted: data?.highlighted,
+  //       mainImage: data?.image,
+  //       title: data.title,
+  //       author_notes: data?.author_notes,
+  //       latitude: newCoords && newCoords[0],
+  //       longitude: newCoords && newCoords[1],
+  //       tag: data?.tag,
+  //     }
+
+  //     console.log(updatedPost)
+  //   } catch (error) {
+  //     console.log(error)
+  //     toast.error("Erro ao atualizar o post")
+  //   }
+  // }
 
   return (
     <FormProvider {...methods}>
@@ -76,11 +98,7 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
         onSubmit={handleSubmit(handleSubmitForm)}
         className="flex flex-col h-auto gap-3"
       >
-        <FormButton
-          isSubmitting={isSubmitting}
-          text="Atualizar"
-          buttonColor="#111111"
-        />
+        <FormButton isSubmitting={isSubmitting} text="Atualizar" />
         <>
           {imageToShow ? (
             <img

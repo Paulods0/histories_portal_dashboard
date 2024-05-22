@@ -33,7 +33,6 @@ const AddPostPage = () => {
   const [content, setContent] = useState("")
   const [authorId, setAuthorId] = useState("")
   const [category, setCategory] = useState("")
-  const [categoryName, setCategoryName] = useState("")
 
   return (
     <main className="flex h-full justify-center items-center">
@@ -45,7 +44,7 @@ const AddPostPage = () => {
         />
 
         <div className="flex-1 px-4 gap-2 flex-col flex py-2">
-          {categoryName === "Passeios" && (
+          {category === "passeios" && (
             <ToursPostForm
               authorId={authorId}
               category={category}
@@ -53,21 +52,18 @@ const AddPostPage = () => {
             />
           )}
 
-          {categoryName !== "Agenda AO" && categoryName !== "Passeios" && (
+          {category !== "agenda ao" && category !== "passeios" && (
             <PostForm
               content={content}
               authorId={authorId}
               category={category}
             />
           )}
-          <SelectCategoryInput
-            setCategory={setCategory}
-            setCategoryName={setCategoryName}
-          />
+          <SelectCategoryInput setCategory={setCategory} />
 
           <SelectAuthorInput setAuthorId={setAuthorId} />
-          
-          {categoryName === "Agenda AO" && (
+
+          {category === "agenda ao" && (
             <SchedulePostForm authorId={authorId} category={category} />
           )}
         </div>

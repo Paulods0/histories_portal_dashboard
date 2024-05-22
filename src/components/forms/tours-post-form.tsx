@@ -9,7 +9,7 @@ import FormButton from "./form-ui/form-button"
 import InputField from "./form-ui/input-field"
 import InputCheckbox from "./form-ui/input-checkbox"
 import TextAreaField from "./form-ui/text-area-field"
-import { uploadImageToFirebaseStorage } from "@/utils/helpers"
+// import { uploadImageToFirebaseStorage } from "@/utils/helpers"
 import { NewPost } from "@/types/create"
 import { toast } from "react-toastify"
 
@@ -20,8 +20,8 @@ type Props = {
 }
 
 const ToursPostForm = ({ content, authorId, category }: Props) => {
-  const navigate = useNavigate()
-  const { mutate } = useCreatePost()
+  // const navigate = useNavigate()
+  // const { mutate } = useCreatePost()
   const { userId } = useAuthContext()
 
   const [image, setImage] = useState("")
@@ -52,11 +52,11 @@ const ToursPostForm = ({ content, authorId, category }: Props) => {
   const handleSubmitForm = async (data: TourFormSchemaType) => {
     try {
       const geocoord = data.coordinates.split(",")
-      const imageURL = await uploadImageToFirebaseStorage(data.image!!, "posts")
+
       const post: NewPost = {
         tag: data.tags,
         content: content,
-        mainImage: imageURL,
+        mainImage: "imageURL",
         title: data.title,
         category: category,
         highlighted: data.highlighted,
@@ -65,14 +65,37 @@ const ToursPostForm = ({ content, authorId, category }: Props) => {
         longitude: geocoord[1],
         author_id: authorId ? authorId : userId!!,
       }
-      mutate(post)
       toast.success("Publicado com sucesso.")
-      navigate("/posts")
+      console.log(post)
     } catch (error) {
       toast.error("Erro ao publicar o post")
       console.log("Erro: " + error)
     }
   }
+  // const handleSubmitForm = async (data: TourFormSchemaType) => {
+  //   try {
+  //     const geocoord = data.coordinates.split(",")
+  //     const imageURL = await uploadImageToFirebaseStorage(data.image!!, "posts")
+  //     const post: NewPost = {
+  //       tag: data.tags,
+  //       content: content,
+  //       mainImage: imageURL,
+  //       title: data.title,
+  //       category: category,
+  //       highlighted: data.highlighted,
+  //       author_notes: data.author_notes,
+  //       latitude: geocoord[0],
+  //       longitude: geocoord[1],
+  //       author_id: authorId ? authorId : userId!!,
+  //     }
+  //     mutate(post)
+  //     toast.success("Publicado com sucesso.")
+  //     navigate("/posts")
+  //   } catch (error) {
+  //     toast.error("Erro ao publicar o post")
+  //     console.log("Erro: " + error)
+  //   }
+  // }
   return (
     <FormProvider {...methods}>
       <form
@@ -80,11 +103,7 @@ const ToursPostForm = ({ content, authorId, category }: Props) => {
         className="flex flex-col h-auto gap-3"
       >
         <>
-          <FormButton
-            isSubmitting={isSubmitting}
-            text="Publicar"
-            buttonColor="#111111"
-          />
+          <FormButton isSubmitting={isSubmitting} text="Publicar" />
           {errors.content && (
             <span className="text-xs text-red-600">
               {errors.content.message}

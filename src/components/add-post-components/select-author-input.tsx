@@ -37,7 +37,7 @@ const SelectAuthorInput = ({ setAuthorId }: Props) => {
         defaultValue={currAuthor._id}
         onValueChange={(value) => setAuthorId(value)}
       >
-        <SelectTrigger className="bg-foreground text-background">
+        <SelectTrigger className="bg-background text-foreground">
           <SelectValue
             placeholder={
               <span className="flex items-center gap-1">
@@ -53,7 +53,7 @@ const SelectAuthorInput = ({ setAuthorId }: Props) => {
           />
         </SelectTrigger>
 
-        <SelectContent>
+        <SelectContent className="bg-background text-foreground">
           {users?.map((user) => (
             <SelectItem key={user._id} value={user._id}>
               <div className="w-full gap-x-3 flex items-center">

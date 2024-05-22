@@ -30,7 +30,7 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
   const [imageToShow, setImageToShow] = useState<string | null>(null)
 
   if (!post) {
-    return <LoaderSpinner color="#111" />
+    return <LoaderSpinner />
   }
 
   const methods: UseFormReturn<EditPostFormSchemaType> =
@@ -39,7 +39,7 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
       defaultValues: {
         title: post?.title,
         image: post!!.mainImage,
-        category: post?.category._id,
+        category: post?.category,
         highlighted: post?.highlighted,
         author_notes: post?.author_notes,
         tags: post?.tag ? post.tag.toString() : "",
@@ -70,14 +70,6 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
 
   const handleSubmitForm = async (data: EditPostFormSchemaType) => {
     try {
-      let imageURL: Promise<string> | string | null = null
-      if (imageToShow !== null) {
-        await deleteImageFromFirebase(post!!.mainImage, "posts")
-        imageURL = uploadImageToFirebaseStorage(data.image!! as File, "posts")
-        console.log("Deletado do firebase")
-        imageURL = imageURL
-      }
-
       const payload = {
         id: post!!._id,
         data: {
@@ -88,11 +80,10 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
           content: content,
           tag: data.tags,
           highlighted: data.highlighted,
-          mainImage: imageURL ? imageURL : post!.mainImage,
+          mainImage: "imageURL" ? "imageURL" : post!.mainImage,
         } as UpdatePost,
       }
 
-      mutate(payload)
       console.log(payload)
       toast.success("Atualizado com sucesso")
     } catch (error) {
@@ -100,6 +91,38 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
       console.log(error)
     }
   }
+  // const handleSubmitForm = async (data: EditPostFormSchemaType) => {
+  //   try {
+  //     let imageURL: Promise<string> | string | null = null
+  //     if (imageToShow !== null) {
+  //       await deleteImageFromFirebase(post!!.mainImage, "posts")
+  //       imageURL = uploadImageToFirebaseStorage(data.image!! as File, "posts")
+  //       console.log("Deletado do firebase")
+  //       imageURL = imageURL
+  //     }
+
+  //     const payload = {
+  //       id: post!!._id,
+  //       data: {
+  //         title: data.title,
+  //         author_id: authorId,
+  //         author_notes: data.author_notes,
+  //         category: data.category,
+  //         content: content,
+  //         tag: data.tags,
+  //         highlighted: data.highlighted,
+  //         mainImage: imageURL ? imageURL : post!.mainImage,
+  //       } as UpdatePost,
+  //     }
+
+  //     mutate(payload)
+  //     console.log(payload)
+  //     toast.success("Atualizado com sucesso")
+  //   } catch (error) {
+  //     toast.error("Erro ao publicar o post")
+  //     console.log(error)
+  //   }
+  // }
 
   return (
     <>
@@ -141,11 +164,7 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
             className="file:text-white"
           />
 
-          <FormButton
-            isSubmitting={isSubmitting}
-            buttonColor="#111"
-            text="Atualizar"
-          />
+          <FormButton isSubmitting={isSubmitting} text="Atualizar" />
 
           <InputField label="Título" {...register("title")} />
 

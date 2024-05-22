@@ -6,9 +6,19 @@ import { UpdateProduct } from "@/types/update"
 export const createProduct = async (data: NewProduct) => {
   await axios.post("/product", data)
 }
+export type ProductsResponse = {
+  products: Product[]
+  pages: number
+}
 
-export const getAllProducts = async (): Promise<Product[] | []> => {
-  const response = await axios.get("/product")
+export const getAllProducts = async (
+  page?: number ,
+  category?: string,
+  limit?: number
+): Promise<ProductsResponse> => {
+  const response = await axios.get(
+    `/product?page=${page}&category=${category}&limit=${limit}`
+  )
   return response.data
 }
 export const updateProduct = async (data: UpdateProduct) => {
