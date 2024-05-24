@@ -17,7 +17,7 @@ const HomeStatsContainer = () => {
   const { data: userPosts } = useGetUserPosts(userId!!)
   const { data: productCategories } = useGetAllProductCategories()
 
-  console.log(postsData?.pages)
+  // console.log(postsData?.pages)
   const totalPostsViews = postsData?.posts?.reduce(
     (total, acc) => acc.views + total,
     0
@@ -47,7 +47,7 @@ const HomeStatsContainer = () => {
             customStyle="bg-[#423B94] w-full"
             titleIcon="posts"
             title="Total de posts"
-            amount={postsData?.total.toString()}
+            amount={postsData?.posts.length.toString()}
             description="posts no total"
             footerIcon="views"
             footerText="views"
@@ -57,7 +57,7 @@ const HomeStatsContainer = () => {
             customStyle="bg-[#505050] w-full"
             titleIcon="store"
             title="loja"
-            amount={products?.length.toString()}
+            amount={products?.products.length.toString()}
             description="Produtos"
             footerIcon="category"
             footerText="categorias"

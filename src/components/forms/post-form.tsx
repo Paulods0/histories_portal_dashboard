@@ -8,7 +8,6 @@ import InputCheckbox from "./form-ui/input-checkbox"
 import TextAreaField from "./form-ui/text-area-field"
 import { useAuthContext } from "@/context/auth-context"
 
-import { ClipLoader } from "react-spinners"
 import { NewPost } from "@/types/create"
 import { uploadImageToFirebaseStorage } from "@/utils/helpers"
 import { toast } from "react-toastify"
@@ -24,8 +23,8 @@ type Props = {
 }
 
 const PostForm = ({ content, category, authorId }: Props) => {
-  // const navigate = useNavigate()
-  // const { mutate } = useCreatePost()
+  const navigate = useNavigate()
+  const { mutate } = useCreatePost()
 
   const { userId } = useAuthContext()
   const [imageToShow, setImageToShow] = useState<string | null>(null)
@@ -56,10 +55,14 @@ const PostForm = ({ content, category, authorId }: Props) => {
 
   const handleSubmitForm = async (data: PostFormSchemaType) => {
     try {
+      const imageURL = await uploadImageToFirebaseStorage(
+        data.image as File,
+        "posts"
+      )
       const post: NewPost = {
         tag: data.tags,
         content: content,
-        mainImage: "imageURL",
+        mainImage: imageURL,
         title: data.title,
         category: category,
         highlighted: data.hightlight,
@@ -69,39 +72,13 @@ const PostForm = ({ content, category, authorId }: Props) => {
         latitude: "",
       }
       toast.success("Publicado com sucesso")
-      console.log(post)
+      mutate(post)
+      navigate("/posts")
     } catch (error) {
       toast.error("Erro ao publicar o post")
       console.log("Erro: " + error)
     }
   }
-  // const handleSubmitForm = async (data: PostFormSchemaType) => {
-  //   console.log({ ...data, author_id: authorId ? authorId : userId })
-  //   try {
-  //     const imageURL = await uploadImageToFirebaseStorage(data.image!!, "posts")
-
-  //     const post: NewPost = {
-  //       tag: data.tags,
-  //       content: content,
-  //       mainImage: imageURL,
-  //       title: data.title,
-  //       category: category,
-  //       highlighted: data.hightlight,
-  //       author_notes: data.author_notes,
-  //       author_id: authorId ? authorId : userId!!,
-  //       longitude: "",
-  //       latitude: "",
-  //     }
-
-  //     mutate(post)
-  //     toast.success("Publicado com sucesso")
-  //     navigate("/posts")
-  //     console.log(post)
-  //   } catch (error) {
-  //     toast.error("Erro ao publicar o post")
-  //     console.log("Erro: " + error)
-  //   }
-  // }
 
   return (
     <FormProvider {...postFormProvider}>

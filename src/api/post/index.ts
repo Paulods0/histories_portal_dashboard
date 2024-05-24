@@ -51,7 +51,7 @@ export const getSchedulePosts = async (
   page: number
 ): Promise<SchedulePostResponse> => {
   const response = await axios.get(`/schedule-post?page=${page}`)
-  return response.data.data
+  return response.data
 }
 
 export const getSinglePost = async (id: string): Promise<Post> => {

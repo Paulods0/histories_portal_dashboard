@@ -70,28 +70,15 @@ const EditProduct = ({ product }: Props) => {
     try {
       let updatedProduct: UpdateProduct
       if (imageToShow) {
-        if (!product.image) {
-          const newImageURL = await uploadImageToFirebaseStorage(
-            data.image!! as File,
-            "products"
-          )
-          updatedProduct = {
-            ...data,
-            image: newImageURL,
-            id: product._id,
-          }
-        } else {
-          await deleteImageFromFirebase(product.image, "products")
-
-          const newImageURL = await uploadImageToFirebaseStorage(
-            data.image!! as File,
-            "products"
-          )
-          updatedProduct = {
-            ...data,
-            image: newImageURL,
-            id: product._id,
-          }
+        await deleteImageFromFirebase(product.image, "products")
+        const newImageURL = await uploadImageToFirebaseStorage(
+          data.image!! as File,
+          "products"
+        )
+        updatedProduct = {
+          ...data,
+          image: newImageURL,
+          id: product._id,
         }
       } else {
         updatedProduct = {

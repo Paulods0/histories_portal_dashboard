@@ -54,7 +54,7 @@ const DeletePostDialog = ({ post }: Props) => {
         </AlertDialogHeader>
 
         <div className="flex items-center gap-2">
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogCancel className="text-foreground">Cancelar</AlertDialogCancel>
           <AlertDialogAction asChild>
             <Button
               onClick={handleDeletePost}

@@ -49,7 +49,7 @@ export type NewSchedulePost = {
   title: string
   file: string
   category: string
-  author: string
+  author?: string
 }
 
 export type NewClassifiedPost = {

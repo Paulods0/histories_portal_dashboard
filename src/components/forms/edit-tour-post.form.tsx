@@ -9,6 +9,11 @@ import InputCheckbox from "./form-ui/input-checkbox"
 import { toast } from "react-toastify"
 import { UpdatePost } from "@/types/update"
 import { ChangeEvent, useState } from "react"
+import { useUpdatePost } from "@/lib/react-query/mutations"
+import {
+  deleteImageFromFirebase,
+  uploadImageToFirebaseStorage,
+} from "@/utils/helpers"
 
 type Props = {
   post: Post | undefined
@@ -18,6 +23,7 @@ type Props = {
 }
 
 const EditTourPostForm = ({ post, author, category, content }: Props) => {
+  const { mutate } = useUpdatePost()
   const [imageToShow, setImageToShow] = useState<string | null>(null)
 
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +33,8 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
       setImageToShow(url)
     }
   }
+
+  const handleRemoveImageToShow = () => setImageToShow(null)
 
   const methods: UseFormReturn<EditTourFormSchemaType> =
     useForm<EditTourFormSchemaType>({
@@ -47,50 +55,49 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
     formState: { isSubmitting },
   } = methods
 
-  const handleSubmitForm = (data: EditTourFormSchemaType) => {
+  const handleSubmitForm = async (data: EditTourFormSchemaType) => {
     try {
+      let updatedPost: UpdatePost
       const newCoords = data.coordinates?.split(",")
-      const updatedPost: UpdatePost = {
-        author_id: author ? author : post!!.author._id,
-        category: category,
-        content: content,
-        highlighted: data?.highlighted,
-        mainImage: data?.image,
-        title: data.title,
-        author_notes: data?.author_notes,
-        latitude: newCoords && newCoords[0],
-        longitude: newCoords && newCoords[1],
-        tag: data?.tag,
+      if (imageToShow) {
+        await deleteImageFromFirebase(post!!.mainImage!!, "posts")
+        const imageURL = await uploadImageToFirebaseStorage(
+          data.image as File,
+          "posts"
+        )
+        updatedPost = {
+          author_id: author ? author : post!!.author._id,
+          category: category,
+          content: content,
+          highlighted: data?.highlighted,
+          mainImage: imageURL,
+          title: data.title,
+          author_notes: data?.author_notes,
+          latitude: newCoords && newCoords[0],
+          longitude: newCoords && newCoords[1],
+          tag: data?.tag,
+        }
+      } else {
+        updatedPost = {
+          author_id: author ? author : post!!.author._id,
+          category: category,
+          content: content,
+          highlighted: data?.highlighted,
+          mainImage: post?.mainImage,
+          title: data.title,
+          author_notes: data?.author_notes,
+          latitude: newCoords && newCoords[0],
+          longitude: newCoords && newCoords[1],
+          tag: data?.tag,
+        }
       }
-
-      console.log(updatedPost)
+      mutate({ id: post!!._id!!, data: updatedPost })
+      toast.success("Post Atualizado")
     } catch (error) {
       console.log(error)
       toast.error("Erro ao atualizar o post")
     }
   }
-  // const handleSubmitForm = (data: EditTourFormSchemaType) => {
-  //   try {
-  //     const newCoords = data.coordinates?.split(",")
-  //     const updatedPost: UpdatePost = {
-  //       author_id: author ? author : post!!.author._id,
-  //       category: category,
-  //       content: content,
-  //       highlighted: data?.highlighted,
-  //       mainImage: data?.image,
-  //       title: data.title,
-  //       author_notes: data?.author_notes,
-  //       latitude: newCoords && newCoords[0],
-  //       longitude: newCoords && newCoords[1],
-  //       tag: data?.tag,
-  //     }
-
-  //     console.log(updatedPost)
-  //   } catch (error) {
-  //     console.log(error)
-  //     toast.error("Erro ao atualizar o post")
-  //   }
-  // }
 
   return (
     <FormProvider {...methods}>
@@ -101,16 +108,26 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
         <FormButton isSubmitting={isSubmitting} text="Atualizar" />
         <>
           {imageToShow ? (
-            <img
-              src={imageToShow}
-              alt="post-image"
-              className="size-24 object-contain aspect-square"
-            />
+            <div className="flex items-center flex-col w-full">
+              <img
+                src={imageToShow}
+                alt="post-image"
+                className="md:size-36 size-24 object-contain aspect-square"
+              />
+
+              <button
+                type="button"
+                onClick={handleRemoveImageToShow}
+                className="text-red-800 hover:text-red-900 transition-all duration-200 ease-in-out"
+              >
+                Remover imagem
+              </button>
+            </div>
           ) : (
             <img
               src={post?.mainImage}
               alt="post-image"
-              className="size-24 object-contain aspect-square"
+              className="md:size-36 size-24 object-contain aspect-square"
             />
           )}
         </>

@@ -7,7 +7,6 @@ import { useGetSchedulePosts } from "@/lib/react-query/queries"
 const SchedulePostsPage = () => {
   const { user } = useAuthContext()
   const { data, isLoading } = useGetSchedulePosts(1)
-  console.log(data?.posts)
 
   if (isLoading) {
     return <LoaderSpinner />

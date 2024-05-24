@@ -27,6 +27,14 @@ const StorePage = () => {
     )
   }
 
+  function formatPrice(price: string) {
+    const newPrice = new Intl.NumberFormat("pt-PT", {
+      style: "currency",
+      currency: "AKZ",
+    }).format(Number(price))
+    return newPrice
+  }
+
   return (
     <main className="w-full p-2 flex-col items-center flex">
       {products?.products.length === 0 || !products || products === null ? (
@@ -63,7 +71,7 @@ const StorePage = () => {
                       </TableCell>
                       <TableCell>{product.name}</TableCell>
                       <TableCell>{product.category}</TableCell>
-                      <TableCell>{product.price}</TableCell>
+                      <TableCell>{formatPrice(product.price)}</TableCell>
 
                       {user?.role !== "publicator" && (
                         <TableCell className="space-x-4">

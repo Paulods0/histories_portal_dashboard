@@ -7,8 +7,9 @@ import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
 import InputField from "./form-ui/input-field"
 import FormButton from "./form-ui/form-button"
 import { SchedulePost } from "@/types/data"
-import SelectAuthorInput from "../add-post-components/select-author-input"
-import { useState } from "react"
+// import SelectAuthorInput from "../add-post-components/select-author-input"
+// import { useState } from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,14 +22,24 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog"
 import { Button } from "../ui/button"
+import { useGetAllUsers } from "@/lib/react-query/queries"
+import { useAuthContext } from "@/context/auth-context"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select"
+import { useState } from "react"
 
 type Props = {
   post: SchedulePost
 }
 
 function EditSchedulePostForm({ post }: Props) {
-  const [authorId, setAuthorId] = useState("")
-  console.log(authorId)
+  const { data: users } = useGetAllUsers()
+  const [hasFile, setHasFile] = useState(false)
 
   const methods: UseFormReturn<EditScheduleFormSchemaType> =
     useForm<EditScheduleFormSchemaType>({
@@ -36,6 +47,7 @@ function EditSchedulePostForm({ post }: Props) {
       defaultValues: {
         title: post.title,
         file: post.file,
+        author: post.author._id!!,
       },
     })
 
@@ -43,10 +55,25 @@ function EditSchedulePostForm({ post }: Props) {
     register,
     handleSubmit,
     formState: { isSubmitting },
+    setValue,
   } = methods
 
+  const handleSelectAuthor = (value: string) => {
+    setValue("author", value)
+  }
+
   function handleSubmitForm(data: EditScheduleFormSchemaType) {
-    console.log(data)
+    try {
+      if (data.file) {
+        console.log("There's a file")
+        console.log({ id: post._id, data: data })
+      } else {
+        console.log("There's not a file")
+        console.log({ id: post._id, data: data })
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   function handleDeletePost() {
@@ -57,28 +84,48 @@ function EditSchedulePostForm({ post }: Props) {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-4">
         <img src="" alt="" />
+        <InputField label="Título" {...register("title")} />
         <InputField
-          className="bg-foreground text-background"
-          label="Título"
-          {...register("title")}
-        />
-        <InputField
-          className="bg-foreground file:text-background"
           label="Documento PDF"
           type="file"
           accept=".pdf"
           {...register("file")}
         />
 
-        <SelectAuthorInput setAuthorId={setAuthorId} />
+        {hasFile && (
+          <button
+            onClick={() => setHasFile(false)}
+            type="button"
+            className="text-red-700 transition-all duration-200 ease-in-out hover:text-red-900"
+          >
+            remover ficheiro
+          </button>
+        )}
 
+        <Select
+          defaultValue={post.author._id}
+          onValueChange={handleSelectAuthor}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Autor" />
+          </SelectTrigger>
+          <SelectContent>
+            {users?.map((user) => (
+              <SelectItem key={user._id} value={user._id}>
+                <div className="flex items-center gap-1">
+                  <Avatar className="size-8">
+                    <AvatarFallback>{user.firstname.charAt(0)}</AvatarFallback>
+                    <AvatarImage src={user.image} />
+                  </Avatar>
+                  <span>{user.firstname}</span>
+                  <span>{user.lastname}</span>
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <div className="mt-4 space-x-2">
-          <FormButton
-            text="Atualizar"
-            isSubmitting={isSubmitting}
-            buttonColor="#111111"
-          />
-
+          <FormButton text="Atualizar" isSubmitting={isSubmitting} />
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant={"destructive"}>Remover</Button>

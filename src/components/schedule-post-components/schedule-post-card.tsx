@@ -12,7 +12,7 @@ type Props = {
 const SchedulePostCard = ({ post }: Props) => {
   const { user } = useAuthContext()
   return (
-    <div className="h-auto flex flex-col w-full lg:w-auto p-4 border rounded-md hover:bg-zinc-900 transition-all duration-200 ease-in-out">
+    <div className="h-auto flex flex-col w-full lg:w-auto p-4 border rounded-md hover:bg-muted-foreground/10 transition-all duration-200 ease-in-out">
       <img
         src="/pdf-image.png"
         className="w-full h-20 object-contain"

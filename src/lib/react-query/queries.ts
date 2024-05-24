@@ -9,14 +9,7 @@ import {
 import { getAllProducts } from "@/api/product"
 import { getAllProdutCategories } from "@/api/product-category"
 import { getAllUsers, getUserPosts } from "@/api/user"
-import {
-  Category,
-  ClassifiedPost,
-  Post,
-  Product,
-  SchedulePost,
-  User,
-} from "@/types/data"
+import { Category, ClassifiedPost, Post, User } from "@/types/data"
 import { useQuery } from "@tanstack/react-query"
 
 export const useGetAllPosts = (

@@ -17,6 +17,7 @@ import {
 import { Button } from "../ui/button"
 import { UpdatePost } from "@/types/update"
 import { useUpdatePost } from "@/lib/react-query/mutations"
+import { useNavigate } from "react-router-dom"
 
 type Props = {
   authorId: string
@@ -27,6 +28,7 @@ type Props = {
 
 const EditPostForm = ({ authorId, post, content, category }: Props) => {
   const { mutate } = useUpdatePost()
+  const navigate = useNavigate()
   const [imageToShow, setImageToShow] = useState<string | null>(null)
 
   if (!post) {
@@ -70,9 +72,16 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
 
   const handleSubmitForm = async (data: EditPostFormSchemaType) => {
     try {
-      const payload = {
-        id: post!!._id,
-        data: {
+      let payload: UpdatePost
+      if (imageToShow) {
+        await deleteImageFromFirebase(post?.mainImage!!, "posts")
+
+        const imageURL = await uploadImageToFirebaseStorage(
+          data.image as File,
+          "posts"
+        )
+
+        payload = {
           title: data.title,
           author_id: authorId,
           author_notes: data.author_notes,
@@ -80,12 +89,25 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
           content: content,
           tag: data.tags,
           highlighted: data.highlighted,
-          mainImage: "imageURL" ? "imageURL" : post!.mainImage,
-        } as UpdatePost,
+          mainImage: imageURL,
+        }
+      } else {
+        payload = {
+          title: data.title,
+          author_id: authorId,
+          author_notes: data.author_notes,
+          category: data.category,
+          content: content,
+          tag: data.tags,
+          highlighted: data.highlighted,
+          mainImage: post!!.mainImage,
+        }
       }
 
-      console.log(payload)
+      console.log({ id: post!!._id, data: payload })
+      mutate({ id: post!!._id, data: payload })
       toast.success("Atualizado com sucesso")
+      navigate("/posts")
     } catch (error) {
       toast.error("Erro ao publicar o post")
       console.log(error)
@@ -132,21 +154,20 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
           className="flex flex-col gap-3 w-full"
         >
           {imageToShow ? (
-            <>
+            <div className="flex flex-col items-center justify-center">
               <img
                 src={imageToShow}
                 className="w-full h-32 object-contain"
                 loading="lazy"
               />
-              <Button
+              <button
                 type="button"
                 onClick={handleRemoveImage}
-                variant={"destructive"}
-                className="capitalize w-fit text-xs self-center"
+                className="text-red-700 hover:text-red-900 ease-in-out transition-all duration-200"
               >
                 remover imagem
-              </Button>
-            </>
+              </button>
+            </div>
           ) : (
             <img
               src={post!!.mainImage}

@@ -29,6 +29,7 @@ export const scheduleFormSchema = z.object({
     .instanceof(FileList)
     .refine((file) => file.item(0) !== null, "*Insira um ficheiro PDF")
     .transform((file) => file.item(0)),
+  author: z.string().optional(),
 })
 
 export const tourFormSchema = z.object({
@@ -107,6 +108,7 @@ export const editScheduleFormSchema = z.object({
         .transform((file) => file.item(0) !== null && file.item(0)),
     ])
     .optional(),
+  author: z.string(),
 })
 
 export const userFormSchema = z.object({
@@ -147,16 +149,7 @@ export const loginSchema = z.object({
 })
 
 export const productFormSchema = z.object({
-  price: z
-    .string()
-    .min(1, { message: "*O preço é obrigatório" })
-    .transform((price) => {
-      const formatedPrice = new Intl.NumberFormat("pt-PT", {
-        style: "currency",
-        currency: "AKZ",
-      }).format(parseInt(price))
-      return formatedPrice  
-    }),
+  price: z.string().min(1, { message: "*O preço é obrigatório" }),
   title: z.string().min(1, { message: "*O título é obrigatório" }),
   category: z.string().min(1, { message: "*Selecione uma categoria" }),
   image: z
@@ -171,20 +164,7 @@ export const productFormSchema = z.object({
 
 export const editProductFormSchema = z.object({
   name: z.string().optional(),
-  price: z.coerce
-    .string()
-    .transform((price) => {
-      if (price) {
-        const formattedPrice = new Intl.NumberFormat("pt-PT", {
-          style: "currency",
-          currency: "AKZ",
-        }).format(parseInt(price))
-
-        console.log(formattedPrice)
-        return formattedPrice
-      }
-    })
-    .optional(),
+  price: z.coerce.string().optional(),
   image: z
     .union([
       z.instanceof(FileList).transform((image) => {
