@@ -14,7 +14,6 @@ import {
   deleteImageFromFirebase,
   uploadImageToFirebaseStorage,
 } from "@/utils/helpers"
-import { Button } from "../ui/button"
 import { UpdatePost } from "@/types/update"
 import { useUpdatePost } from "@/lib/react-query/mutations"
 import { useNavigate } from "react-router-dom"
@@ -104,7 +103,6 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
         }
       }
 
-      console.log({ id: post!!._id, data: payload })
       mutate({ id: post!!._id, data: payload })
       toast.success("Atualizado com sucesso")
       navigate("/posts")
@@ -113,38 +111,6 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
       console.log(error)
     }
   }
-  // const handleSubmitForm = async (data: EditPostFormSchemaType) => {
-  //   try {
-  //     let imageURL: Promise<string> | string | null = null
-  //     if (imageToShow !== null) {
-  //       await deleteImageFromFirebase(post!!.mainImage, "posts")
-  //       imageURL = uploadImageToFirebaseStorage(data.image!! as File, "posts")
-  //       console.log("Deletado do firebase")
-  //       imageURL = imageURL
-  //     }
-
-  //     const payload = {
-  //       id: post!!._id,
-  //       data: {
-  //         title: data.title,
-  //         author_id: authorId,
-  //         author_notes: data.author_notes,
-  //         category: data.category,
-  //         content: content,
-  //         tag: data.tags,
-  //         highlighted: data.highlighted,
-  //         mainImage: imageURL ? imageURL : post!.mainImage,
-  //       } as UpdatePost,
-  //     }
-
-  //     mutate(payload)
-  //     console.log(payload)
-  //     toast.success("Atualizado com sucesso")
-  //   } catch (error) {
-  //     toast.error("Erro ao publicar o post")
-  //     console.log(error)
-  //   }
-  // }
 
   return (
     <>

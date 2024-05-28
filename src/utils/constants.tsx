@@ -3,7 +3,6 @@ import {
   BiPlus,
   BiHomeAlt2,
   BiStore,
-  BiSolidGrid,
   BiSolidFile,
 } from "react-icons/bi"
 
@@ -28,16 +27,6 @@ export const ADMIN_DASHBOARD_NAV_LINKS = [
     icon: <BiStore size={20} />,
     link: "/loja",
   },
-  // {
-  //   name: "Ads",
-  //   icon: <SiGoogleanalytics size={20} />,
-  //   link: "/ads",
-  // },
-  // {
-  //   name: "Categorias",
-  //   icon: <BiSolidGrid size={20} />,
-  //   link: "/categorias",
-  // },
   {
     name: "Usuários",
     icon: <BiUser size={20} />,

@@ -75,9 +75,6 @@ const EditUserDialog = ({ user }: Props) => {
     }
   }
 
-  // const handleUpdateUser = async (data: EditUserFormType) => {
-  //   console.log(data)
-  // }
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -152,7 +149,6 @@ const EditUserDialog = ({ user }: Props) => {
                 className="self-start"
                 isSubmitting={isSubmitting}
                 text="Atualizar"
-                buttonColor="#FFF"
               />
             </form>
           </CardContent>

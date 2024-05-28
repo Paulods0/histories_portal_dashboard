@@ -157,7 +157,6 @@ const UserForm = () => {
           variant="secondary"
           isSubmitting={isSubmitting}
           text="Salvar"
-          buttonColor="#111111"
         />
       </form>
     </FormProvider>

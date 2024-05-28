@@ -50,7 +50,7 @@ const UserPostsPage = () => {
                   </CardContent>
                   <div className="absolute bottom-4 left-2 flex items-center justify-between px-3 w-full">
                     <span className="p-2 capitalize rounded-full text-white  text-[12px] bg-zinc-900/40">
-                      Categoria: {post.category.name}
+                      Categoria: {post.category}
                     </span>
 
                     <div className="flex items-center gap-2">

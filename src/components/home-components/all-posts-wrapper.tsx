@@ -3,7 +3,7 @@ import { ClipLoader } from "react-spinners"
 import { useGetAllPosts } from "@/lib/react-query/queries"
 
 const AllPostsWrapper = () => {
-  const { data, isLoading } = useGetAllPosts(1, "", 0)
+  const { data, isLoading } = useGetAllPosts(1)
 
   if (isLoading) {
     return (

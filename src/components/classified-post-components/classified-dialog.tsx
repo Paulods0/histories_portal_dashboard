@@ -119,11 +119,7 @@ const ClassifiedDialog = ({ post }: Props) => {
             onClick={handleUpdateClassified}
             variant={"secondary"}
           >
-            {isLoading ? (
-              <LoaderSpinner size={14} color="#111111" />
-            ) : (
-              "Atualizar"
-            )}
+            {isLoading ? <LoaderSpinner size={14} /> : "Atualizar"}
           </Button>
         </DialogFooter>
       </DialogContent>

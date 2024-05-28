@@ -11,7 +11,7 @@ const ClassifiedPostsPage = () => {
   const currFilter = filter.get("filter") ?? ""
 
   if (isLoading) {
-    return <LoaderSpinner color="#FFF" size={24} />
+    return <LoaderSpinner size={24} />
   }
 
   const filterPost =
