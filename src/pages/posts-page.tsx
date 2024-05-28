@@ -24,18 +24,12 @@ const PostsPage = () => {
   const [filter, setFilter] = useSearchParams({
     page: "1",
     category: "",
-    limit: "2",
   })
 
   const page = filter.get("page")!!
-  const cat = filter.get("category")!!
-  const limit = filter.get("limit")!!
+  const category = filter.get("category")!!
 
-  const { data: posts, isLoading } = useGetAllPosts(
-    parseInt(page),
-    cat,
-    parseInt(limit)
-  )
+  const { data: posts, isLoading } = useGetAllPosts(parseInt(page), category)
 
   const handleChangePage = (newPage: number) => {
     setFilter((prev) => {
@@ -67,12 +61,12 @@ const PostsPage = () => {
     <main className="w-full h-full flex-col px-1 flex">
       <div className="gap-x-2 flex w-full justify-between items-center">
         <div className="flex items-center gap-6 w-fit">
-          <Select defaultValue={cat} onValueChange={handleFilter}>
+          <Select defaultValue={category} onValueChange={handleFilter}>
             <SelectTrigger className="w-fit">
-              <SelectValue placeholder={cat ?? "Todos"} />
+              <SelectValue placeholder={category ?? "Todos"} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="#">Todos</SelectItem>
+              <SelectItem value="##">Todos</SelectItem>
               {filteredCategories?.map((category, index) => (
                 <SelectItem key={index} value={category.slug}>
                   {category.label}

@@ -31,42 +31,43 @@ const SchedulePostForm = ({ authorId, category }: Props) => {
     formState: { errors, isSubmitting },
   } = methods
 
-  const handleSubmitForm = async (data: ScheduleFormSchemaType) => {
-    try {
-      const fileData: NewSchedulePost = {
-        title: data.title,
-        author: authorId ?? userId!!,
-        category: category,
-        file: "file",
-      }
-
-      console.log(fileData)
-      toast.success("Publicado com sucesso")
-    } catch (error) {
-      console.log("Erro ao publicar")
-      toast.error("Erro ao publicar")
-    }
-  }
   // const handleSubmitForm = async (data: ScheduleFormSchemaType) => {
   //   try {
-  //     const file = await uploadImageToFirebaseStorage(
-  //       data.file!!,
-  //       "schedule-posts"
-  //     )
   //     const fileData: NewSchedulePost = {
   //       title: data.title,
   //       author: authorId ?? userId!!,
   //       category: category,
-  //       file: file,
+  //       file: "file",
   //     }
-  //     mutate(fileData)
+
+  //     console.log(fileData)
   //     toast.success("Publicado com sucesso")
-  //     navigate("/posts")
+  //     mutate()
   //   } catch (error) {
   //     console.log("Erro ao publicar")
   //     toast.error("Erro ao publicar")
   //   }
   // }
+  const handleSubmitForm = async (data: ScheduleFormSchemaType) => {
+    try {
+      const file = await uploadImageToFirebaseStorage(
+        data.file!!,
+        "schedule-posts"
+      )
+      const fileData: NewSchedulePost = {
+        title: data.title,
+        author: authorId ?? userId!!,
+        category: category,
+        file: file,
+      }
+      mutate(fileData)
+      toast.success("Publicado com sucesso")
+      navigate("/posts")
+    } catch (error) {
+      console.log("Erro ao publicar")
+      toast.error("Erro ao publicar")
+    }
+  }
 
   return (
     <FormProvider {...methods}>

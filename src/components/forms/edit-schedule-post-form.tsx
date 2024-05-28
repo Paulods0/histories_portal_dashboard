@@ -7,8 +7,7 @@ import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
 import InputField from "./form-ui/input-field"
 import FormButton from "./form-ui/form-button"
 import { SchedulePost } from "@/types/data"
-// import SelectAuthorInput from "../add-post-components/select-author-input"
-// import { useState } from "react"
+
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import {
   AlertDialog,
@@ -23,7 +22,7 @@ import {
 } from "../ui/alert-dialog"
 import { Button } from "../ui/button"
 import { useGetAllUsers } from "@/lib/react-query/queries"
-import { useAuthContext } from "@/context/auth-context"
+
 import {
   Select,
   SelectContent,
@@ -32,6 +31,13 @@ import {
   SelectValue,
 } from "../ui/select"
 import { useState } from "react"
+import { useUpdateSchedulePost } from "@/lib/react-query/mutations"
+import {
+  deleteImageFromFirebase,
+  uploadImageToFirebaseStorage,
+} from "@/utils/helpers"
+import { UpdateSchedulePost } from "@/types/update"
+import { toast } from "react-toastify"
 
 type Props = {
   post: SchedulePost
@@ -40,6 +46,7 @@ type Props = {
 function EditSchedulePostForm({ post }: Props) {
   const { data: users } = useGetAllUsers()
   const [hasFile, setHasFile] = useState(false)
+  const { mutate } = useUpdateSchedulePost()
 
   const methods: UseFormReturn<EditScheduleFormSchemaType> =
     useForm<EditScheduleFormSchemaType>({
@@ -62,17 +69,29 @@ function EditSchedulePostForm({ post }: Props) {
     setValue("author", value)
   }
 
-  function handleSubmitForm(data: EditScheduleFormSchemaType) {
+  async function handleSubmitForm(data: EditScheduleFormSchemaType) {
     try {
       if (data.file) {
-        console.log("There's a file")
-        console.log({ id: post._id, data: data })
+        await deleteImageFromFirebase(post.file, "schedule-posts")
+
+        const downloadURL = await uploadImageToFirebaseStorage(
+          data.file!! as File,
+          "schedule-posts"
+        )
+        const dataPost: UpdateSchedulePost = {
+          author: data.author,
+          file: downloadURL,
+        }
+
+        mutate({ id: post._id, data: dataPost })
+        toast.success("Post atualizado")
       } else {
-        console.log("There's not a file")
-        console.log({ id: post._id, data: data })
+        mutate({ id: post._id, data: { ...data, file: post.file } })
+        toast.success("Post atualizado")
       }
     } catch (error) {
       console.log(error)
+      toast.error("Erro ao atualizar o post")
     }
   }
 
@@ -126,6 +145,7 @@ function EditSchedulePostForm({ post }: Props) {
         </Select>
         <div className="mt-4 space-x-2">
           <FormButton text="Atualizar" isSubmitting={isSubmitting} />
+
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant={"destructive"}>Remover</Button>

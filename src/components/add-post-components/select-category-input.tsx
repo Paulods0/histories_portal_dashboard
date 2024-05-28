@@ -15,7 +15,6 @@ type Props = {
 const SelectCategoryInput = ({ setCategory }: Props) => {
   const AGENDA_AO = "agenda ao"
   const CLASSIFICADOS = "classificados"
-  const OVERLAND_EXPERIENCE = "overland experience"
 
   const handleChangeCategory = (value: string) => {
     const category = CATEGORIES.find((category) => category === value)!!
@@ -31,10 +30,7 @@ const SelectCategoryInput = ({ setCategory }: Props) => {
 
         <SelectContent className="capitalize">
           {CATEGORIES.filter(
-            (category) =>
-              category !== CLASSIFICADOS &&
-              category !== OVERLAND_EXPERIENCE &&
-              category !== AGENDA_AO
+            (category) => category !== CLASSIFICADOS && category !== AGENDA_AO
           ).map((category) => (
             <SelectItem key={category} value={category} className="capitalize">
               {category}

@@ -1,6 +1,17 @@
 import { ClassifiedPost } from "@/types/data"
 
 import ClassifiedDialog from "./classified-dialog"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog"
+import { Button } from "../ui/button"
 
 type Props = {
   post: ClassifiedPost | undefined
@@ -39,6 +50,28 @@ const ClassifiedCard = ({ post }: Props) => {
         </div>
       </div>
     </div>
+    // <Dialog>
+    //   <DialogTrigger asChild>
+
+    //   </DialogTrigger>
+    //   <DialogContent>
+    //     <DialogHeader>
+    //       <DialogTitle>
+    //         Tem a certeza que pretende eliminar esta post da base de dados?
+    //       </DialogTitle>
+    //       <DialogDescription>
+    //         Esta ação é irreverssível. Ao elimnar este post, todos os dados
+    //         serão removidos permanentemente da base de dados
+    //       </DialogDescription>
+    //     </DialogHeader>
+    //     <DialogFooter>
+    //       <DialogClose asChild>
+    //         <Button>Cancelar</Button>
+    //       </DialogClose>
+    //       <Button variant={"destructive"}>Eliminar</Button>
+    //     </DialogFooter>
+    //   </DialogContent>
+    // </Dialog>
   )
 }
 

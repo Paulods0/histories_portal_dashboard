@@ -5,6 +5,7 @@ import {
   deletePost,
   updateClassifiedPost,
   updatePost,
+  updateSchedulePost,
 } from "@/api/post"
 // import {
 //   createPostCategory,
@@ -35,6 +36,15 @@ export const useCreateSchedulePost = () => {
   })
 }
 
+export const useUpdateSchedulePost = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: updateSchedulePost,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["get-schedule-posts"] }),
+  })
+}
+
 export const useCreateProduct = () => {
   const queryClient = useQueryClient()
   return useMutation({
@@ -43,15 +53,6 @@ export const useCreateProduct = () => {
       queryClient.invalidateQueries({ queryKey: ["get-all-products"] }),
   })
 }
-
-// export const useCreatePostCategory = () => {
-//   const queryClient = useQueryClient()
-//   return useMutation({
-//     mutationFn: createPostCategory,
-//     onSuccess: () =>
-//       queryClient.invalidateQueries({ queryKey: ["get-categories"] }),
-//   })
-// }
 
 export const useCreateProductCategory = () => {
   const queryClient = useQueryClient()
@@ -88,15 +89,6 @@ export const useUpdateUser = () => {
   })
 }
 
-// export const useUpdatePostCategory = () => {
-//   const queryClient = useQueryClient()
-//   return useMutation({
-//     mutationFn: updatePostCategory,
-//     onSuccess: () =>
-//       queryClient.invalidateQueries({ queryKey: ["get-categories"] }),
-//   })
-// }
-
 export const useUpdateProductCategory = () => {
   const queryClient = useQueryClient()
   return useMutation({
@@ -125,15 +117,6 @@ export const useUpdateClassifiedPost = () => {
       queryClient.invalidateQueries({ queryKey: ["get-classified-posts"] }),
   })
 }
-
-// export const useDeletePostCategory = () => {
-//   const queryClient = useQueryClient()
-//   return useMutation({
-//     mutationFn: deleteCategory,
-//     onSuccess: () =>
-//       queryClient.invalidateQueries({ queryKey: ["get-categories"] }),
-//   })
-// }
 
 export const useDeletePost = () => {
   const queryClient = useQueryClient()

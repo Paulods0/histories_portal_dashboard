@@ -40,6 +40,13 @@ export type UpdatePost = {
   author_id: string
 }
 
+export type UpdateSchedulePost = {
+  title?: string
+  file?: string
+  category?: string
+  author?: string
+}
+
 export type UpdatePostCategory = {
   id: string
   name: string

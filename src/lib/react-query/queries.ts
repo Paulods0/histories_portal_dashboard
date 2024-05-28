@@ -12,14 +12,10 @@ import { getAllUsers, getUserPosts } from "@/api/user"
 import { Category, ClassifiedPost, Post, User } from "@/types/data"
 import { useQuery } from "@tanstack/react-query"
 
-export const useGetAllPosts = (
-  page: number,
-  category?: string,
-  limit?: number
-) => {
+export const useGetAllPosts = (page: number, category?: string) => {
   return useQuery<PostsDataResponse>({
-    queryKey: ["get-all-posts", page, category, limit],
-    queryFn: () => getAllPosts(page, category, limit),
+    queryKey: ["get-all-posts", page, category],
+    queryFn: () => getAllPosts(page, category),
   })
 }
 

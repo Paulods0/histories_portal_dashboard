@@ -1,7 +1,7 @@
 import { NewClassifiedPost, NewPost, NewSchedulePost } from "@/types/create"
 import axios from "../../config/axios-config"
 import { ClassifiedPost, Post, SchedulePost } from "@/types/data"
-import { UpdatePost } from "@/types/update"
+import { UpdatePost, UpdateSchedulePost } from "@/types/update"
 
 export const createPost = async (body: NewPost) => {
   return await axios.post("/post", body)
@@ -23,12 +23,9 @@ export type PostsDataResponse = {
 
 export const getAllPosts = async (
   page: number,
-  category?: string,
-  limit?: number
+  category?: string
 ): Promise<PostsDataResponse> => {
-  const posts = await axios.get(
-    `/post?page=${page}&category=${category}&limit=${limit}`
-  )
+  const posts = await axios.get(`/post?page=${page}&category=${category}`)
   return posts.data
 }
 
@@ -66,6 +63,13 @@ export const getClassifiedPosts = async (): Promise<ClassifiedPost[]> => {
 
 export const updatePost = async (data: { id: string; data: UpdatePost }) => {
   await axios.put(`/post/${data.id}`, data.data)
+}
+
+export const updateSchedulePost = async (data: {
+  id: string
+  data: UpdateSchedulePost
+}) => {
+  await axios.put(`/schedule-post/${data.id}`, data.data)
 }
 
 export const updateClassifiedPost = async (data: {
