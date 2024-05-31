@@ -75,6 +75,7 @@ export const editTourFormSchema = z.object({
     .optional(),
   author_notes: z.string().optional(),
   highlighted: z.boolean().optional(),
+  author: z.string().optional(),
 })
 
 export const editPostFormSchema = z.object({
@@ -99,16 +100,9 @@ export const editPostFormSchema = z.object({
 })
 
 export const editScheduleFormSchema = z.object({
+  author: z.string().optional(),
   title: z.string().optional(),
-  file: z
-    .union([
-      z.string(),
-      z
-        .instanceof(FileList)
-        .transform((file) => file.item(0) !== null && file.item(0)),
-    ])
-    .optional(),
-  author: z.string(),
+  file: z.custom<File>().optional(),
 })
 
 export const userFormSchema = z.object({
@@ -176,6 +170,7 @@ export const editProductFormSchema = z.object({
     ])
     .optional(),
   category: z.string().optional(),
+  description: z.string().optional(),
 })
 
 export type EditUserFormType = z.infer<typeof editUserFormSchema>

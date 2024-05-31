@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom"
-import { ClipLoader } from "react-spinners"
 import { useGetHighlightedPost } from "@/lib/react-query/queries"
 import { FaEye } from "react-icons/fa"
 import { SlLike } from "react-icons/sl"
 import { Button } from "../ui/button"
+import LoaderSpinner from "../global/loader-spinner"
 
 const HighlightedPost = () => {
   const { data, isLoading } = useGetHighlightedPost()
@@ -11,7 +11,7 @@ const HighlightedPost = () => {
   if (isLoading) {
     return (
       <main className="w-full h-full flex items-center justify-center">
-        <ClipLoader size={40} color="#111111" />
+        <LoaderSpinner />
       </main>
     )
   }

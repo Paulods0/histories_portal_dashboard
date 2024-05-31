@@ -2,8 +2,9 @@ export type UpdateProduct = {
   id: string
   name?: string
   price?: string
-  image?: string | File | undefined
   category?: string
+  description?: string
+  image?: string | File | undefined
 }
 
 export type UpdateUser = {
@@ -37,10 +38,11 @@ export type UpdatePost = {
   longitude?: string
   tag?: string[] | string
   author_notes?: string
-  author_id: string
+  author: string
 }
 
 export type UpdateSchedulePost = {
+  id?: string
   title?: string
   file?: string
   category?: string

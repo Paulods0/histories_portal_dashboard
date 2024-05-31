@@ -18,7 +18,7 @@ const TextAreaField = forwardRef<HTMLTextAreaElement, Props>((props, ref) => {
         id={props.name}
         rows={6}
         {...props}
-        className="resize-none scroll-bar"
+        className="resize-none scroll-bar text-foreground"
         {...register(props.name)}
         ref={ref}
       />

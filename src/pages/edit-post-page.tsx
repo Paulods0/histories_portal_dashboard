@@ -66,7 +66,7 @@ const EditPostPostPage = () => {
             />
           )}
 
-          <SelectAuthorInput setAuthorId={setAuthorId} />
+          <SelectAuthorInput authorId={authorId} setAuthorId={setAuthorId} />
           <SelectInputCategory category={category} setCategory={setCategory} />
         </div>
       </section>

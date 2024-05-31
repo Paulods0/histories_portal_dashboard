@@ -27,31 +27,26 @@ const MobileNavbar = ({ user }: Props) => {
   return (
     <Sheet>
       <SheetTrigger asChild className="cursor-pointer">
-        <div>
-          <IoMenu size={32} />
-        </div>
+        <IoMenu size={40} />
       </SheetTrigger>
 
-      <SheetContent className="bg-foreground space-y-6 text-background border-white/20">
+      <SheetContent className="bg-background space-y-6 border-white/20">
         <SheetHeader className="flex items-center">
-          <Avatar>
+          <Avatar className="size-20 text-foreground">
             <AvatarFallback>{user?.firstname.charAt(0)}</AvatarFallback>
             <AvatarImage src={user.image} />
           </Avatar>
-          <div className="flex items-center gap-1 text-background">
+          <div className="flex items-center gap-1 text-foreground">
             <span>{user.firstname}</span>
             <span>{user.lastname}</span>
           </div>
         </SheetHeader>
 
-        <ul className="flex flex-col  gap-6">
+        <ul className="flex flex-col text-foreground gap-6">
           {ADMIN_DASHBOARD_NAV_LINKS.map((link, index) => (
             <li key={index}>
               <SheetClose asChild>
-                <Link
-                  className="flex items-center gap-1 text-background"
-                  to={link.link}
-                >
+                <Link className="flex items-center gap-1" to={link.link}>
                   <span>{link.icon}</span>
                   <span>{link.name}</span>
                 </Link>
@@ -68,10 +63,12 @@ const MobileNavbar = ({ user }: Props) => {
           <p>Sair</p>
           <LogOutIcon size={18} />
         </Button>
+
         <SheetFooter>
           <img
-            src="logotipo-texto.png"
-            className="w-full h-16 self-center mt-4 object-contain"
+            loading="lazy"
+            src="logotipo-tradicional.png"
+            className="size-36 self-center mt-4 object-cover"
           />
         </SheetFooter>
       </SheetContent>

@@ -1,5 +1,3 @@
-import { ClipLoader } from "react-spinners"
-
 import {
   Table,
   TableBody,
@@ -14,6 +12,7 @@ import EditProduct from "@/components/store-components/edit-product"
 import DeleteProduct from "@/components/store-components/delete-product"
 import { useGetAllProducts } from "@/lib/react-query/queries"
 import { useAuthContext } from "@/context/auth-context"
+import LoaderSpinner from "@/components/global/loader-spinner"
 
 const StorePage = () => {
   const { user } = useAuthContext()
@@ -22,7 +21,7 @@ const StorePage = () => {
   if (isLoading) {
     return (
       <main className="relative w-full h-[80vh] flex items-center justify-center">
-        <ClipLoader color="#111111" size={40} />
+        <LoaderSpinner />
       </main>
     )
   }

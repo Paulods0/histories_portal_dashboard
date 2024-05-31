@@ -1,7 +1,7 @@
 import StretchedPostCard from "./home-post-card"
 import { useAuthContext } from "../../context/auth-context"
-import { ClipLoader } from "react-spinners"
 import { useGetUserPosts } from "@/lib/react-query/queries"
+import LoaderSpinner from "../global/loader-spinner"
 
 const MyPostsWrapper = () => {
   const { userId } = useAuthContext()
@@ -10,7 +10,7 @@ const MyPostsWrapper = () => {
   if (isLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <ClipLoader color="#111111" size={28} />
+        <LoaderSpinner />
       </div>
     )
   }

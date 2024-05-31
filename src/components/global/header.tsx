@@ -17,7 +17,8 @@ const Header = () => {
   const handleChangeTheme = () => toggleTheme()
 
   return (
-    <header className="w-full sticky top-0 bg-background border-b border-b-foreground/10 z-50 h-[60px] px-2 py-2 flex justify-between items-center">
+    <header className="w-full sticky top-0 bg-background border-b border-b-foreground/10 z-50 h-[60px] px-8 py-10 lg:px-2 lg:py-2 flex justify-between items-center">
+
       <Link to="/">
         <img
           src="/logotipo-texto.png"

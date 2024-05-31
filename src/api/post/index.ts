@@ -22,7 +22,7 @@ export type PostsDataResponse = {
 }
 
 export const getAllPosts = async (
-  page: number,
+  page?: number,
   category?: string
 ): Promise<PostsDataResponse> => {
   const posts = await axios.get(`/post?page=${page}&category=${category}`)
@@ -65,11 +65,8 @@ export const updatePost = async (data: { id: string; data: UpdatePost }) => {
   await axios.put(`/post/${data.id}`, data.data)
 }
 
-export const updateSchedulePost = async (data: {
-  id: string
-  data: UpdateSchedulePost
-}) => {
-  await axios.put(`/schedule-post/${data.id}`, data.data)
+export const updateSchedulePost = async (data: UpdateSchedulePost) => {
+  await axios.put(`/schedule-post/${data.id}`, data)
 }
 
 export const updateClassifiedPost = async (data: {

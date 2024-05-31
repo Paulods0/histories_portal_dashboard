@@ -2,7 +2,6 @@ import { useState } from "react"
 import { IoMdEye } from "react-icons/io"
 import { IoMdEyeOff } from "react-icons/io"
 import { Navigate } from "react-router-dom"
-import { ClipLoader } from "react-spinners"
 import { useAuthContext } from "../context/auth-context"
 import Cookies from "js-cookie"
 import { useForm } from "react-hook-form"
@@ -12,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { LoginInSchema, loginSchema } from "@/types/form-schema"
+import LoaderSpinner from "@/components/global/loader-spinner"
 
 const LoginPage = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
@@ -93,7 +93,7 @@ const LoginPage = () => {
             type="submit"
             className="uppercase"
           >
-            {isLoading ? <ClipLoader size={24} color="#fff" /> : "login"}
+            {isLoading ? <LoaderSpinner /> : "login"}
           </Button>
         </form>
       </div>

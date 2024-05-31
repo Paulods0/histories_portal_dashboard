@@ -1,4 +1,3 @@
-import LoaderSpinner from "@/components/global/loader-spinner"
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -9,13 +8,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import LoaderSpinner from "@/components/global/loader-spinner"
 
 type DialogModalProps = {
   id: string
   isDeleting: boolean
   handleDelete: (id: string) => Promise<void>
 }
-
 const DialogModal = ({ id, handleDelete, isDeleting }: DialogModalProps) => {
   return (
     <AlertDialogContent>
@@ -42,5 +41,4 @@ const DialogModal = ({ id, handleDelete, isDeleting }: DialogModalProps) => {
     </AlertDialogContent>
   )
 }
-
 export default DialogModal

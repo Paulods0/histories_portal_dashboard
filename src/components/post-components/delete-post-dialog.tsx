@@ -13,8 +13,8 @@ import { Button } from "../ui/button"
 import { toast } from "react-toastify"
 import { deleteImageFromFirebase } from "@/utils/helpers"
 import { useDeletePost } from "@/lib/react-query/mutations"
-import { ClipLoader } from "react-spinners"
 import { CiTrash } from "react-icons/ci"
+import LoaderSpinner from "../global/loader-spinner"
 
 type Props = {
   post: Post
@@ -54,14 +54,16 @@ const DeletePostDialog = ({ post }: Props) => {
         </AlertDialogHeader>
 
         <div className="flex items-center gap-2">
-          <AlertDialogCancel className="text-foreground">Cancelar</AlertDialogCancel>
+          <AlertDialogCancel className="text-foreground">
+            Cancelar
+          </AlertDialogCancel>
           <AlertDialogAction asChild>
             <Button
               onClick={handleDeletePost}
               disabled={isPending}
               variant={"destructive"}
             >
-              {isPending ? <ClipLoader size={16} /> : "Eliminar"}
+              {isPending ? <LoaderSpinner /> : "Eliminar"}
             </Button>
           </AlertDialogAction>
         </div>

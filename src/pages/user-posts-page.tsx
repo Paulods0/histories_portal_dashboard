@@ -8,11 +8,11 @@ import {
 
 import { useAuthContext } from "@/context/auth-context"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
-import { ClipLoader } from "react-spinners"
 import { useGetUserPosts } from "@/lib/react-query/queries"
 
 import { AiFillLike } from "react-icons/ai"
 import { FiEye } from "react-icons/fi"
+import LoaderSpinner from "@/components/global/loader-spinner"
 
 const UserPostsPage = () => {
   const { userId } = useAuthContext()
@@ -22,7 +22,7 @@ const UserPostsPage = () => {
   if (isLoading) {
     return (
       <main className="w-full h-[50vh] flex items-center justify-center">
-        <ClipLoader size={50} color="#111111" />
+        <LoaderSpinner/>
       </main>
     )
   }

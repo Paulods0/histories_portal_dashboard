@@ -23,18 +23,19 @@ const DeleteUserDialog = ({ user }: Props) => {
   const { mutate } = useDeleteUser()
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleDeleteUser = async () => {
-    setIsLoading(true)
+  async function handleDeleteUser() {
     try {
+      setIsLoading(true)
       mutate(user._id)
-      setIsLoading(false)
       toast.success("Usuário removido com sucesso")
+      setIsLoading(false)
     } catch (error) {
       console.log(error)
       toast.error("Erro ao remover usuário, por favor tente novamente")
       setIsLoading(false)
     }
   }
+
   return (
     <AlertDialog>
       <AlertDialogTrigger>
@@ -51,17 +52,17 @@ const DeleteUserDialog = ({ user }: Props) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogAction asChild>
-            <Button
-              disabled={isLoading}
-              onClick={handleDeleteUser}
-              variant={"destructive"}
-            >
-              {isLoading ? "Removendo..." : "Remover"}
-            </Button>
-          </AlertDialogAction>
+          <Button
+            type="button"
+            onClick={handleDeleteUser}
+            disabled={isLoading}
+            variant={"destructive"}
+          >
+            {isLoading ? "Removendo..." : "Remover"}
+          </Button>
+
           <AlertDialogCancel asChild>
-            <Button variant={"outline"}>Cancelar</Button>
+            <Button variant={"secondary"}>Cancelar</Button>
           </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>

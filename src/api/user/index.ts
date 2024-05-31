@@ -39,5 +39,9 @@ export const updateUser = async (user: UpdateUser) => {
 }
 
 export const deleteUser = async (id: string) => {
-  await axios.delete(`/auth/${id}`)
+  try {
+    await axios.delete(`/auth/${id}`)
+  } catch (error) {
+    console.log(error)
+  }
 }

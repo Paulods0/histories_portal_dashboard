@@ -9,8 +9,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Post } from "@/types/data"
 import { Label } from "../ui/label"
 import { useGetAllUsers } from "@/lib/react-query/queries"
-import { ClipLoader } from "react-spinners"
 import { SetStateAction } from "react"
+import LoaderSpinner from "../global/loader-spinner"
 
 type Props = {
   post: Post
@@ -23,7 +23,7 @@ const SelectInputUser = ({ post, setAuthor }: Props) => {
   if (isLoading) {
     return (
       <main className="w-full items-center justify-center h-full">
-        <ClipLoader size={24} color="#FFF" />
+        <LoaderSpinner />
       </main>
     )
   }

@@ -14,6 +14,7 @@ import {
   deleteImageFromFirebase,
   uploadImageToFirebaseStorage,
 } from "@/utils/helpers"
+import { useNavigate } from "react-router-dom"
 
 type Props = {
   post: Post | undefined
@@ -23,7 +24,11 @@ type Props = {
 }
 
 const EditTourPostForm = ({ post, author, category, content }: Props) => {
+  const navigate = useNavigate()
   const { mutate } = useUpdatePost()
+
+  console.log(author)
+
   const [imageToShow, setImageToShow] = useState<string | null>(null)
 
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -40,12 +45,13 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
     useForm<EditTourFormSchemaType>({
       resolver: zodResolver(editTourFormSchema),
       defaultValues: {
-        image: post?.mainImage,
-        author_notes: post?.author_notes,
-        coordinates: `${post?.latitude},${post?.longitude}`,
-        highlighted: post?.highlighted,
         tag: post?.tag,
         title: post?.title,
+        image: post?.mainImage,
+        author: post?.author._id,
+        highlighted: post?.highlighted,
+        author_notes: post?.author_notes,
+        coordinates: `${post?.latitude},${post?.longitude}`,
       },
     })
 
@@ -66,33 +72,34 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
           "posts"
         )
         updatedPost = {
-          author_id: author ? author : post!!.author._id,
-          category: category,
+          tag: data?.tag,
           content: content,
-          highlighted: data?.highlighted,
-          mainImage: imageURL,
           title: data.title,
+          category: category,
+          mainImage: imageURL,
+          highlighted: data?.highlighted,
           author_notes: data?.author_notes,
           latitude: newCoords && newCoords[0],
           longitude: newCoords && newCoords[1],
-          tag: data?.tag,
+          author: author ? author : post!!.author._id,
         }
       } else {
         updatedPost = {
-          author_id: author ? author : post!!.author._id,
-          category: category,
+          tag: data?.tag,
           content: content,
-          highlighted: data?.highlighted,
-          mainImage: post?.mainImage,
           title: data.title,
+          category: category,
+          mainImage: post?.mainImage,
+          highlighted: data?.highlighted,
           author_notes: data?.author_notes,
           latitude: newCoords && newCoords[0],
           longitude: newCoords && newCoords[1],
-          tag: data?.tag,
+          author: author ? author : post!!.author._id,
         }
       }
       mutate({ id: post!!._id!!, data: updatedPost })
       toast.success("Post Atualizado")
+      navigate("/posts")
     } catch (error) {
       console.log(error)
       toast.error("Erro ao atualizar o post")

@@ -81,25 +81,25 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
         )
 
         payload = {
-          title: data.title,
-          author_id: authorId,
-          author_notes: data.author_notes,
-          category: data.category,
-          content: content,
           tag: data.tags,
-          highlighted: data.highlighted,
+          author: authorId,
+          content: content,
+          title: data.title,
           mainImage: imageURL,
+          category: data.category,
+          highlighted: data.highlighted,
+          author_notes: data.author_notes,
         }
       } else {
         payload = {
-          title: data.title,
-          author_id: authorId,
-          author_notes: data.author_notes,
-          category: data.category,
-          content: content,
           tag: data.tags,
-          highlighted: data.highlighted,
+          content: content,
+          author: authorId,
+          title: data.title,
+          category: data.category,
           mainImage: post!!.mainImage,
+          highlighted: data.highlighted,
+          author_notes: data.author_notes,
         }
       }
 

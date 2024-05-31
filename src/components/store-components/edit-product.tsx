@@ -31,6 +31,7 @@ import {
   deleteImageFromFirebase,
   uploadImageToFirebaseStorage,
 } from "@/utils/helpers"
+import TextAreaField from "../forms/form-ui/text-area-field"
 
 type Props = {
   product: Product
@@ -44,10 +45,11 @@ const EditProduct = ({ product }: Props) => {
     useForm<EditProductFormSchemaType>({
       resolver: zodResolver(editProductFormSchema),
       defaultValues: {
-        image: product.image,
         name: product.name,
+        image: product.image,
         price: product.price,
         category: product.category,
+        description: product.description,
       },
     })
 
@@ -88,7 +90,6 @@ const EditProduct = ({ product }: Props) => {
       }
       mutate(updatedProduct)
       toast.success("Atualizado com sucesso")
-      console.log(updatedProduct)
       reset()
     } catch (error) {
       console.log("Erro: " + error)
@@ -135,6 +136,7 @@ const EditProduct = ({ product }: Props) => {
 
             <InputField label="Título" {...register("name")} />
             <InputField label="Preço" {...register("price")} type="number" />
+            <TextAreaField label="Descrição" {...register("description")} />
 
             <SelectCategory product={product} />
 

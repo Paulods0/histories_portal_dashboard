@@ -1,21 +1,19 @@
 import AuthorNotes from "@/components/post-details-components/author-notes"
 import { formatDate } from "@/utils/helpers"
 import { useGetSinglePost } from "@/lib/react-query/queries"
-import {  useParams } from "react-router-dom"
-import { ClipLoader } from "react-spinners"
+import { useParams } from "react-router-dom"
 import { SlLike, SlDislike } from "react-icons/sl"
 import { FaEye } from "react-icons/fa"
-// import { useAuth } from "@/context/auth-context"
+import LoaderSpinner from "@/components/global/loader-spinner"
 
 const PostDetailsPage = () => {
   const { id } = useParams()
   const { data, isLoading } = useGetSinglePost(id!!)
-  // const { userId } = useAuth()
 
   if (isLoading) {
     return (
       <section className="w-full h-40 flex items-center justify-center">
-        <ClipLoader size={40} color="#FFF" />
+        <LoaderSpinner />
       </section>
     )
   }

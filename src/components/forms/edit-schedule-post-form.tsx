@@ -30,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { useUpdateSchedulePost } from "@/lib/react-query/mutations"
 import {
   deleteImageFromFirebase,
@@ -38,6 +38,7 @@ import {
 } from "@/utils/helpers"
 import { UpdateSchedulePost } from "@/types/update"
 import { toast } from "react-toastify"
+import { Input } from "../ui/input"
 
 type Props = {
   post: SchedulePost
@@ -45,7 +46,7 @@ type Props = {
 
 function EditSchedulePostForm({ post }: Props) {
   const { data: users } = useGetAllUsers()
-  const [hasFile, setHasFile] = useState(false)
+  const [newFile, setnewFile] = useState<string | null>(null)
   const { mutate } = useUpdateSchedulePost()
 
   const methods: UseFormReturn<EditScheduleFormSchemaType> =
@@ -53,7 +54,6 @@ function EditSchedulePostForm({ post }: Props) {
       resolver: zodResolver(editScheduleFormSchema),
       defaultValues: {
         title: post.title,
-        file: post.file,
         author: post.author._id!!,
       },
     })
@@ -69,24 +69,42 @@ function EditSchedulePostForm({ post }: Props) {
     setValue("author", value)
   }
 
+  function handleChangeFile(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) {
+      const file = e.target.files[0]
+      const fileURL = URL.createObjectURL(file)
+      setnewFile(fileURL)
+      setValue("file", file)
+    }
+  }
+
   async function handleSubmitForm(data: EditScheduleFormSchemaType) {
     try {
-      if (data.file) {
-        await deleteImageFromFirebase(post.file, "schedule-posts")
+      let updatedSchedulePost: UpdateSchedulePost
 
-        const downloadURL = await uploadImageToFirebaseStorage(
-          data.file!! as File,
+      if (newFile) {
+        await deleteImageFromFirebase(post.file, "schedule-posts")
+        const fileURL = await uploadImageToFirebaseStorage(
+          data.file!!,
           "schedule-posts"
         )
-        const dataPost: UpdateSchedulePost = {
-          author: data.author,
-          file: downloadURL,
+        updatedSchedulePost = {
+          id: post._id,
+          file: fileURL,
+          title: data.title,
+          author: data.author ?? post.author._id,
         }
-
-        mutate({ id: post._id, data: dataPost })
+        mutate(updatedSchedulePost)
         toast.success("Post atualizado")
       } else {
-        mutate({ id: post._id, data: { ...data, file: post.file } })
+        updatedSchedulePost = {
+          id: post._id,
+          file: post.file,
+          title: data.title,
+          author: data.author ?? post.author._id,
+        }
+
+        mutate(updatedSchedulePost)
         toast.success("Post atualizado")
       }
     } catch (error) {
@@ -102,27 +120,38 @@ function EditSchedulePostForm({ post }: Props) {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-4">
-        <img src="" alt="" />
         <InputField label="Título" {...register("title")} />
-        <InputField
-          label="Documento PDF"
-          type="file"
-          accept=".pdf"
-          {...register("file")}
-        />
 
-        {hasFile && (
-          <button
-            onClick={() => setHasFile(false)}
-            type="button"
-            className="text-red-700 transition-all duration-200 ease-in-out hover:text-red-900"
-          >
-            remover ficheiro
-          </button>
-        )}
+        <div className="w-full flex flex-col items-end gap-2">
+          <div className="w-full flex items-end justify-between">
+            {newFile && (
+              <a href={newFile} target="_blank">
+                <img
+                  src="/pdf-image.png"
+                  alt="pdf-icon"
+                  className="w-14 h-20 object-cover"
+                />
+              </a>
+            )}
+            <button
+              type="button"
+              disabled={newFile === null}
+              onClick={() => setnewFile(null)}
+              className="bg-red-700 disabled:bg-zinc-400 text-white py-2 px-3 rounded-lg capitalize"
+            >
+              remover ficheiro
+            </button>
+          </div>
+          <Input
+            type="file"
+            accept=".pdf"
+            onChange={handleChangeFile}
+            className="text-foreground"
+          />
+        </div>
 
         <Select
-          defaultValue={post.author._id}
+          defaultValue={post?.author._id}
           onValueChange={handleSelectAuthor}
         >
           <SelectTrigger>
@@ -144,7 +173,11 @@ function EditSchedulePostForm({ post }: Props) {
           </SelectContent>
         </Select>
         <div className="mt-4 space-x-2">
-          <FormButton text="Atualizar" isSubmitting={isSubmitting} />
+          <FormButton
+            text="Atualizar"
+            className="text-black"
+            isSubmitting={isSubmitting}
+          />
 
           <AlertDialog>
             <AlertDialogTrigger asChild>

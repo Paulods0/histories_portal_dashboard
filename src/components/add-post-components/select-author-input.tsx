@@ -1,3 +1,7 @@
+import { Label } from "../ui/label"
+import { SetStateAction } from "react"
+import { useGetAllUsers } from "@/lib/react-query/queries"
+import LoaderSpinner from "../global/loader-spinner"
 import {
   Select,
   SelectContent,
@@ -5,36 +9,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useAuthContext } from "@/context/auth-context"
-import { useGetAllUsers } from "@/lib/react-query/queries"
-import { SetStateAction } from "react"
-import { ClipLoader } from "react-spinners"
-import { Label } from "../ui/label"
 
 type Props = {
   setAuthorId: React.Dispatch<SetStateAction<string>>
+  authorId: string
 }
 
-const SelectAuthorInput = ({ setAuthorId }: Props) => {
-  const { userId } = useAuthContext()
+const SelectAuthorInput = ({ authorId, setAuthorId }: Props) => {
   const { data: users, isLoading: isLoadingUsers } = useGetAllUsers()
 
   if (isLoadingUsers) {
     return (
       <div className="w-full items-center justify-center">
-        <ClipLoader size={20} color="#FFF" />
+        <LoaderSpinner />
       </div>
     )
   }
 
-  let currAuthor = users!!.find((user) => user._id === userId)!!
+  let currAuthor = users?.find((user) => user._id === authorId)
 
   return (
     <div className="w-full">
       <Label>Autor</Label>
 
       <Select
-        defaultValue={currAuthor._id}
+        defaultValue={currAuthor?._id}
         onValueChange={(value) => setAuthorId(value)}
       >
         <SelectTrigger className="bg-background text-foreground">

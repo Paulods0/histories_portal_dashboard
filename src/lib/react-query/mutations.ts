@@ -155,6 +155,7 @@ export const useDeleteUser = () => {
       queryClient.invalidateQueries({ queryKey: ["get-all-users"] }),
   })
 }
+
 export const useCreateUser = () => {
   const queryClient = useQueryClient()
   return useMutation({

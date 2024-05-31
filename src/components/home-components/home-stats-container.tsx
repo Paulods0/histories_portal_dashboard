@@ -1,6 +1,5 @@
 import HomeStatsCard from "./home-stats-card"
 import { useAuthContext } from "../../context/auth-context"
-import { ClipLoader } from "react-spinners"
 
 import {
   useGetAllPosts,
@@ -8,6 +7,7 @@ import {
   useGetAllProducts,
   useGetUserPosts,
 } from "@/lib/react-query/queries"
+import LoaderSpinner from "../global/loader-spinner"
 
 const HomeStatsContainer = () => {
   const { userId } = useAuthContext()
@@ -29,7 +29,7 @@ const HomeStatsContainer = () => {
     <div className="w-full">
       {isLoading ? (
         <div className="flex items-center justify-center h-full">
-          <ClipLoader color="#111111" size={28} />
+          <LoaderSpinner />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">

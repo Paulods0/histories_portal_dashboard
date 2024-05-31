@@ -33,13 +33,18 @@ const SchedulePostCard = ({ post }: Props) => {
           )}
 
           <Button
+            asChild
             variant={"secondary"}
             className="flex items-center w-fit gap-2"
           >
-            <a target="_blank" className="flex items-center" href={post.file}>
+            <a
+              target="_blank"
+              className="flex items-center gap-2"
+              href={post.file}
+            >
               Ver
+              <MdOutlineRemoveRedEye />
             </a>
-            <MdOutlineRemoveRedEye />
           </Button>
         </div>
       </div>

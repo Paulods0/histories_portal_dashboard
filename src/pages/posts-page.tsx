@@ -1,5 +1,4 @@
 import AdminPostCard from "../components/post-components/post-card"
-import { ClipLoader } from "react-spinners"
 import { Button } from "@/components/ui/button"
 
 import {
@@ -17,6 +16,7 @@ import { FaPlusCircle } from "react-icons/fa"
 import { useAuthContext } from "@/context/auth-context"
 import { CATEGORIES_SLUG } from "@/utils/constants"
 import Pagination from "@/components/global/pagination"
+import LoaderSpinner from "@/components/global/loader-spinner"
 
 const PostsPage = () => {
   const { user } = useAuthContext()
@@ -52,18 +52,18 @@ const PostsPage = () => {
   if (isLoading) {
     return (
       <main className="relative w-full h-[80vh] flex items-center justify-center">
-        <ClipLoader color="#111111" size={40} />
+        <LoaderSpinner />
       </main>
     )
   }
 
   return (
-    <main className="w-full h-full flex-col px-1 flex">
+    <main className="w-full flex-col  justify-between px-1 flex">
       <div className="gap-x-2 flex w-full justify-between items-center">
-        <div className="flex items-center gap-6 w-fit">
+        <div className="flex lg:flex-row flex-col items-center gap-6">
           <Select defaultValue={category} onValueChange={handleFilter}>
-            <SelectTrigger className="w-fit">
-              <SelectValue placeholder={category ?? "Todos"} />
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={category ? category : "Todos"} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="##">Todos</SelectItem>
@@ -75,13 +75,15 @@ const PostsPage = () => {
             </SelectContent>
           </Select>
 
-          <Button variant={"ghost"} asChild>
-            <Link to="/posts/agenda-ao">Ver Agenda AO</Link>
-          </Button>
+          <div className="gap-4 flex lg:flex-row flex-col">
+            <Button variant={"secondary"} asChild>
+              <Link to="/posts/agenda-ao">Ver Agenda AO</Link>
+            </Button>
 
-          <Button variant={"ghost"} asChild>
-            <Link to="/posts/classificados">Ver Classificados</Link>
-          </Button>
+            <Button variant={"secondary"} asChild>
+              <Link to="/posts/classificados">Ver Classificados</Link>
+            </Button>
+          </div>
         </div>
 
         {user!!.role !== "store-manager" && (
@@ -92,10 +94,9 @@ const PostsPage = () => {
           </Link>
         )}
       </div>
-
       <hr className="w-full my-3" />
 
-      <div className="w-full relative gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 scroll-bar overflow-y-auto h-[calc(90vh-80px)]">
+      <div className="w-full gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 py-4 overflow-y-auto h-full lg:h-[67vh]">
         {posts?.posts.length === 0 ? (
           <main className="w-full h-full flex items-center col-span-4 justify-center">
             <h1>Não há posts nada ainda.</h1>
@@ -105,7 +106,9 @@ const PostsPage = () => {
             <AdminPostCard key={post._id} post={post} />
           ))
         )}
+      </div>
 
+      <div className="border-t-2">
         <Pagination
           currentPage={1}
           onPageChange={handleChangePage}

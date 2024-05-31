@@ -1,13 +1,15 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useAuthContext } from "@/context/auth-context"
-import { Link } from "react-router-dom"
-import { FaArrowLeft } from "react-icons/fa"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
+import { Link } from "react-router-dom"
+import { useForm } from "react-hook-form"
+import { FaArrowLeft } from "react-icons/fa"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { useAuthContext } from "@/context/auth-context"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 import { toast } from "react-toastify"
+import { ChangeEvent, useState } from "react"
+import FormButton from "@/components/forms/form-ui/form-button"
 
 const userFormSchema = z.object({
   firstname: z.string().optional(),
@@ -19,8 +21,25 @@ type UserFormType = z.infer<typeof userFormSchema>
 
 const EditProfileDataPage = () => {
   const { user, userId } = useAuthContext()
+  const [newImage, setNewImage] = useState<string | null>(null)
 
-  const { register, handleSubmit } = useForm<UserFormType>({
+  function handleChangeImage(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) {
+      const image = e.target.files[0]
+      const imageURL = URL.createObjectURL(image)
+      setNewImage(imageURL)
+    }
+  }
+
+  function removeImage() {
+    setNewImage(null)
+  }
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<UserFormType>({
     resolver: zodResolver(userFormSchema),
     defaultValues: {
       firstname: user?.firstname,
@@ -29,9 +48,39 @@ const EditProfileDataPage = () => {
     },
   })
 
+  type UpdateUserProfile = {
+    id: string
+    image?: string
+    firstname?: string
+    lastname?: string
+  }
+
   const handleUpdateUser = async (data: UserFormType) => {
-    console.log(data)
-    toast.error("Esta função ainda não está disponível.")
+    try {
+      let payload: UpdateUserProfile
+
+      if (newImage) {
+        payload = {
+          id: userId!!,
+          image: "newImage",
+          lastname: data.lastname,
+          firstname: data.firstname,
+        }
+        console.log("Há uma nova imagem para atualizar")
+      } else {
+        payload = {
+          id: userId!!,
+          image: user!!.image!!,
+          lastname: data.lastname,
+          firstname: data.firstname,
+        }
+        console.log("Não há imagem para atualizar")
+      }
+      console.log(payload)
+      toast.success("Os seus dados forama atulizados com sucesso")
+    } catch (error) {
+      toast.error("Erro ao atualzar os dados")
+    }
   }
 
   return (
@@ -40,25 +89,43 @@ const EditProfileDataPage = () => {
         <h1 className="font-bold text-sm md:text-base lg:text-xl text-center">
           Editar os dados pessoais
         </h1>
-        <Button variant={"outline"} className="flex gap-x-2">
-          <FaArrowLeft size={12} className="hidden md:inline-block" />
-          <Link to={`/profile/${userId!!}`}>Voltar ao perfil</Link>
+        <Button variant={"outline"} asChild>
+          <div className="flex gap-x-2">
+            <FaArrowLeft size={12} className="hidden md:inline-block" />
+            <Link to={`/profile/${userId!!}`}>Voltar ao perfil</Link>
+          </div>
         </Button>
       </div>
+
       <form
         onSubmit={handleSubmit(handleUpdateUser)}
         className="w-ful flex flex-col space-y-3 p-3"
       >
-        <div className="w-[100px] h-[100px]">
-          <label htmlFor="file" className="cursor-pointer">
-            <img
-              src={user?.image}
-              className="w-full h-full rounded-full"
-              alt="user profile image"
-            />
-          </label>
-          <Input id="file" type="file" className="opacity-0" />
+        {newImage ? (
+          <img
+            src={newImage}
+            className="size-24 object-cover rounded-full"
+            alt="user profile image"
+          />
+        ) : (
+          <img
+            src={user?.image}
+            className="size-24 object-cover rounded-full"
+            alt="user profile image"
+          />
+        )}
+        <div className="w-full flex gap-2 flex-col items-end">
+          <button
+            type="button"
+            onClick={removeImage}
+            disabled={newImage === null}
+            className="bg-red-700 disabled:bg-zinc-400 text-white px-3 py-2 rounded-lg"
+          >
+            Remover imagem
+          </button>
+          <Input type="file" className="" onChange={handleChangeImage} />
         </div>
+
         <Input
           type="text"
           {...register("firstname")}
@@ -71,9 +138,7 @@ const EditProfileDataPage = () => {
           className="w-full p-2 rounded-md border"
           placeholder="Sobrenome"
         />
-        <Button className="self-start flex items-center justify-center w-[200px]">
-          Atualizar alterações
-        </Button>
+        <FormButton text="Atualizar perfil" isSubmitting={isSubmitting} />
       </form>
     </section>
   )
