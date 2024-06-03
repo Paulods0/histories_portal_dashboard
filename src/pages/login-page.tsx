@@ -33,8 +33,8 @@ const LoginPage = () => {
   const handleLogin = async (credentials: LoginInSchema) => {
     try {
       login(credentials.email, credentials.password)
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
+      throw new Error(error.response.data.message)
     }
   }
 

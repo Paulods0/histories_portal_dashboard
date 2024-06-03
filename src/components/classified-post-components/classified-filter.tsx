@@ -16,7 +16,7 @@ type Props = {
 const ClassifiedFilter = ({ setFilter }: Props) => {
   const handleFilter = (value: string) => {
     setFilter((prev) => {
-      prev.set("filter", value)
+      prev.set("category", value)
       return prev
     })
   }

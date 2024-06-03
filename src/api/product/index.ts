@@ -12,15 +12,13 @@ export type ProductsResponse = {
 }
 
 export const getAllProducts = async (
-  page?: number ,
-  category?: string,
-  limit?: number
+  page?: number,
+  category?: string
 ): Promise<ProductsResponse> => {
-  const response = await axios.get(
-    `/product?page=${page}&category=${category}&limit=${limit}`
-  )
+  const response = await axios.get(`/product?page=${page}&category=${category}`)
   return response.data
 }
+
 export const updateProduct = async (data: UpdateProduct) => {
   const response = await axios.put(`/product/${data.id}`, data)
   return response.data

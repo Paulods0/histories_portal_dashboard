@@ -20,8 +20,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
-import { UpdateUser } from "@/types/update"
 import FormButton from "../forms/form-ui/form-button"
+import {
+  deleteImageFromFirebase,
+  uploadImageToFirebaseStorage,
+} from "@/utils/helpers"
+import { UpdateUser } from "@/types/update"
 
 type Props = {
   user: User
@@ -29,13 +33,13 @@ type Props = {
 
 const EditUserDialog = ({ user }: Props) => {
   const { mutate } = useUpdateUser()
-  const [imageToShow, setImageToShow] = useState("")
+  const [imageToShow, setImageToShow] = useState<string | null>(null)
 
   const {
-    register,
-    handleSubmit,
     control,
     setValue,
+    register,
+    handleSubmit,
     formState: { isSubmitting },
   } = useForm<EditUserFormType>({
     resolver: zodResolver(editUserFormSchema),
@@ -49,10 +53,13 @@ const EditUserDialog = ({ user }: Props) => {
       const file = e.target.files[0]
       const imgURL = URL.createObjectURL(file)
       setImageToShow(imgURL)
+      setValue("image", file)
+    } else {
+      console.log("There's no image to show")
     }
   }
   const handleRemoveImage = () => {
-    setImageToShow("")
+    setImageToShow(null)
   }
 
   const handleSelectRole = (value: EditUserFormType["role"]) => {
@@ -60,14 +67,33 @@ const EditUserDialog = ({ user }: Props) => {
   }
 
   const handleUpdateUser = async (data: EditUserFormType) => {
+    let newUser: UpdateUser
     try {
-      let newUser: UpdateUser = {
-        id: user._id,
-        firstname: data.firstname,
-        image: data.image,
-        lastname: data.lastname,
-        role: data.role,
+      if (imageToShow) {
+        if (user.image) {
+          await deleteImageFromFirebase(user.image!!, "profile")
+        }
+        const imageURL = await uploadImageToFirebaseStorage(
+          data.image!!,
+          "profile"
+        )
+        newUser = {
+          id: user._id,
+          image: imageURL,
+          role: data.role,
+          firstname: data.firstname,
+          lastname: data.lastname,
+        }
+      } else {
+        newUser = {
+          id: user._id,
+          role: data.role,
+          image: user.image,
+          lastname: data.lastname,
+          firstname: data.firstname,
+        }
       }
+
       mutate(newUser)
       toast.success("Atualizado com sucesso")
     } catch (error) {

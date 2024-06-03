@@ -11,7 +11,7 @@ import {
 } from "../ui/alert-dialog"
 import { Button } from "../ui/button"
 import { User } from "@/types/data"
-// import { deleteImageFromFirebase } from "@/utils/helpers"
+import { deleteImageFromFirebase } from "@/utils/helpers"
 import { useDeleteUser } from "@/lib/react-query/mutations"
 import { useState } from "react"
 
@@ -25,6 +25,9 @@ const DeleteUserDialog = ({ user }: Props) => {
   async function handleDeleteUser() {
     try {
       setIsLoading(true)
+      if (user.image) {
+        await deleteImageFromFirebase(user.image!!, "profile")
+      }
       mutate(user._id)
       toast.success("Usuário removido com sucesso")
       setIsLoading(false)

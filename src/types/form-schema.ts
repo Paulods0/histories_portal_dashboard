@@ -125,10 +125,10 @@ export const userFormSchema = z.object({
 
 export const editUserFormSchema = z.object({
   image: z
-    .instanceof(FileList)
+    .custom<File>()
     .transform((image) => {
-      if (image.item(0) !== null) {
-        return handleImageUpload(image.item(0)!!)
+      if (image !== null) {
+        return handleImageUpload(image!!)
       }
     })
     .optional(),

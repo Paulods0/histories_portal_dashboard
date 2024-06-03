@@ -9,7 +9,7 @@ export type UpdateProduct = {
 
 export type UpdateUser = {
   id: string
-  image?: File | undefined
+  image?: string | undefined
   firstname?: string | undefined
   lastname?: string | undefined
   role?: string | undefined

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Cookies from "js-cookie"
 import axios from "../config/axios-config"
+import { toast } from "react-toastify"
 
 export type UserData = {
   email: string
@@ -70,8 +71,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         navigate("/")
         return
       }
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
+      toast.error(error.response.data.message)
     }
     setIsLoading(false)
   }

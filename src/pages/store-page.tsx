@@ -13,10 +13,23 @@ import DeleteProduct from "@/components/store-components/delete-product"
 import { useGetAllProducts } from "@/lib/react-query/queries"
 import { useAuthContext } from "@/context/auth-context"
 import LoaderSpinner from "@/components/global/loader-spinner"
+import Pagination from "@/components/global/pagination"
+import { useSearchParams } from "react-router-dom"
 
 const StorePage = () => {
   const { user } = useAuthContext()
-  const { data: products, isLoading } = useGetAllProducts()
+
+  const [currentPage, setCurrentPage] = useSearchParams({ page: "" })
+  const page = Number(currentPage.get("page")) || 1
+
+  const { data, isLoading } = useGetAllProducts(page)
+
+  function handlePagination(newPage: number) {
+    setCurrentPage((prev) => {
+      prev.set("page", String(newPage))
+      return prev
+    })
+  }
 
   if (isLoading) {
     return (
@@ -36,7 +49,7 @@ const StorePage = () => {
 
   return (
     <main className="w-full p-2 flex-col items-center flex">
-      {products?.products.length === 0 || !products || products === null ? (
+      {data?.products.length === 0 ? (
         <div className="w-full h-full flex items-center justify-center col-span-3">
           <h1>Não há nenhum produto ainda</h1>
         </div>
@@ -60,7 +73,7 @@ const StorePage = () => {
                 </TableHeader>
 
                 <TableBody>
-                  {products?.products.map((product) => (
+                  {data?.products.map((product) => (
                     <TableRow key={product._id}>
                       <TableCell>
                         <img
@@ -83,6 +96,12 @@ const StorePage = () => {
                 </TableBody>
               </Table>
             </div>
+
+            <Pagination
+              totalPages={data!!.pages}
+              currentPage={Number(page)}
+              onPageChange={handlePagination}
+            />
           </div>
         </section>
       )}

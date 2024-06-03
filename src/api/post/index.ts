@@ -56,9 +56,16 @@ export const getSinglePost = async (id: string): Promise<Post> => {
   return response.data
 }
 
-export const getClassifiedPosts = async (): Promise<ClassifiedPost[]> => {
-  const response = await axios.get("/classified-post")
-  return response.data.data
+export type ClassifiedPostResponse = {
+  pages: number
+  posts: ClassifiedPost[]
+}
+
+export const getClassifiedPosts = async (
+  page: number = 1
+): Promise<ClassifiedPostResponse> => {
+  const response = await axios.get(`/classified-post?page=${page}`)
+  return response.data
 }
 
 export const updatePost = async (data: { id: string; data: UpdatePost }) => {

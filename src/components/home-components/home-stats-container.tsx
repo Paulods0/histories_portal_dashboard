@@ -8,22 +8,26 @@ import {
   useGetUserPosts,
 } from "@/lib/react-query/queries"
 import LoaderSpinner from "../global/loader-spinner"
+import { useMemo } from "react"
 
 const HomeStatsContainer = () => {
   const { userId } = useAuthContext()
 
-  const { data: postsData, isLoading } = useGetAllPosts(1)
+  const { data: postsData, isLoading } = useGetAllPosts(1, "")
   const { data: products } = useGetAllProducts()
   const { data: userPosts } = useGetUserPosts(userId!!)
-  const { data: productCategories } = useGetAllProductCategories()
 
-  // console.log(postsData?.pages)
   const totalPostsViews = postsData?.posts?.reduce(
     (total, acc) => acc.views + total,
     0
   )
+
   const userPostsViews = userPosts?.reduce((total, acc) => acc.views + total, 0)
-  const totalProductCategories = productCategories?.length
+  const totalPosts = useMemo(() => {
+    return postsData?.posts.length
+  }, [postsData?.posts])
+
+  console.log(totalPosts)
 
   return (
     <div className="w-full">
@@ -56,12 +60,12 @@ const HomeStatsContainer = () => {
           <HomeStatsCard
             customStyle="bg-[#505050] w-full"
             titleIcon="store"
-            title="loja"
+            title="subscritos"
             amount={products?.products.length.toString()}
-            description="Produtos"
+            description="Inscritos"
             footerIcon="category"
-            footerText="categorias"
-            footerAmount={totalProductCategories}
+            footerText="inscritos"
+            footerAmount={16}
           />
         </div>
       )}

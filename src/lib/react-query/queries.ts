@@ -1,4 +1,5 @@
 import {
+  ClassifiedPostResponse,
   PostsDataResponse,
   getAllPosts,
   getClassifiedPosts,
@@ -26,14 +27,10 @@ export const useGetUserPosts = (user_id: string) => {
   })
 }
 
-export const useGetAllProducts = (
-  page: number = 1,
-  category: string = "",
-  limit: number = 100
-) => {
+export const useGetAllProducts = (page: number = 1, category: string = "") => {
   return useQuery({
-    queryKey: ["get-all-products", page, category, limit],
-    queryFn: () => getAllProducts(page, category, limit),
+    queryKey: ["get-all-products", page, category],
+    queryFn: () => getAllProducts(page, category),
   })
 }
 
@@ -87,9 +84,9 @@ export const useGetSchedulePosts = (page: number) => {
   })
 }
 
-export const useGetClassifiedPosts = () => {
-  return useQuery<ClassifiedPost[]>({
-    queryKey: ["get-classified-posts"],
-    queryFn: getClassifiedPosts,
+export const useGetClassifiedPosts = (page: number = 1) => {
+  return useQuery<ClassifiedPostResponse>({
+    queryKey: ["get-classified-posts", page],
+    queryFn: () => getClassifiedPosts(page),
   })
 }
