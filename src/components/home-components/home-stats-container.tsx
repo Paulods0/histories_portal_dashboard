@@ -3,7 +3,6 @@ import { useAuthContext } from "../../context/auth-context"
 
 import {
   useGetAllPosts,
-  useGetAllProductCategories,
   useGetAllProducts,
   useGetUserPosts,
 } from "@/lib/react-query/queries"
