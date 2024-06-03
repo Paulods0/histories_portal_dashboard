@@ -3,8 +3,8 @@ import { useAuthContext } from "../../context/auth-context"
 
 import {
   useGetAllPosts,
-  useGetAllProducts,
   useGetUserPosts,
+  useGetAllProducts,
 } from "@/lib/react-query/queries"
 import LoaderSpinner from "../global/loader-spinner"
 import { useMemo } from "react"
