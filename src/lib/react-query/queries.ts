@@ -10,7 +10,7 @@ import {
 import { getAllProducts } from "@/api/product"
 import { getAllProdutCategories } from "@/api/product-category"
 import { getAllUsers, getUserPosts } from "@/api/user"
-import { Category, ClassifiedPost, Post, User } from "@/types/data"
+import { Category, Post, User } from "@/types/data"
 import { useQuery } from "@tanstack/react-query"
 
 export const useGetAllPosts = (page: number, category?: string) => {
@@ -54,13 +54,6 @@ export const useGetHighlightedPost = () => {
     queryFn: getHighlightedPost,
   })
 }
-
-// export const useGetCategories = () => {
-//   return useQuery<Category[]>({
-//     queryKey: ["get-categories"],
-//     queryFn: getAllCategories,
-//   })
-// }
 
 export const useGetSinglePost = (id: string) => {
   return useQuery<Post>({
