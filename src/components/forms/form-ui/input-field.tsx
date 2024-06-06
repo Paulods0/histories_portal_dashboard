@@ -15,9 +15,7 @@ const InputField = forwardRef<HTMLInputElement, Props>((props, ref) => {
   const { register } = useFormContext()
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor={props.name} className="text-foreground">
-        {props.label}
-      </Label>
+      <Label htmlFor={props.name}>{props.label}</Label>
       <Input
         id={props.name}
         {...register(props.name)}

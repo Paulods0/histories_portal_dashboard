@@ -1,9 +1,11 @@
 import {
   BiUser,
   BiPlus,
-  BiHomeAlt2,
   BiStore,
+  BiHomeAlt2,
   BiSolidFile,
+  BiSolidEnvelope,
+  BiMessageRoundedError,
 } from "react-icons/bi"
 
 export const ADMIN_DASHBOARD_NAV_LINKS = [
@@ -31,6 +33,21 @@ export const ADMIN_DASHBOARD_NAV_LINKS = [
     name: "Usuários",
     icon: <BiUser size={20} />,
     link: "/usuarios",
+  },
+  {
+    name: "Inscritos",
+    icon: <BiSolidEnvelope size={20} />,
+    link: "/inscritos",
+  },
+  {
+    name: "Dicas",
+    icon: <BiMessageRoundedError size={20} />,
+    link: "/dicas",
+  },
+  {
+    name: "Parceiros",
+    icon: <BiUser size={20} />,
+    link: "/parceiros",
   },
 ]
 
@@ -91,12 +108,13 @@ export const CLASSIFIED_FILTERS = [
 ]
 
 export const CATEGORIES = [
+  "dicas",
   "reviews",
-  "jornal overland",
   "histórias",
   "passeios",
   "agenda ao",
   "classificados",
+  "jornal overland",
   "overland experience",
 ]
 

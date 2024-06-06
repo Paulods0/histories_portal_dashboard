@@ -18,7 +18,6 @@ const Header = () => {
 
   return (
     <header className="w-full sticky top-0 bg-background border-b border-b-foreground/10 z-50 h-[60px] px-8 py-10 lg:px-2 lg:py-2 flex justify-between items-center">
-
       <Link to="/">
         <img
           src="/logotipo-texto.png"
@@ -32,7 +31,7 @@ const Header = () => {
           <Link
             key={index}
             to={link.link}
-            className={`cursor-pointer mr-4 uppercase font-semibold gap-x-8 text-[12px] hover:text-zinc-200 text-white rounded-lg duration-300 transition-all ease-in-out ${
+            className={`cursor-pointer mr-4 uppercase font-bold gap-x-8 text-xs rounded-lg duration-300 transition-all ease-in-out ${
               path === link.name.split(" ").join("").toLowerCase()
                 ? "text-zinc-900"
                 : "text-zinc-400"

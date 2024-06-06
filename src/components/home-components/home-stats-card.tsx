@@ -46,26 +46,20 @@ const HomeStatsCard = ({
     >
       <CardHeader className="">
         <CardDescription className="flex items-center justify-between">
-          <div className="flex items-center text-background gap-x-2">
+          <div className="flex items-center text-white gap-x-2">
             {titleIcons[titleIcon]}
             <span className="capitalize text-[12px]">{title}</span>
           </div>
-          <Link
-            to={""}
-            className="text-background rounded-full px-4 py-1 bg-foreground/10"
-          >
-            Ver
-          </Link>
         </CardDescription>
 
-        <CardTitle className="capitalize text-[18px] text-background flex items-center gap-x-2">
+        <CardTitle className="capitalize text-[18px] text-white flex items-center gap-x-2">
           <span>{amount}</span>
           <span>{description}</span>
         </CardTitle>
       </CardHeader>
 
       <CardFooter>
-        <p className="px-2 py-1 text-background bg-foreground/10 rounded-full flex items-center gap-x-2 text-[10px]">
+        <p className="px-2 py-1 text-white bg-foreground/10 rounded-full flex items-center gap-x-2 text-[10px]">
           {icons[footerIcon]}
           <span>{footerAmount}</span>
           <span>{footerText}</span>

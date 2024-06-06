@@ -18,6 +18,7 @@ import {
   deleteProductCategory,
   updateProductCategory,
 } from "@/api/product-category"
+import { Tips, UpdateTip } from "@/api/tips"
 import { createUser, deleteUser, updateUser } from "@/api/user"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
@@ -162,5 +163,28 @@ export const useCreateUser = () => {
     mutationFn: createUser,
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["get-all-users"] }),
+  })
+}
+export const useCreateTip = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: Tips.createTip,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["get-tips"] }),
+  })
+}
+
+export const useUpdateTip = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: Tips.updateTip,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["get-tips"] }),
+  })
+}
+
+export const useDeleteTip = (id: string) => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => Tips.deleteTip(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["get-tips"] }),
   })
 }

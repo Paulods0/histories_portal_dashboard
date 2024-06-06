@@ -5,10 +5,12 @@ import { useParams } from "react-router-dom"
 import { SlLike, SlDislike } from "react-icons/sl"
 import { FaEye } from "react-icons/fa"
 import LoaderSpinner from "@/components/global/loader-spinner"
+import { useThemeContext } from "@/context/theme-context"
 
 const PostDetailsPage = () => {
   const { id } = useParams()
   const { data, isLoading } = useGetSinglePost(id!!)
+  const { theme } = useThemeContext()
 
   if (isLoading) {
     return (
@@ -38,8 +40,8 @@ const PostDetailsPage = () => {
           alt="imagem principal"
         />
         <div className="w-full lg:w-[950px] pb-3 mt-3 mx-auto">
-          <div
-            className="text-base mt-4 text-white"
+          <p
+            className={`text-base mt-4 text-red-700`}
             dangerouslySetInnerHTML={{ __html: data?.content ?? "" }}
           />
           <hr className="w-full bg-zinc-400 my-8" />

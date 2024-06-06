@@ -17,6 +17,7 @@ type firebaseFolder =
   | "profile"
   | "schedule-posts"
   | "posts-content"
+  | "tips"
 
 export function getImagePathFromFirebaseURL(
   imageURL: string,

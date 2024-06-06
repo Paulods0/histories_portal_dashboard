@@ -15,6 +15,7 @@ import { useDeleteProduct } from "@/lib/react-query/mutations"
 import { Product } from "@/types/data"
 import { toast } from "react-toastify"
 import { deleteImageFromFirebase } from "@/utils/helpers"
+import { Button } from "../ui/button"
 
 type Props = {
   product: Product
@@ -50,8 +51,10 @@ const DeleteProduct = ({ product }: Props) => {
             este produto da loja.
           </AlertDialogDescription>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteProduct}>
+            <AlertDialogCancel asChild>
+              <Button variant="secondary">Cancelar</Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild onClick={handleDeleteProduct}>
               Eliminar
             </AlertDialogAction>
           </AlertDialogFooter>

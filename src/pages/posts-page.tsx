@@ -107,8 +107,8 @@ const PostsPage = () => {
           ))
         )}
       </div>
-
-      <div className="border-t-2">
+      <hr className="w-[70vw] mx-auto h-[1px] bg-zinc-300" />
+      <div className="mx-auto">
         <Pagination
           currentPage={1}
           onPageChange={handleChangePage}

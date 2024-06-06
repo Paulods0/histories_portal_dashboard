@@ -9,7 +9,10 @@ import {
 } from "@/api/post"
 import { getAllProducts } from "@/api/product"
 import { getAllProdutCategories } from "@/api/product-category"
+import { getSubscribers } from "@/api/subscribers"
+import { TipResponse, Tips } from "@/api/tips"
 import { getAllUsers, getUserPosts } from "@/api/user"
+import { Subscriber } from "@/components/subscribers-table"
 import { Category, Post, User } from "@/types/data"
 import { useQuery } from "@tanstack/react-query"
 
@@ -81,5 +84,19 @@ export const useGetClassifiedPosts = (page: number = 1) => {
   return useQuery<ClassifiedPostResponse>({
     queryKey: ["get-classified-posts", page],
     queryFn: () => getClassifiedPosts(page),
+  })
+}
+
+export const useGetSubscribers = () => {
+  return useQuery<Subscriber[]>({
+    queryKey: ["get-subscribers"],
+    queryFn: getSubscribers,
+  })
+}
+
+export const useGetTips = (page: number = 1) => {
+  return useQuery<TipResponse>({
+    queryKey: ["get-tips", page],
+    queryFn: () => Tips.getTips(page),
   })
 }

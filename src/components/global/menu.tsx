@@ -22,27 +22,21 @@ const Menu = ({ logout, user, userId }: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
-        {user?.image ? (
-          <Avatar>
-            <AvatarImage src={user.image} />
-          </Avatar>
-        ) : (
-          <Avatar>
-            <AvatarFallback>
-              {user?.firstname.charAt(0).toUpperCase()}
-              {user?.lastname.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        )}
+        <Avatar>
+          <AvatarImage src={user?.image} />
+          <AvatarFallback>
+            {user?.firstname.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
-      
-      <DropdownMenuContent className="p-4 text-foreground bg-background border-white/20 mr-4">
+
+      <DropdownMenuContent className="p-4 mr-4">
         <DropdownMenuLabel className="text-lg ">Menu</DropdownMenuLabel>
-        <DropdownMenuLabel className="text-zinc-500 font-normal flex items-center gap-x-1">
+        <DropdownMenuLabel className="font-normal flex items-center gap-x-1">
           <span>{user?.firstname}</span>
           <span>{user?.lastname}</span>
         </DropdownMenuLabel>
-        <DropdownMenuLabel className="text-zinc-500 font-normal">
+        <DropdownMenuLabel className="font-normal">
           {user?.email}
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-zinc-600" />

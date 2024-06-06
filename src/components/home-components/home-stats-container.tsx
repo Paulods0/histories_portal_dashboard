@@ -26,8 +26,6 @@ const HomeStatsContainer = () => {
     return postsData?.posts.length
   }, [postsData?.posts])
 
-  console.log(totalPosts)
-
   return (
     <div className="w-full">
       {isLoading ? (

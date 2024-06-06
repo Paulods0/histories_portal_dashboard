@@ -12,7 +12,7 @@ const PostCard = ({ post }: PostCardProps) => {
   const { user } = useAuthContext()
 
   return (
-    <div className="bg-background h-[270px] w-full flex items-center flex-col border border-secondary">
+    <div className="bg-background h-[270px] w-full flex items-center flex-col border">
       <Link to={`/post/${post._id}`} className="relative w-full h-[160px] ">
         <img
           src={post.mainImage}
@@ -28,7 +28,9 @@ const PostCard = ({ post }: PostCardProps) => {
         <div className="flex flex-col items-start w-full justify-between mt-2">
           <div className="flex">
             <span className="text-[12px] text-foreground mr-1">Categoria:</span>
-            <span className="text-[12px] text-foreground capitalize">{post.category}</span>
+            <span className="text-[12px] text-foreground capitalize">
+              {post.category}
+            </span>
           </div>
 
           <div className="flex items-center w-full text-[12px] justify-between">

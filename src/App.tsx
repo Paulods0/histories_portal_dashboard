@@ -19,6 +19,11 @@ import ProtectedRoutes from "./components/global/protected-routes"
 import SchedulePostsPage from "./pages/schedule-posts-page"
 import ClassifiedPostsPage from "./pages/classified-posts-page"
 import { useThemeContext } from "@/context/theme-context"
+import SubscribersPage from "./pages/subscribers-page"
+import TipsPage from "./pages/tips-page"
+import PartnersPage from "./pages/partners-page"
+import AddTips from "./add-tips"
+import AllTips from "./pages/all-tips"
 
 function App() {
   const { theme } = useThemeContext()
@@ -30,13 +35,20 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         <Route path="/" element={<ProtectedRoutes />}>
+          <Route path="dicas" element={<TipsPage />} />
+
+          <Route path="dicas/adicionar" element={<AddTips />} />
+          <Route path="dicas/todas" element={<AllTips />} />
+
           <Route path="loja" element={<StorePage />} />
           <Route path="posts" element={<PostsPage />} />
           <Route index element={<HomeDashboardPage />} />
           <Route path="ads" element={<GoogleAdsPage />} />
           <Route path="novopost" element={<AddPostPage />} />
+          <Route path="parceiros" element={<PartnersPage />} />
           <Route path="usuarios" element={<ManageUserPage />} />
           <Route path="post/:id" element={<PostDetailsPage />} />
+          <Route path="inscritos" element={<SubscribersPage />} />
           <Route path="edit-post/:id" element={<EditPostPostPage />} />
           <Route path="posts/agenda-ao" element={<SchedulePostsPage />} />
           <Route path="posts/classificados" element={<ClassifiedPostsPage />} />

@@ -104,9 +104,9 @@ const EditProduct = ({ product }: Props) => {
         <CiEdit size={24} />
       </DialogTrigger>
 
-      <DialogContent className="bg-foreground">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-background">Editar produto</DialogTitle>
+          <DialogTitle>Editar produto</DialogTitle>
         </DialogHeader>
 
         <FormProvider {...editProductForm}>
@@ -119,7 +119,7 @@ const EditProduct = ({ product }: Props) => {
 
               <Label htmlFor="image" className="cursor-pointer">
                 <Input
-                  className="placeholder:text-white text-white"
+                  className="bg-foreground file:text-background"
                   type="file"
                   {...register("image")}
                   accept=".jpg, .png, .jpeg"
@@ -134,9 +134,22 @@ const EditProduct = ({ product }: Props) => {
               </Label>
             </>
 
-            <InputField label="Título" {...register("name")} />
-            <InputField label="Preço" {...register("price")} type="number" />
-            <TextAreaField label="Descrição" {...register("description")} />
+            <InputField
+              className="bg-foreground text-background"
+              label="Título"
+              {...register("name")}
+            />
+            <InputField
+              className="bg-foreground text-background"
+              label="Preço"
+              {...register("price")}
+              type="number"
+            />
+            <TextAreaField
+              className="bg-foreground text-background outline-none"
+              label="Descrição"
+              {...register("description")}
+            />
 
             <SelectCategory product={product} />
 
