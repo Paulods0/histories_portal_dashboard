@@ -7,18 +7,14 @@ import {
   updatePost,
   updateSchedulePost,
 } from "@/api/post"
-// import {
-//   createPostCategory,
-//   deleteCategory,
-//   updatePostCategory,
-// } from "@/api/post-category"
+
 import { createProduct, deleteProduct, updateProduct } from "@/api/product"
 import {
   createProductCategory,
   deleteProductCategory,
   updateProductCategory,
 } from "@/api/product-category"
-import { Tips, UpdateTip } from "@/api/tips"
+import { Tips } from "@/api/tips"
 import { createUser, deleteUser, updateUser } from "@/api/user"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
