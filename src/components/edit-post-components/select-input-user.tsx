@@ -5,12 +5,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Post } from "@/types/data"
 import { Label } from "../ui/label"
-import { useGetAllUsers } from "@/lib/react-query/queries"
 import { SetStateAction } from "react"
 import LoaderSpinner from "../global/loader-spinner"
+import { useGetAllUsers } from "@/lib/react-query/queries/user-queries"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 type Props = {
   post: Post

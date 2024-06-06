@@ -1,15 +1,14 @@
 import { useState } from "react"
 
-import PostForm from "@/components/forms/post-form"
-import SchedulePostForm from "@/components/forms/schedule-post-form"
-
-import QuillEditor from "@/components/global/quill-editor"
-import ToursPostForm from "@/components/forms/tours-post-form"
-import SelectAuthorInput from "@/components/add-post-components/select-author-input"
-import SelectCategoryInput from "@/components/add-post-components/select-category-input"
-import { useAuthContext } from "@/context/auth-context"
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
+import PostForm from "@/components/forms/post-form"
+import { useAuthContext } from "@/context/auth-context"
+import QuillEditor from "@/components/global/quill-editor"
+import ToursPostForm from "@/components/forms/tours-post-form"
+import SchedulePostForm from "@/components/forms/schedule-post-form"
+import SelectAuthorInput from "@/components/add-post-components/select-author-input"
+import SelectCategoryInput from "@/components/add-post-components/select-category-input"
 
 const AddPostPage = () => {
   const { user } = useAuthContext()

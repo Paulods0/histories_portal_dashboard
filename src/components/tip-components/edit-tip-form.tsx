@@ -1,31 +1,23 @@
-import { Tip, UpdateTip } from "@/api/tips"
-import { ChangeEvent, FC, useState } from "react"
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
-import SelectAuthorInput from "../add-post-components/select-author-input"
-import { Button } from "../ui/button"
-import LoaderSpinner from "../global/loader-spinner"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useUpdateTip } from "@/lib/react-query/mutations"
 import {
   deleteImageFromFirebase,
   uploadImageToFirebaseStorage,
 } from "@/utils/helpers"
+import { Input } from "../ui/input"
+import { Label } from "../ui/label"
+import { Button } from "../ui/button"
+import { useForm } from "react-hook-form"
+import { Tip, UpdateTip } from "@/api/tips"
+import { z } from "zod"
+import { ChangeEvent, FC, useState } from "react"
+import LoaderSpinner from "../global/loader-spinner"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useUpdateTip } from "@/lib/react-query/mutations/tip-mutation"
+import SelectAuthorInput from "../add-post-components/select-author-input"
+import { EditTipType, editTipSchema } from "@/types/form-schema"
 
-const editTipSchema = z.object({
-  title: z.string(),
-  author: z.string(),
-  content: z.string(),
-  image: z.union([z.custom<File>(), z.string()]),
-})
+type Props = { tip: Tip; content: string }
 
-type EditTipType = z.infer<typeof editTipSchema>
-
-type Props = { tip: Tip }
-
-const EditTipForm: FC<Props> = ({ tip }) => {
+const EditTipForm: FC<Props> = ({ tip, content }) => {
   const [authorId, setAuthorId] = useState("")
   const [imageToShow, setImageToShow] = useState<string | null>(null)
   const { mutate } = useUpdateTip()
@@ -34,15 +26,18 @@ const EditTipForm: FC<Props> = ({ tip }) => {
     register,
     handleSubmit,
     formState: { isSubmitting },
+    setValue,
   } = useForm<EditTipType>({
     resolver: zodResolver(editTipSchema),
     defaultValues: {
       image: tip.image,
       title: tip.title,
-      content: tip.content,
+      content: content,
       author: tip.author._id,
     },
   })
+
+  setValue("content", content)
 
   function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
@@ -68,18 +63,18 @@ const EditTipForm: FC<Props> = ({ tip }) => {
         )
         payload = {
           id: tip._id,
+          content: data.content,
           title: data.title,
           author: data.author,
-          content: data.content,
           image: imgDownloadURL,
         }
       } else {
         payload = {
           id: tip._id,
-          title: data.title,
-          author: data.author,
           content: data.content,
           image: tip.image,
+          title: data.title,
+          author: data.author,
         }
       }
 
@@ -90,7 +85,10 @@ const EditTipForm: FC<Props> = ({ tip }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-4">
+    <form
+      onSubmit={handleSubmit(handleSubmitForm)}
+      className="space-y-4 p-4 h-fit border rounded-lg"
+    >
       <img
         src={imageToShow ?? tip.image}
         className="size-28 object-cover"

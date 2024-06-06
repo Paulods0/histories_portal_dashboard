@@ -108,7 +108,6 @@ export const CLASSIFIED_FILTERS = [
 ]
 
 export const CATEGORIES = [
-  "dicas",
   "reviews",
   "histórias",
   "passeios",

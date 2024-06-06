@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useAuthContext } from "@/context/auth-context"
-import { FaArrowLeft } from "react-icons/fa"
 import { Link } from "react-router-dom"
+import { FaArrowLeft } from "react-icons/fa"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { useAuthContext } from "@/context/auth-context"
 
 const EditSecurityDataPage = () => {
   const { user, userId } = useAuthContext()

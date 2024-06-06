@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom"
-import { useGetHighlightedPost } from "@/lib/react-query/queries"
+import { Button } from "../ui/button"
 import { FaEye } from "react-icons/fa"
 import { SlLike } from "react-icons/sl"
-import { Button } from "../ui/button"
+import { Link } from "react-router-dom"
 import LoaderSpinner from "../global/loader-spinner"
+import { useGetHighlightedPost } from "@/lib/react-query/queries/post-queries"
 
 const HighlightedPost = () => {
   const { data, isLoading } = useGetHighlightedPost()

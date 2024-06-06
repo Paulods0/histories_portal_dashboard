@@ -9,27 +9,18 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from "../ui/alert-dialog"
-import { CiTrash } from "react-icons/ci"
 import { Button } from "../ui/button"
-import { toast } from "react-toastify"
-import { useDeleteTip } from "@/lib/react-query/mutations"
+import { CiTrash } from "react-icons/ci"
 import LoaderSpinner from "../global/loader-spinner"
+import { useDeleteTip } from "@/lib/react-query/mutations/tip-mutation"
 
 type Props = {
   tipId: string
 }
 
 const DeleteTip: FC<Props> = ({ tipId }) => {
-  const { mutate, isPending } = useDeleteTip(tipId)
-  async function handleDeleteTip() {
-    try {
-      mutate()
-      console.log(tipId)
-      toast.success("Dica removida com sucesso")
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const { mutateAsync, isPending } = useDeleteTip(tipId)
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild className="cursor-pointer text-red-700">
@@ -50,7 +41,7 @@ const DeleteTip: FC<Props> = ({ tipId }) => {
         <AlertDialogAction asChild>
           <Button
             disabled={isPending}
-            onClick={handleDeleteTip}
+            onClick={() => mutateAsync()}
             variant="destructive"
           >
             {isPending ? <LoaderSpinner /> : "Remover"}

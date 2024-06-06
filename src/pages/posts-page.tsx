@@ -1,26 +1,16 @@
-import AdminPostCard from "../components/post-components/post-card"
-import { Button } from "@/components/ui/button"
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
-import { Link, useSearchParams } from "react-router-dom"
-import { useGetAllPosts } from "@/lib/react-query/queries"
-
 import { FaPlusCircle } from "react-icons/fa"
-import { useAuthContext } from "@/context/auth-context"
+import { Button } from "@/components/ui/button"
 import { CATEGORIES_SLUG } from "@/utils/constants"
 import Pagination from "@/components/global/pagination"
+import { useAuthContext } from "@/context/auth-context"
+import { Link, useSearchParams } from "react-router-dom"
 import LoaderSpinner from "@/components/global/loader-spinner"
+import AdminPostCard from "../components/post-components/post-card"
+import { useGetAllPosts } from "@/lib/react-query/queries/post-queries"
+import FilterPostCategory from "@/components/post-components/filter-post-category"
 
 const PostsPage = () => {
   const { user } = useAuthContext()
-
   const [filter, setFilter] = useSearchParams({
     page: "1",
     category: "",
@@ -57,23 +47,17 @@ const PostsPage = () => {
     )
   }
 
+  const isUserAuthorized = user!!.role !== "store-manager"
+
   return (
     <main className="w-full flex-col  justify-between px-1 flex">
       <div className="gap-x-2 flex w-full justify-between items-center">
         <div className="flex lg:flex-row flex-col items-center gap-6">
-          <Select defaultValue={category} onValueChange={handleFilter}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder={category ? category : "Todos"} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="##">Todos</SelectItem>
-              {filteredCategories?.map((category, index) => (
-                <SelectItem key={index} value={category.slug}>
-                  {category.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <FilterPostCategory
+            category={category}
+            onChange={handleFilter}
+            filteredCategories={filteredCategories}
+          />
 
           <div className="gap-4 flex lg:flex-row flex-col">
             <Button variant={"secondary"} asChild>
@@ -86,14 +70,15 @@ const PostsPage = () => {
           </div>
         </div>
 
-        {user!!.role !== "store-manager" && (
-          <Link to={"/novopost"}>
-            <Button variant={"default"} className="gap-x-2 flex">
+        {isUserAuthorized && (
+          <Button variant={"default"} asChild>
+            <Link to={"/novopost"} className="flex items-center gap-2 ">
               <FaPlusCircle size={12} /> Novo
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         )}
       </div>
+
       <hr className="w-full my-3" />
 
       <div className="w-full gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 py-4 overflow-y-auto h-full lg:h-[67vh]">
@@ -107,14 +92,14 @@ const PostsPage = () => {
           ))
         )}
       </div>
+
       <hr className="w-[70vw] mx-auto h-[1px] bg-zinc-300" />
-      <div className="mx-auto">
-        <Pagination
-          currentPage={1}
-          onPageChange={handleChangePage}
-          totalPages={posts!!.pages}
-        />
-      </div>
+
+      <Pagination
+        currentPage={1}
+        onPageChange={handleChangePage}
+        totalPages={posts!!.pages}
+      />
     </main>
   )
 }

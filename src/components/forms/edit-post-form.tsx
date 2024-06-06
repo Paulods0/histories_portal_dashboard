@@ -1,22 +1,22 @@
 import { ChangeEvent, useState } from "react"
 
-import { EditPostFormSchemaType, editPostFormSchema } from "@/types/form-schema"
-import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
-import InputCheckbox from "./form-ui/input-checkbox"
-import { zodResolver } from "@hookform/resolvers/zod"
-import TextAreaField from "./form-ui/text-area-field"
-import InputField from "./form-ui/input-field"
-import FormButton from "./form-ui/form-button"
-import { Post } from "@/types/data"
-import LoaderSpinner from "../global/loader-spinner"
-import { toast } from "react-toastify"
 import {
   deleteImageFromFirebase,
   uploadImageToFirebaseStorage,
 } from "@/utils/helpers"
+import { Post } from "@/types/data"
+import { toast } from "react-toastify"
 import { UpdatePost } from "@/types/update"
-import { useUpdatePost } from "@/lib/react-query/mutations"
+import FormButton from "./form-ui/form-button"
+import InputField from "./form-ui/input-field"
 import { useNavigate } from "react-router-dom"
+import InputCheckbox from "./form-ui/input-checkbox"
+import LoaderSpinner from "../global/loader-spinner"
+import { zodResolver } from "@hookform/resolvers/zod"
+import TextAreaField from "./form-ui/text-area-field"
+import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
+import { useUpdatePost } from "@/lib/react-query/mutations/post-mutation"
+import { EditPostFormSchemaType, editPostFormSchema } from "@/types/form-schema"
 
 type Props = {
   authorId: string

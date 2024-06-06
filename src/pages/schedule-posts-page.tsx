@@ -1,8 +1,8 @@
+import { useAuthContext } from "@/context/auth-context"
 import LoaderSpinner from "@/components/global/loader-spinner"
+import { useGetSchedulePosts } from "@/lib/react-query/queries/post-queries"
 import AddSchedulePost from "@/components/schedule-post-components/add-schedule-post"
 import SchedulePostCard from "@/components/schedule-post-components/schedule-post-card"
-import { useAuthContext } from "@/context/auth-context"
-import { useGetSchedulePosts } from "@/lib/react-query/queries"
 
 const SchedulePostsPage = () => {
   const { user } = useAuthContext()

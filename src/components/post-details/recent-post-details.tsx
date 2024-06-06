@@ -1,6 +1,8 @@
-import { BiCalendar } from "react-icons/bi"
 import { FaHeart } from "react-icons/fa"
+import { BiCalendar } from "react-icons/bi"
 import { MdOutlineCategory } from "react-icons/md"
+
+
 type RecentPostDetailsProps = {
   icon: "topics" | "likes" | "createdAt"
   label: string

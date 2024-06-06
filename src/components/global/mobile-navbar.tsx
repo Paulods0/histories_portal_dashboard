@@ -27,7 +27,9 @@ const MobileNavbar = ({ user }: Props) => {
   return (
     <Sheet>
       <SheetTrigger asChild className="cursor-pointer">
-        <IoMenu size={40} />
+        <div>
+          <IoMenu size={40} />
+        </div>
       </SheetTrigger>
 
       <SheetContent className="bg-background space-y-6 border-white/20">

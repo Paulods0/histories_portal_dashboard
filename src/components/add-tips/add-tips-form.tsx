@@ -1,32 +1,18 @@
-import { z } from "zod"
+import { ChangeEvent, FC, SetStateAction, useState } from "react"
+
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Button } from "../ui/button"
 import { toast } from "react-toastify"
 import { useForm } from "react-hook-form"
-import {
-  handleImageUpload,
-  uploadImageToFirebaseStorage,
-} from "@/utils/helpers"
+import { CreateTip } from "@/api/tips"
+import LoaderSpinner from "../global/loader-spinner"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAuthContext } from "@/context/auth-context"
-import { ChangeEvent, FC, SetStateAction, useState } from "react"
+import { uploadImageToFirebaseStorage } from "@/utils/helpers"
+import { useCreateTip } from "@/lib/react-query/mutations/tip-mutation"
 import SelectAuthorInput from "../add-post-components/select-author-input"
-import LoaderSpinner from "../global/loader-spinner"
-import { CreateTip } from "@/api/tips"
-import { useCreateTip } from "@/lib/react-query/mutations"
-
-const addTipsSchema = z.object({
-  title: z.string().min(1, "Insira um título"),
-  content: z.string().min(1, "Escreva alguma dica"),
-  author: z.string().min(1, "Adicione um autor para esta dica"),
-  mainImage: z
-    .custom<File>()
-    .refine((image) => image !== undefined, "Insira uma imagem")
-    .transform(async (file) => await handleImageUpload(file)),
-})
-
-type AddTipsType = z.infer<typeof addTipsSchema>
+import { AddTipsType, addTipsSchema } from "@/types/form-schema"
 
 type Props = {
   content: string
@@ -93,7 +79,10 @@ const AddTipsForm: FC<Props> = ({ content, setContent }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-4">
+    <form
+      onSubmit={handleSubmit(handleSubmitForm)}
+      className="space-y-4 border rounded-lg p-4 w-full h-fit"
+    >
       <div className="space-y-2">
         {imageToShow && (
           <img src={imageToShow} alt="" className="size-32 object-cover" />

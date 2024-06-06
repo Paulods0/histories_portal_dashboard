@@ -1,13 +1,11 @@
+import Menu from "./menu"
+import MobileNavbar from "./mobile-navbar"
+import { MdLightMode } from "react-icons/md"
+import { MdOutlineLightMode } from "react-icons/md"
 import { Link, useLocation } from "react-router-dom"
 import { useAuthContext } from "@/context/auth-context"
-import { ADMIN_DASHBOARD_NAV_LINKS } from "@/utils/constants"
-import MobileNavbar from "./mobile-navbar"
-import Menu from "./menu"
-
-import { MdOutlineLightMode } from "react-icons/md"
-import { MdLightMode } from "react-icons/md"
-
 import { useThemeContext } from "@/context/theme-context"
+import { ADMIN_DASHBOARD_NAV_LINKS } from "@/utils/constants"
 
 const Header = () => {
   const { logout, user, userId } = useAuthContext()

@@ -1,7 +1,7 @@
 import { Label } from "../ui/label"
 import { SetStateAction } from "react"
-import { useGetAllUsers } from "@/lib/react-query/queries"
 import LoaderSpinner from "../global/loader-spinner"
+import { useGetAllUsers } from "@/lib/react-query/queries/user-queries"
 import {
   Select,
   SelectContent,

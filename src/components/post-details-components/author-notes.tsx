@@ -22,7 +22,6 @@ const AuthorNotes = ({ author, notes }: AuthorNotesProps) => {
           <span>{author?.firstname}</span>
           <span>{author?.lastname}</span>
         </CardTitle>
-        {/* <CardDescription>{author.email}</CardDescription> */}
       </CardHeader>
       <CardContent className="text-[16px]">{notes}</CardContent>
     </Card>

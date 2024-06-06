@@ -173,14 +173,33 @@ export const editProductFormSchema = z.object({
   description: z.string().optional(),
 })
 
-export type EditUserFormType = z.infer<typeof editUserFormSchema>
+export const addTipsSchema = z.object({
+  title: z.string().min(1, "Insira um título"),
+  content: z.string().min(1, "Escreva alguma dica"),
+  author: z.string().min(1, "Adicione um autor para esta dica"),
+  mainImage: z
+    .custom<File>()
+    .refine((image) => image !== undefined, "Insira uma imagem")
+    .transform(async (file) => await handleImageUpload(file)),
+})
+
+export const editTipSchema = z.object({
+  title: z.string(),
+  author: z.string(),
+  content: z.string(),
+  image: z.union([z.custom<File>(), z.string()]),
+})
+
+export type EditTipType = z.infer<typeof editTipSchema>
+export type AddTipsType = z.infer<typeof addTipsSchema>
 export type LoginInSchema = z.infer<typeof loginSchema>
 export type UserFormType = z.infer<typeof userFormSchema>
-export type ProductFormSchema = z.infer<typeof productFormSchema>
-export type EditProductFormSchemaType = z.infer<typeof editProductFormSchema>
 export type PostFormSchemaType = z.infer<typeof postFormSchema>
 export type TourFormSchemaType = z.infer<typeof tourFormSchema>
+export type EditUserFormType = z.infer<typeof editUserFormSchema>
+export type ProductFormSchema = z.infer<typeof productFormSchema>
 export type ScheduleFormSchemaType = z.infer<typeof scheduleFormSchema>
 export type EditTourFormSchemaType = z.infer<typeof editTourFormSchema>
 export type EditPostFormSchemaType = z.infer<typeof editPostFormSchema>
+export type EditProductFormSchemaType = z.infer<typeof editProductFormSchema>
 export type EditScheduleFormSchemaType = z.infer<typeof editScheduleFormSchema>

@@ -1,8 +1,8 @@
-import { useGetAllUsers } from "@/lib/react-query/queries"
-import UsersTable from "@/components/manage-user-component/users-table"
-import AddUserDialog from "@/components/manage-user-component/add-user-dialog"
 import { useAuthContext } from "@/context/auth-context"
 import LoaderSpinner from "@/components/global/loader-spinner"
+import UsersTable from "@/components/manage-user-component/users-table"
+import { useGetAllUsers } from "@/lib/react-query/queries/user-queries"
+import AddUserDialog from "@/components/manage-user-component/add-user-dialog"
 
 const ManageUserPage = () => {
   const { user: currentUser } = useAuthContext()

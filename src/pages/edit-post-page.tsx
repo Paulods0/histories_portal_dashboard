@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react"
 
-import QuillEditor from "@/components/global/quill-editor"
-
 import { Post } from "@/types/data"
-import { getSinglePost } from "@/api/post"
-
+import { PostEntity } from "@/api/post"
 import { useParams } from "react-router-dom"
-import LoaderSpinner from "@/components/global/loader-spinner"
+import QuillEditor from "@/components/global/quill-editor"
 import EditPostForm from "@/components/forms/edit-post-form"
+import LoaderSpinner from "@/components/global/loader-spinner"
 import EditTourPostForm from "@/components/forms/edit-tour-post.form"
 import SelectAuthorInput from "@/components/add-post-components/select-author-input"
 import SelectInputCategory from "@/components/edit-post-components/select-input-category"
@@ -23,7 +21,7 @@ const EditPostPostPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const post = await getSinglePost(id!!)
+      const post = await PostEntity.getSinglePost(id!!)
       setPost(post)
       setContent(post?.content)
       setCategory(post.category)

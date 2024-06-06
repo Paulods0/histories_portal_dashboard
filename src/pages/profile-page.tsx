@@ -1,13 +1,13 @@
+import { CiUser } from "react-icons/ci"
+import { CiSettings } from "react-icons/ci"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useAuthContext } from "@/context/auth-context"
-import { useEffect, useState } from "react"
 import { Link, Outlet, useLocation } from "react-router-dom"
-import { CiSettings } from "react-icons/ci"
-import { CiUser } from "react-icons/ci"
 
 const ProfilePage = () => {
-  const { user, userId } = useAuthContext()
   const path = useLocation()
+  const { user, userId } = useAuthContext()
   const [pathName, setPathName] = useState<string>("")
 
   useEffect(() => {

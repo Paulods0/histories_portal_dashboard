@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card"
-import { Link } from "react-router-dom"
 
 type HomeStatsProps = {
   customStyle?: string
@@ -46,10 +45,10 @@ const HomeStatsCard = ({
     >
       <CardHeader className="">
         <CardDescription className="flex items-center justify-between">
-          <div className="flex items-center text-white gap-x-2">
+          <span className="flex items-center text-white gap-x-2">
             {titleIcons[titleIcon]}
             <span className="capitalize text-[12px]">{title}</span>
-          </div>
+          </span>
         </CardDescription>
 
         <CardTitle className="capitalize text-[18px] text-white flex items-center gap-x-2">

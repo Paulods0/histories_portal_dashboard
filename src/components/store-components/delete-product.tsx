@@ -1,5 +1,3 @@
-import { CiTrash } from "react-icons/ci"
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,11 +9,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { useDeleteProduct } from "@/lib/react-query/mutations"
+import { Button } from "../ui/button"
 import { Product } from "@/types/data"
 import { toast } from "react-toastify"
+import { CiTrash } from "react-icons/ci"
 import { deleteImageFromFirebase } from "@/utils/helpers"
-import { Button } from "../ui/button"
+import { useDeleteProduct } from "@/lib/react-query/mutations/product-mutation"
 
 type Props = {
   product: Product

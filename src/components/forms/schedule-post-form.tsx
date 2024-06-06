@@ -1,14 +1,14 @@
-import { useCreateSchedulePost } from "@/lib/react-query/mutations"
-import { uploadImageToFirebaseStorage } from "@/utils/helpers"
-import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { ScheduleFormSchemaType, scheduleFormSchema } from "@/types/form-schema"
-import { useAuthContext } from "@/context/auth-context"
 import { toast } from "react-toastify"
-import { NewSchedulePost } from "@/types/create"
 import { useNavigate } from "react-router-dom"
 import InputField from "./form-ui/input-field"
 import FormButton from "./form-ui/form-button"
+import { NewSchedulePost } from "@/types/create"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useAuthContext } from "@/context/auth-context"
+import { uploadImageToFirebaseStorage } from "@/utils/helpers"
+import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
+import { ScheduleFormSchemaType, scheduleFormSchema } from "@/types/form-schema"
+import { useCreateSchedulePost } from "@/lib/react-query/mutations/post-mutation"
 
 type Props = {
   category: string
@@ -31,23 +31,6 @@ const SchedulePostForm = ({ authorId, category }: Props) => {
     formState: { errors, isSubmitting },
   } = methods
 
-  // const handleSubmitForm = async (data: ScheduleFormSchemaType) => {
-  //   try {
-  //     const fileData: NewSchedulePost = {
-  //       title: data.title,
-  //       author: authorId ?? userId!!,
-  //       category: category,
-  //       file: "file",
-  //     }
-
-  //     console.log(fileData)
-  //     toast.success("Publicado com sucesso")
-  //     mutate()
-  //   } catch (error) {
-  //     console.log("Erro ao publicar")
-  //     toast.error("Erro ao publicar")
-  //   }
-  // }
   const handleSubmitForm = async (data: ScheduleFormSchemaType) => {
     try {
       const file = await uploadImageToFirebaseStorage(

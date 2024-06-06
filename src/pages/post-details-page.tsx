@@ -1,16 +1,14 @@
-import AuthorNotes from "@/components/post-details-components/author-notes"
+import { FaEye } from "react-icons/fa"
 import { formatDate } from "@/utils/helpers"
-import { useGetSinglePost } from "@/lib/react-query/queries"
 import { useParams } from "react-router-dom"
 import { SlLike, SlDislike } from "react-icons/sl"
-import { FaEye } from "react-icons/fa"
 import LoaderSpinner from "@/components/global/loader-spinner"
-import { useThemeContext } from "@/context/theme-context"
+import { useGetSinglePost } from "@/lib/react-query/queries/post-queries"
+import AuthorNotes from "@/components/post-details-components/author-notes"
 
 const PostDetailsPage = () => {
   const { id } = useParams()
   const { data, isLoading } = useGetSinglePost(id!!)
-  const { theme } = useThemeContext()
 
   if (isLoading) {
     return (

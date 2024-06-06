@@ -3,27 +3,33 @@ import axios from "../../config/axios-config"
 import { Product } from "@/types/data"
 import { UpdateProduct } from "@/types/update"
 
-export const createProduct = async (data: NewProduct) => {
-  await axios.post("/product", data)
-}
 export type ProductsResponse = {
   products: Product[]
   pages: number
 }
 
-export const getAllProducts = async (
-  page?: number,
-  category?: string
-): Promise<ProductsResponse> => {
-  const response = await axios.get(`/product?page=${page}&category=${category}`)
-  return response.data
-}
+export class ProductEntity {
+  
+  static async createProduct(data: NewProduct) {
+    await axios.post("/product", data)
+  }
 
-export const updateProduct = async (data: UpdateProduct) => {
-  const response = await axios.put(`/product/${data.id}`, data)
-  return response.data
-}
+  static async getAllProducts(
+    page?: number,
+    category?: string
+  ): Promise<ProductsResponse> {
+    const response = await axios.get(
+      `/product?page=${page}&category=${category}`
+    )
+    return response.data
+  }
 
-export const deleteProduct = async (id: string) => {
-  await axios.delete(`/product/${id}`)
+  static async updateProduct(data: UpdateProduct) {
+    const response = await axios.put(`/product/${data.id}`, data)
+    return response.data
+  }
+
+  static async deleteProduct(id: string) {
+    await axios.delete(`/product/${id}`)
+  }
 }

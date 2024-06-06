@@ -1,4 +1,3 @@
-import { SchedulePost } from "@/types/data"
 import {
   Dialog,
   DialogContent,
@@ -6,8 +5,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog"
-import EditSchedulePostForm from "../forms/edit-schedule-post-form"
 import { Button } from "../ui/button"
+import { SchedulePost } from "@/types/data"
+import EditSchedulePostForm from "../forms/edit-schedule-post-form"
 
 type Props = {
   post: SchedulePost

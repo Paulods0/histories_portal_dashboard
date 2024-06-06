@@ -1,12 +1,3 @@
-import { FormProvider, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { ProductFormSchema, productFormSchema } from "@/types/form-schema"
-
-import { Label } from "../ui/label"
-import { Input } from "../ui/input"
-import InputField from "../forms/form-ui/input-field"
-import FormButton from "../forms/form-ui/form-button"
-import { ChangeEvent, useState } from "react"
 import {
   Select,
   SelectContent,
@@ -14,11 +5,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
-import { NewProduct } from "@/types/create"
-import { uploadImageToFirebaseStorage } from "@/utils/helpers"
+import { Input } from "../ui/input"
+import { Label } from "../ui/label"
 import { toast } from "react-toastify"
-import { useCreateProduct } from "@/lib/react-query/mutations"
+import { NewProduct } from "@/types/create"
+import { zodResolver } from "@hookform/resolvers/zod"
+import InputField from "../forms/form-ui/input-field"
+import FormButton from "../forms/form-ui/form-button"
 import { PRODUCT_CATEGORIES } from "@/utils/constants"
+import { FormProvider, useForm } from "react-hook-form"
+import { uploadImageToFirebaseStorage } from "@/utils/helpers"
+import { ChangeEvent, useState } from "react"
+import { ProductFormSchema, productFormSchema } from "@/types/form-schema"
+import { useCreateProduct } from "@/lib/react-query/mutations/product-mutation"
 
 const StoreForm = () => {
   const { mutate } = useCreateProduct()

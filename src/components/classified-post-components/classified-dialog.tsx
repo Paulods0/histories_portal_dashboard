@@ -1,8 +1,3 @@
-import { ClassifiedPost } from "@/types/data"
-
-import { ImBlocked } from "react-icons/im"
-import { IoIosCheckmarkCircleOutline } from "react-icons/io"
-import { FaRegCirclePause } from "react-icons/fa6"
 import {
   Dialog,
   DialogClose,
@@ -20,11 +15,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
-import { Button } from "../ui/button"
+
 import { useState } from "react"
-import { useUpdateClassifiedPost } from "@/lib/react-query/mutations"
+import { Button } from "../ui/button"
 import { toast } from "react-toastify"
+import { ImBlocked } from "react-icons/im"
+import { ClassifiedPost } from "@/types/data"
+import { FaRegCirclePause } from "react-icons/fa6"
 import LoaderSpinner from "../global/loader-spinner"
+import { IoIosCheckmarkCircleOutline } from "react-icons/io"
+import { useUpdateClassifiedPost } from "@/lib/react-query/mutations/post-mutation"
 
 type Props = {
   post: ClassifiedPost | undefined
@@ -56,6 +56,20 @@ const ClassifiedDialog = ({ post }: Props) => {
     }
   }
 
+  const postStatusColor =
+    post?.status === "active"
+      ? "text-green-700"
+      : post?.status === "inactive"
+      ? "text-red-700"
+      : "text-yellow-700"
+
+  const postStatusText =
+    post?.status === "active"
+      ? "Activo"
+      : post?.status === "inactive"
+      ? "Inativo"
+      : "Suspenso"
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -83,35 +97,21 @@ const ClassifiedDialog = ({ post }: Props) => {
           <DialogTitle>Alterar o estado do produto</DialogTitle>
           <DialogDescription>
             O produto atual está{" "}
-            <span
-              className={`${
-                post?.status === "active"
-                  ? "text-green-700"
-                  : post?.status === "inactive"
-                  ? "text-red-700"
-                  : "text-yellow-700"
-              }`}
-            >
-              {post?.status === "active"
-                ? "Activo"
-                : post?.status === "inactive"
-                ? "Inativo"
-                : "Suspenso"}
-            </span>
+            <span className={postStatusColor}>{postStatusText}</span>
           </DialogDescription>
         </DialogHeader>
-        <>
-          <Select onValueChange={handleSelected}>
-            <SelectTrigger className="bg-foreground text-background">
-              <SelectValue placeholder="Selecionar" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="active">Activo</SelectItem>
-              <SelectItem value="suspended">Suspenso</SelectItem>
-              <SelectItem value="inactive">Inativo</SelectItem>
-            </SelectContent>
-          </Select>
-        </>
+
+        <Select onValueChange={handleSelected}>
+          <SelectTrigger className="bg-foreground text-background">
+            <SelectValue placeholder="Selecionar" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="active">Activo</SelectItem>
+            <SelectItem value="suspended">Suspenso</SelectItem>
+            <SelectItem value="inactive">Inativo</SelectItem>
+          </SelectContent>
+        </Select>
+
         <DialogFooter>
           <DialogClose>Cancelar</DialogClose>
           <Button

@@ -112,3 +112,11 @@ export async function handleImageUpload(img: File) {
     console.log(error)
   }
 }
+
+export function formatPrice(price: string) {
+  const newPrice = new Intl.NumberFormat("pt-PT", {
+    style: "currency",
+    currency: "AKZ",
+  }).format(Number(price))
+  return newPrice
+}

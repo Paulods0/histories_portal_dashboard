@@ -1,4 +1,4 @@
-import { toast } from "react-toastify"
+import { useState } from "react"
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -9,11 +9,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog"
-import { Button } from "../ui/button"
 import { User } from "@/types/data"
+import { Button } from "../ui/button"
+  import { toast } from "react-toastify"
 import { deleteImageFromFirebase } from "@/utils/helpers"
-import { useDeleteUser } from "@/lib/react-query/mutations"
-import { useState } from "react"
+import { useDeleteUser } from "@/lib/react-query/mutations/user-mutation"
 
 type Props = {
   user: User

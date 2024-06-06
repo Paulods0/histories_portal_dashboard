@@ -1,4 +1,3 @@
-import { Post } from "@/types/data"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,12 +8,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog"
+import { Post } from "@/types/data"
 import { Button } from "../ui/button"
 import { toast } from "react-toastify"
-import { deleteImageFromFirebase } from "@/utils/helpers"
-import { useDeletePost } from "@/lib/react-query/mutations"
 import { CiTrash } from "react-icons/ci"
 import LoaderSpinner from "../global/loader-spinner"
+import { deleteImageFromFirebase } from "@/utils/helpers"
+import { useDeletePost } from "@/lib/react-query/mutations/post-mutation"
 
 type Props = {
   post: Post

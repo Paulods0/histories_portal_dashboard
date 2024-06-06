@@ -1,19 +1,17 @@
-import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { PostFormSchemaType, postFormSchema } from "@/types/form-schema"
+import { toast } from "react-toastify"
+import { NewPost } from "@/types/create"
+import { ChangeEvent, useState } from "react"
 import InputField from "./form-ui/input-field"
+import { useNavigate } from "react-router-dom"
+import FormButton from "./form-ui/form-button"
 import InputCheckbox from "./form-ui/input-checkbox"
-
+import { zodResolver } from "@hookform/resolvers/zod"
 import TextAreaField from "./form-ui/text-area-field"
 import { useAuthContext } from "@/context/auth-context"
-
-import { NewPost } from "@/types/create"
 import { uploadImageToFirebaseStorage } from "@/utils/helpers"
-import { toast } from "react-toastify"
-import { useNavigate } from "react-router-dom"
-import { useCreatePost } from "@/lib/react-query/mutations"
-import { ChangeEvent, useState } from "react"
-import FormButton from "./form-ui/form-button"
+import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
+import { PostFormSchemaType, postFormSchema } from "@/types/form-schema"
+import { useCreatePost } from "@/lib/react-query/mutations/post-mutation"
 
 type Props = {
   content: string

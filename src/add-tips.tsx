@@ -19,9 +19,8 @@ const AddTips = () => {
         <section className="lg:col-span-2 w-full">
           <QuillEditor content={content} setContent={setContent} />
         </section>
-        <section className="border rounded-lg p-4 w-full">
-          <AddTipsForm setContent={setContent} content={content} />
-        </section>
+
+        <AddTipsForm setContent={setContent} content={content} />
       </section>
     </div>
   )

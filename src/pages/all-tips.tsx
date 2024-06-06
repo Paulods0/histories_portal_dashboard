@@ -1,8 +1,8 @@
-import LoaderSpinner from "@/components/global/loader-spinner"
+import { Button } from "@/components/ui/button"
 import Pagination from "@/components/global/pagination"
 import TipCard from "@/components/tip-components/tip-card"
-import { Button } from "@/components/ui/button"
-import { useGetTips } from "@/lib/react-query/queries"
+import LoaderSpinner from "@/components/global/loader-spinner"
+import { useGetTips } from "@/lib/react-query/queries/tip-queries"
 
 import { LuPlus } from "react-icons/lu"
 import { Link, useSearchParams } from "react-router-dom"

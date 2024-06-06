@@ -6,9 +6,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { FaPlusCircle } from "react-icons/fa"
-import { Button } from "../ui/button"
 import StoreForm from "./store-form"
+import { Button } from "../ui/button"
+import { FaPlusCircle } from "react-icons/fa"
 
 const AddProductButton = () => {
   return (

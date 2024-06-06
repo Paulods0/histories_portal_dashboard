@@ -31,7 +31,7 @@ export type TipResponse = {
   posts: Tip[]
 }
 
-export class Tips {
+export class TipsEntity {
   static async createTip(data: CreateTip) {
     try {
       await axios.post("/tip", data)
@@ -50,6 +50,16 @@ export class Tips {
     }
   }
 
+  static async getSingleTip(id: string): Promise<Tip> {
+    try {
+      const response = await axios.get(`/tip/${id}`)
+      return response.data
+    } catch (error: any) {
+      console.log(error)
+      throw new Error(error.response.data.message)
+    }
+  }
+
   static async updateTip(data: UpdateTip) {
     try {
       const response = await axios.put(`/tip/${data.id}`, {
@@ -64,12 +74,13 @@ export class Tips {
       throw new Error(error.response.data.message)
     }
   }
-
   static async deleteTip(id: string): Promise<void> {
     try {
-      await axios.delete(`/tip/${id}`)
+      const response = await axios.delete(`/tip/${id}`)
+      toast.success(response.data.message)
+      console.log(response.data.message)
     } catch (error: any) {
-      console.log(error.response.data.message)
+      toast.error(error.response.data.message)
       throw new Error(error.response.data.message)
     }
   }

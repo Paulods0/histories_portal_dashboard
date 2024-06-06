@@ -1,20 +1,20 @@
-import { Post } from "@/types/data"
-import { EditTourFormSchemaType, editTourFormSchema } from "@/types/form-schema"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
-import FormButton from "./form-ui/form-button"
-import InputField from "./form-ui/input-field"
-import TextAreaField from "./form-ui/text-area-field"
-import InputCheckbox from "./form-ui/input-checkbox"
-import { toast } from "react-toastify"
-import { UpdatePost } from "@/types/update"
-import { ChangeEvent, useState } from "react"
-import { useUpdatePost } from "@/lib/react-query/mutations"
 import {
   deleteImageFromFirebase,
   uploadImageToFirebaseStorage,
 } from "@/utils/helpers"
+import { Post } from "@/types/data"
+import { toast } from "react-toastify"
+import { UpdatePost } from "@/types/update"
+import { ChangeEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import InputField from "./form-ui/input-field"
+import FormButton from "./form-ui/form-button"
+import InputCheckbox from "./form-ui/input-checkbox"
+import TextAreaField from "./form-ui/text-area-field"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
+import { useUpdatePost } from "@/lib/react-query/mutations/post-mutation"
+import { EditTourFormSchemaType, editTourFormSchema } from "@/types/form-schema"
 
 type Props = {
   post: Post | undefined

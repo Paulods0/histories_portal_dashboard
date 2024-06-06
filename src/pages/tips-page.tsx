@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { LuPlus } from "react-icons/lu"
+import { Button } from "@/components/ui/button"
 
 const TipsPage = () => {
   return (

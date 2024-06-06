@@ -1,17 +1,18 @@
-import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { TourFormSchemaType, tourFormSchema } from "@/types/form-schema"
-import { useAuthContext } from "@/context/auth-context"
-import { ChangeEvent, useState } from "react"
-import { useCreatePost } from "@/lib/react-query/mutations"
+import { toast } from "react-toastify"
+import { NewPost } from "@/types/create"
 import { useNavigate } from "react-router-dom"
 import FormButton from "./form-ui/form-button"
 import InputField from "./form-ui/input-field"
 import InputCheckbox from "./form-ui/input-checkbox"
+import { zodResolver } from "@hookform/resolvers/zod"
 import TextAreaField from "./form-ui/text-area-field"
-import { NewPost } from "@/types/create"
-import { toast } from "react-toastify"
+import { useAuthContext } from "@/context/auth-context"
 import { uploadImageToFirebaseStorage } from "@/utils/helpers"
+import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
+import { TourFormSchemaType, tourFormSchema } from "@/types/form-schema"
+import { useCreatePost } from "@/lib/react-query/mutations/post-mutation"
+
+import { ChangeEvent, useState } from "react"
 
 type Props = {
   authorId: string
@@ -74,30 +75,7 @@ const ToursPostForm = ({ content, authorId, category }: Props) => {
       console.log("Erro: " + error)
     }
   }
-  // const handleSubmitForm = async (data: TourFormSchemaType) => {
-  //   try {
-  //     const geocoord = data.coordinates.split(",")
-  //     const imageURL = await uploadImageToFirebaseStorage(data.image!!, "posts")
-  //     const post: NewPost = {
-  //       tag: data.tags,
-  //       content: content,
-  //       mainImage: imageURL,
-  //       title: data.title,
-  //       category: category,
-  //       highlighted: data.highlighted,
-  //       author_notes: data.author_notes,
-  //       latitude: geocoord[0],
-  //       longitude: geocoord[1],
-  //       author_id: authorId ? authorId : userId!!,
-  //     }
-  //     mutate(post)
-  //     toast.success("Publicado com sucesso.")
-  //     navigate("/posts")
-  //   } catch (error) {
-  //     toast.error("Erro ao publicar o post")
-  //     console.log("Erro: " + error)
-  //   }
-  // }
+
   return (
     <FormProvider {...methods}>
       <form

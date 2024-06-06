@@ -1,4 +1,8 @@
 import {
+  deleteImageFromFirebase,
+  uploadImageToFirebaseStorage,
+} from "@/utils/helpers"
+import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -7,31 +11,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-
-import { Product } from "@/types/data"
-import { CiEdit } from "react-icons/ci"
-import { Button } from "../ui/button"
-import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
 import {
   EditProductFormSchemaType,
   editProductFormSchema,
 } from "@/types/form-schema"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { toast } from "react-toastify"
-
-import SelectCategory from "./select-category"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
-import { useUpdateProduct } from "@/lib/react-query/mutations"
+import { Button } from "../ui/button"
+import { toast } from "react-toastify"
+import { Product } from "@/types/data"
+import { CiEdit } from "react-icons/ci"
+import { ChangeEvent, useState } from "react"
+import SelectCategory from "./select-category"
 import { UpdateProduct } from "@/types/update"
 import InputField from "../forms/form-ui/input-field"
+import { zodResolver } from "@hookform/resolvers/zod"
 import FormButton from "../forms/form-ui/form-button"
-import { ChangeEvent, useState } from "react"
-import {
-  deleteImageFromFirebase,
-  uploadImageToFirebaseStorage,
-} from "@/utils/helpers"
 import TextAreaField from "../forms/form-ui/text-area-field"
+import { FormProvider, UseFormReturn, useForm } from "react-hook-form"
+import { useUpdateProduct } from "@/lib/react-query/mutations/product-mutation"
 
 type Props = {
   product: Product

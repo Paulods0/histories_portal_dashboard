@@ -1,17 +1,17 @@
+import Cookies from "js-cookie"
 import { useState } from "react"
 import { IoMdEye } from "react-icons/io"
+import { useForm } from "react-hook-form"
 import { IoMdEyeOff } from "react-icons/io"
 import { Navigate } from "react-router-dom"
-import { useAuthContext } from "../context/auth-context"
-import Cookies from "js-cookie"
-import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useAuthContext } from "../context/auth-context"
 
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { LoginInSchema, loginSchema } from "@/types/form-schema"
+import { Button } from "@/components/ui/button"
 import LoaderSpinner from "@/components/global/loader-spinner"
+import { LoginInSchema, loginSchema } from "@/types/form-schema"
 
 const LoginPage = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)

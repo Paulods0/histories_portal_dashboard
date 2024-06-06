@@ -3,40 +3,10 @@ import axios from "../../config/axios-config"
 import { ClassifiedPost, Post, SchedulePost } from "@/types/data"
 import { UpdatePost, UpdateSchedulePost } from "@/types/update"
 
-export const createPost = async (body: NewPost) => {
-  return await axios.post("/post", body)
-}
-
-export const createSchedulePost = async (body: NewSchedulePost) => {
-  return await axios.post("/schedule-post", body)
-}
-
-export const createClassifiedPost = async (body: NewClassifiedPost) => {
-  return await axios.post("/classified-post", body)
-}
-
 export type PostsDataResponse = {
   total: number
   pages: number
   posts: Post[]
-}
-
-export const getAllPosts = async (
-  page?: number,
-  category?: string
-): Promise<PostsDataResponse> => {
-  const posts = await axios.get(`/post?page=${page}&category=${category}`)
-  return posts.data
-}
-
-export const getHighlightedPost = async (): Promise<Post> => {
-  const response = await axios.get("/post/get/highlighted-post")
-  return response.data
-}
-
-export const getAllPostsByCategory = async (category_slug: string) => {
-  const response = await axios.get(`/post/category/${category_slug}`)
-  return response.data.data
 }
 
 type SchedulePostResponse = {
@@ -44,47 +14,74 @@ type SchedulePostResponse = {
   page: number
 }
 
-export const getSchedulePosts = async (
-  page: number
-): Promise<SchedulePostResponse> => {
-  const response = await axios.get(`/schedule-post?page=${page}`)
-  return response.data
-}
-
-export const getSinglePost = async (id: string): Promise<Post> => {
-  const response = await axios.get(`/post/${id}`)
-  return response.data
-}
-
 export type ClassifiedPostResponse = {
   pages: number
   posts: ClassifiedPost[]
 }
 
-export const getClassifiedPosts = async (
-  page: number = 1
-): Promise<ClassifiedPostResponse> => {
-  const response = await axios.get(`/classified-post?page=${page}`)
-  return response.data
-}
+export class PostEntity {
+  static async createPost(body: NewPost) {
+    return await axios.post("/post", body)
+  }
 
-export const updatePost = async (data: { id: string; data: UpdatePost }) => {
-  await axios.put(`/post/${data.id}`, data.data)
-}
+  static async createSchedulePost(body: NewSchedulePost) {
+    return await axios.post("/schedule-post", body)
+  }
 
-export const updateSchedulePost = async (data: UpdateSchedulePost) => {
-  await axios.put(`/schedule-post/${data.id}`, data)
-}
+  static async createClassifiedPost(body: NewClassifiedPost) {
+    return await axios.post("/classified-post", body)
+  }
 
-export const updateClassifiedPost = async (data: {
-  id: string
-  newStatus: string
-}) => {
-  await axios.put(`/classified-post/${data.id}`, {
-    newStatus: data.newStatus,
-  })
-}
+  static async getAllPosts(
+    page?: number,
+    category?: string
+  ): Promise<PostsDataResponse> {
+    const posts = await axios.get(`/post?page=${page}&category=${category}`)
+    return posts.data
+  }
 
-export const deletePost = async (id: string) => {
-  await axios.delete(`/post/${id}`)
+  static async getHighlightedPost(): Promise<Post> {
+    const response = await axios.get("/post/get/highlighted-post")
+    return response.data
+  }
+
+  static async getAllPostsByCategory(category_slug: string) {
+    const response = await axios.get(`/post/category/${category_slug}`)
+    return response.data.data
+  }
+
+  static async getSchedulePosts(page: number): Promise<SchedulePostResponse> {
+    const response = await axios.get(`/schedule-post?page=${page}`)
+    return response.data
+  }
+
+  static async getSinglePost(id: string): Promise<Post> {
+    const response = await axios.get(`/post/${id}`)
+    return response.data
+  }
+
+  static async getClassifiedPosts(
+    page: number = 1
+  ): Promise<ClassifiedPostResponse> {
+    const response = await axios.get(`/classified-post?page=${page}`)
+    return response.data
+  }
+
+  static async updatePost(data: { id: string; data: UpdatePost }) {
+    await axios.put(`/post/${data.id}`, data.data)
+  }
+
+  static async updateSchedulePost(data: UpdateSchedulePost) {
+    await axios.put(`/schedule-post/${data.id}`, data)
+  }
+
+  static async updateClassifiedPost(data: { id: string; newStatus: string }) {
+    await axios.put(`/classified-post/${data.id}`, {
+      newStatus: data.newStatus,
+    })
+  }
+
+  static async deletePost(id: string) {
+    await axios.delete(`/post/${id}`)
+  }
 }

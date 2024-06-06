@@ -1,9 +1,9 @@
+import { Button } from "../ui/button"
 import { SchedulePost } from "@/types/data"
 import { formatDate } from "@/utils/helpers"
 import { MdOutlineRemoveRedEye } from "react-icons/md"
-import { Button } from "../ui/button"
-import EditSchedulePostDialog from "./edit-schedule-post-dialog"
 import { useAuthContext } from "@/context/auth-context"
+import EditSchedulePostDialog from "./edit-schedule-post-dialog"
 
 type Props = {
   post: SchedulePost

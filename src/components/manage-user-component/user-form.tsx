@@ -1,15 +1,3 @@
-import { FormProvider, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { EyeIcon, EyeOff } from "lucide-react"
-import { ChangeEvent, useState } from "react"
-import { UserFormType, userFormSchema } from "@/types/form-schema"
-import { useCreateUser } from "@/lib/react-query/mutations"
-import { toast } from "react-toastify"
-import { NewUser } from "@/types/create"
-import { uploadImageToFirebaseStorage } from "@/utils/helpers"
-import { Input } from "../ui/input"
-import InputField from "../forms/form-ui/input-field"
-import FormButton from "../forms/form-ui/form-button"
 import {
   Select,
   SelectContent,
@@ -17,6 +5,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
+import { Input } from "../ui/input"
+import { toast } from "react-toastify"
+import { NewUser } from "@/types/create"
+import { ChangeEvent, useState } from "react"
+import { EyeIcon, EyeOff } from "lucide-react"
+import InputField from "../forms/form-ui/input-field"
+import FormButton from "../forms/form-ui/form-button"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { FormProvider, useForm } from "react-hook-form"
+import { uploadImageToFirebaseStorage } from "@/utils/helpers"
+import { UserFormType, userFormSchema } from "@/types/form-schema"
+import { useCreateUser } from "@/lib/react-query/mutations/user-mutation"
 
 const UserForm = () => {
   const { mutate } = useCreateUser()

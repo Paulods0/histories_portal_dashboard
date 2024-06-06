@@ -1,4 +1,7 @@
+import { ChangeEvent, useState } from "react"
+
 import { User } from "@/types/data"
+import { toast } from "react-toastify"
 import { Button } from "../ui/button"
 import {
   Dialog,
@@ -8,14 +11,11 @@ import {
   DialogTrigger,
 } from "../ui/dialog"
 import { Input } from "../ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { AiOutlineClose } from "react-icons/ai"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ChangeEvent, useState } from "react"
-import { AiOutlineClose } from "react-icons/ai"
-
-import { toast } from "react-toastify"
-import { useUpdateUser } from "@/lib/react-query/mutations"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { useUpdateUser } from "@/lib/react-query/mutations/user-mutation"
 import { EditUserFormType, editUserFormSchema } from "@/types/form-schema"
 
 import {

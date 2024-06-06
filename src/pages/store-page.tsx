@@ -1,20 +1,10 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-
-import AddProductButton from "@/components/store-components/add-product-button"
-import EditProduct from "@/components/store-components/edit-product"
-import DeleteProduct from "@/components/store-components/delete-product"
-import { useGetAllProducts } from "@/lib/react-query/queries"
-import { useAuthContext } from "@/context/auth-context"
-import LoaderSpinner from "@/components/global/loader-spinner"
-import Pagination from "@/components/global/pagination"
 import { useSearchParams } from "react-router-dom"
+import { useAuthContext } from "@/context/auth-context"
+import Pagination from "@/components/global/pagination"
+import LoaderSpinner from "@/components/global/loader-spinner"
+import { useGetAllProducts } from "@/lib/react-query/queries/product-queries"
+import AddProductButton from "@/components/store-components/add-product-button"
+import StoreProductTable from "@/components/store-components/store-product-table"
 
 const StorePage = () => {
   const { user } = useAuthContext()
@@ -39,13 +29,7 @@ const StorePage = () => {
     )
   }
 
-  function formatPrice(price: string) {
-    const newPrice = new Intl.NumberFormat("pt-PT", {
-      style: "currency",
-      currency: "AKZ",
-    }).format(Number(price))
-    return newPrice
-  }
+  const isUserAuthorized = user?.role !== "publicator"
 
   return (
     <main className="w-full p-2 flex-col items-center flex">
@@ -57,45 +41,17 @@ const StorePage = () => {
         <section className="w-full flex flex-col h-full items-center justify-start gap-y-2">
           <div className="flex flex-col gap-y-2 mx-auto w-full lg:w-[800px]">
             <h1 className="font-bold text-3xl">Produtos</h1>
-            {user?.role !== "publicator" && (
+            
+            {isUserAuthorized && (
               <div className="w-full flex items-center justify-end">
                 <AddProductButton />
               </div>
             )}
 
-            <div className="border h-[60vh] overflow-y-auto scroll-bar relative rounded-lg p-6 w-full">
-              <Table>
-                <TableHeader>
-                  <TableHead>Imagem</TableHead>
-                  <TableHead>Produto</TableHead>
-                  <TableHead>Categoria</TableHead>
-                  <TableHead>Preço</TableHead>
-                </TableHeader>
-
-                <TableBody>
-                  {data?.products.map((product) => (
-                    <TableRow key={product._id}>
-                      <TableCell>
-                        <img
-                          src={product.image}
-                          className="size-16 object-cover"
-                        />
-                      </TableCell>
-                      <TableCell>{product.name}</TableCell>
-                      <TableCell>{product.category}</TableCell>
-                      <TableCell>{formatPrice(product.price)}</TableCell>
-
-                      {user?.role !== "publicator" && (
-                        <TableCell className="space-x-4">
-                          <EditProduct product={product} />
-                          <DeleteProduct product={product} />
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+            <StoreProductTable
+              isUserAuthorized={isUserAuthorized}
+              products={data?.products}
+            />
 
             <Pagination
               totalPages={data!!.pages}

@@ -1,7 +1,7 @@
+import { Post } from "../../types/data"
 import { LiaUser } from "react-icons/lia"
 import { BiCategory } from "react-icons/bi"
 import { CiCalendarDate } from "react-icons/ci"
-import { Post } from "../../types/data"
 
 const HomePostCard = ({
   post: { mainImage, title, createdAt, category, author },

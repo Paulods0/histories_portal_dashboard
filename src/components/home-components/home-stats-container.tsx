@@ -1,13 +1,10 @@
-import HomeStatsCard from "./home-stats-card"
-import { useAuthContext } from "../../context/auth-context"
-
-import {
-  useGetAllPosts,
-  useGetUserPosts,
-  useGetAllProducts,
-} from "@/lib/react-query/queries"
-import LoaderSpinner from "../global/loader-spinner"
 import { useMemo } from "react"
+import HomeStatsCard from "./home-stats-card"
+import LoaderSpinner from "../global/loader-spinner"
+import { useAuthContext } from "../../context/auth-context"
+import { useGetAllPosts } from "@/lib/react-query/queries/post-queries"
+import { useGetUserPosts } from "@/lib/react-query/queries/user-queries"
+import { useGetAllProducts } from "@/lib/react-query/queries/product-queries"
 
 const HomeStatsContainer = () => {
   const { userId } = useAuthContext()
@@ -35,34 +32,34 @@ const HomeStatsContainer = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           <HomeStatsCard
-            customStyle="bg-[#D93C3C] w-full"
+            footerIcon="views"
+            footerText="views"
             titleIcon="myPosts"
             title="Os meus posts"
-            amount={userPosts?.length.toString()}
-            description="Posts meus "
-            footerIcon="views"
-            footerText="views"
+            description="Posts meus"
             footerAmount={userPostsViews}
+            customStyle="bg-[#D93C3C] w-full"
+            amount={userPosts?.length.toString()}
           />
           <HomeStatsCard
-            customStyle="bg-[#423B94] w-full"
             titleIcon="posts"
-            title="Total de posts"
-            amount={postsData?.posts.length.toString()}
-            description="posts no total"
             footerIcon="views"
             footerText="views"
+            title="Total de posts"
+            description="posts no total"
             footerAmount={totalPostsViews}
+            amount={totalPosts?.toString()}
+            customStyle="bg-[#423B94] w-full"
           />
           <HomeStatsCard
-            customStyle="bg-[#505050] w-full"
+            footerAmount={16}
             titleIcon="store"
             title="subscritos"
-            amount={products?.products.length.toString()}
-            description="Inscritos"
             footerIcon="category"
             footerText="inscritos"
-            footerAmount={16}
+            description="Inscritos"
+            customStyle="bg-[#505050] w-full"
+            amount={products?.products.length.toString()}
           />
         </div>
       )}

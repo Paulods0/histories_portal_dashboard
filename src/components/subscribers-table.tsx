@@ -32,6 +32,7 @@ const SsubscribersTable: FC<Props> = ({ subscribers }) => {
             <TableHead>ID</TableHead>
             <TableHead>Nome</TableHead>
             <TableHead>Email</TableHead>
+            <TableHead>Tel</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -41,6 +42,9 @@ const SsubscribersTable: FC<Props> = ({ subscribers }) => {
               <TableCell>{subscriber._id}</TableCell>
               <TableCell>{subscriber.name}</TableCell>
               <TableCell>{subscriber.email}</TableCell>
+              <TableCell>
+                {subscriber.phone ? subscriber.phone : "Nenhum"}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
