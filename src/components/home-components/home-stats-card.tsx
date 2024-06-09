@@ -41,7 +41,7 @@ const HomeStatsCard = ({
 }: HomeStatsProps) => {
   return (
     <Card
-      className={`w-[120px]  ${customStyle} hover:translate-y-1 auto transition-all duration-200 ease-linear`}
+      className={`w-[120px] h-[192px] ${customStyle} hover:translate-y-1 auto transition-all duration-200 ease-linear`}
     >
       <CardHeader className="">
         <CardDescription className="flex items-center justify-between">

@@ -11,7 +11,7 @@ const AddPartnerPage = () => {
     <main className="w-full h-full flex flex-col pb-6 gap-4">
       <section className="w-full flex items-center justify-end">
         <Button asChild>
-          <Link to="/partners">Ver todos</Link>
+          <Link to="/parceiros">Ver todos</Link>
         </Button>
       </section>
 

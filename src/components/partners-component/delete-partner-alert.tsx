@@ -12,12 +12,25 @@ import {
 } from "../ui/alert-dialog"
 import { Button } from "../ui/button"
 import { CiTrash } from "react-icons/ci"
+import { useDeletePartner } from "@/lib/react-query/mutations/partner-mutation"
+import { deleteImageFromFirebase } from "@/utils/helpers"
 
 type Props = {
-  id: number
+  id: string
+  image: string
 }
 
-const DeletePartnerAlert: FC<Props> = ({ id }) => {
+const DeletePartnerAlert: FC<Props> = ({ id, image }) => {
+  const { mutate } = useDeletePartner()
+
+  async function deletePartner() {
+    try {
+      await deleteImageFromFirebase(image, "partners")
+      mutate(id)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -38,7 +51,9 @@ const DeletePartnerAlert: FC<Props> = ({ id }) => {
             <Button variant="secondary">Cancelar</Button>
           </AlertDialogCancel>
           <AlertDialogAction asChild>
-            <Button variant="destructive">Remover</Button>
+            <Button onClick={deletePartner} variant="destructive">
+              Remover
+            </Button>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

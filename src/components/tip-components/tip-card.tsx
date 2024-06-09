@@ -11,7 +11,7 @@ type Props = {
 const TipCard: FC<Props> = ({ tip }) => {
   return (
     <div className="p-4 border w-full h-fit rounded-md gap-2 flex flex-col">
-      <img src={tip.image} className="w-full h-[200px] object-cover" alt="" />
+      <img src={tip.image} className="w-full h-[150px] object-cover" alt="" />
 
       <div className="border-t w-full mt-2 pt-2 flex flex-col gap-2">
         <h1 className="text-xl  font-semibold">{tip.title}</h1>

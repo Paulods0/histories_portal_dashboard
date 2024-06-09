@@ -6,34 +6,38 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Button } from "../ui/button"
 import { useForm } from "react-hook-form"
-import { Tip, UpdateTip } from "@/api/tips"
-import { z } from "zod"
+import { PartnerData } from "@/api/partner"
 import { ChangeEvent, FC, useState } from "react"
 import LoaderSpinner from "../global/loader-spinner"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useUpdateTip } from "@/lib/react-query/mutations/tip-mutation"
 import SelectAuthorInput from "../add-post-components/select-author-input"
-import { EditTipType, editTipSchema } from "@/types/form-schema"
+import { useUpdatePartner } from "@/lib/react-query/mutations/partner-mutation"
 
-type Props = { tip: Tip; content: string }
+import { UpdatePartner } from "@/api/tips"
+import { EditPartnerType, editPartnerSchema } from "@/types/form-schema"
 
-const EditTipForm: FC<Props> = ({ tip, content }) => {
-  const [authorId, setAuthorId] = useState(tip.author._id)
+type Props = {
+  partner: PartnerData
+  content: string
+}
+
+const EditPartnerForm: FC<Props> = ({ partner, content }) => {
+  const [authorId, setAuthorId] = useState(partner.author._id)
   const [imageToShow, setImageToShow] = useState<string | null>(null)
-  const { mutate } = useUpdateTip()
+  const { mutate } = useUpdatePartner()
 
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
     setValue,
-  } = useForm<EditTipType>({
-    resolver: zodResolver(editTipSchema),
+  } = useForm<EditPartnerType>({
+    resolver: zodResolver(editPartnerSchema),
     defaultValues: {
-      image: tip.image,
-      title: tip.title,
+      image: partner.image,
+      title: partner.title,
       content: content,
-      author: tip.author._id,
+      author: partner.author._id,
     },
   })
 
@@ -52,18 +56,18 @@ const EditTipForm: FC<Props> = ({ tip, content }) => {
     setImageToShow(null)
   }
 
-  async function handleSubmitForm(data: EditTipType) {
+  async function handleSubmitForm(data: EditPartnerType) {
     try {
-      let payload: UpdateTip
+      let payload: UpdatePartner
 
       if (imageToShow) {
-        await deleteImageFromFirebase(tip.image, "tips")
+        await deleteImageFromFirebase(partner.image, "partners")
         const imgDownloadURL = await uploadImageToFirebaseStorage(
           data.image!! as File,
-          "tips"
+          "partners"
         )
         payload = {
-          id: tip._id,
+          id: partner._id,
           content: data.content,
           title: data.title,
           author: data.author,
@@ -71,9 +75,9 @@ const EditTipForm: FC<Props> = ({ tip, content }) => {
         }
       } else {
         payload = {
-          id: tip._id,
+          id: partner._id,
           content: data.content,
-          image: tip.image,
+          image: partner.image,
           title: data.title,
           author: data.author,
         }
@@ -84,14 +88,13 @@ const EditTipForm: FC<Props> = ({ tip, content }) => {
       console.log(error)
     }
   }
-
   return (
     <form
       onSubmit={handleSubmit(handleSubmitForm)}
       className="space-y-4 p-4 h-fit border rounded-lg"
     >
       <img
-        src={imageToShow ?? tip.image}
+        src={imageToShow ?? partner.image}
         className="size-28 object-cover"
         alt="dica-imagem"
       />
@@ -131,4 +134,4 @@ const EditTipForm: FC<Props> = ({ tip, content }) => {
   )
 }
 
-export default EditTipForm
+export default EditPartnerForm

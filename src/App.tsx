@@ -36,7 +36,6 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         <Route path="/" element={<ProtectedRoutes />}>
-
           <Route path="dicas" element={<TipsPage />} />
           <Route path="loja" element={<StorePage />} />
           <Route path="posts" element={<PostsPage />} />
@@ -47,6 +46,7 @@ function App() {
           <Route path="parceiros" element={<PartnersPage />} />
           <Route path="usuarios" element={<ManageUserPage />} />
           <Route path="dicas/adicionar" element={<AddTips />} />
+          {/* <Route path="dicas/adicionar" element={<EditPartnerPage />} /> */}
           <Route path="post/:id" element={<PostDetailsPage />} />
           <Route path="inscritos" element={<SubscribersPage />} />
           <Route path="parceiros/:id" element={<EditPartnerPage />} />
@@ -57,13 +57,21 @@ function App() {
 
           <Route path="profile/:id/" element={<ProfilePage />}>
             <Route index element={<UserPostsPage />} />
-            <Route path="settings/security" element={<EditSecurityDataPage />}/>
-            <Route path="settings/edit_profile" element={<EditProfileDataPage />}/>
+            <Route
+              path="settings/security"
+              element={<EditSecurityDataPage />}
+            />
+            <Route
+              path="settings/edit_profile"
+              element={<EditProfileDataPage />}
+            />
           </Route>
-
         </Route>
 
-        <Route path="/settings/forgotpassword" element={<ForgotPasswordPage />}/>
+        <Route
+          path="/settings/forgotpassword"
+          element={<ForgotPasswordPage />}
+        />
       </Routes>
     </main>
   )

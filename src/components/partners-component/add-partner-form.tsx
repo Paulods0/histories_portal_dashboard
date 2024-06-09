@@ -1,34 +1,21 @@
-import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ChangeEvent, FC, useState } from "react"
-import { handleImageUpload } from "@/utils/helpers"
 import FormButton from "../forms/form-ui/form-button"
 import { zodResolver } from "@hookform/resolvers/zod"
 import SelectAuthorInput from "@/components/add-post-components/select-author-input"
+import { toast } from "react-toastify"
+import { AddPartnerType, addPartnerSchema } from "@/types/form-schema"
+import { useCreatePartner } from "@/lib/react-query/mutations/partner-mutation"
+import { uploadImageToFirebaseStorage } from "@/utils/helpers"
 
 type Props = {
   content: string
 }
 
-const addPartnerSchema = z.object({
-  author: z.string().min(1, "Escolha autor"),
-  title: z.string().min(1, "Insira um título"),
-  content: z.string().min(1, "Escreva algum conteúdo"),
-  image: z
-    .custom<File>()
-    .refine((file) => file !== null, "Insira uma image")
-    .transform((file) => {
-      if (file) {
-        return handleImageUpload(file)
-      }
-    }),
-})
-
-type AddPartnerType = z.infer<typeof addPartnerSchema>
-
 const AddPartnerForm: FC<Props> = ({ content }) => {
+  const { mutate } = useCreatePartner()
   const [authorId, setAuthorId] = useState("")
   const [imageToShow, setImageToShow] = useState<string | null>(null)
 
@@ -55,7 +42,12 @@ const AddPartnerForm: FC<Props> = ({ content }) => {
 
   async function handleSubmitForm(data: AddPartnerType) {
     try {
-      console.log(data)
+      const imageURL = await uploadImageToFirebaseStorage(
+        data.image!!,
+        "partners"
+      )
+      mutate({ ...data, image: imageURL })
+      console.log({ ...data, image: imageURL })
     } catch (error) {
       console.log(error)
     }
@@ -82,7 +74,7 @@ const AddPartnerForm: FC<Props> = ({ content }) => {
           onChange={handleChangeImage}
         />
         {errors.image && (
-          <span className="text-sm text-red-600">{errors.image.message}</span>
+          <span className="text-xs text-red-600">{errors.image.message}</span>
         )}
       </div>
 
@@ -90,7 +82,7 @@ const AddPartnerForm: FC<Props> = ({ content }) => {
         <Label>Título</Label>
         <Input type="text" {...register("title")} />
         {errors.title && (
-          <span className="text-sm text-red-600">{errors.title.message}</span>
+          <span className="text-xs text-red-600">{errors.title.message}</span>
         )}
       </div>
 
@@ -98,15 +90,19 @@ const AddPartnerForm: FC<Props> = ({ content }) => {
         <SelectAuthorInput authorId="" setAuthorId={setAuthorId} />
 
         {errors.author && (
-          <span className="text-sm text-red-600">{errors.author.message}</span>
+          <span className="text-xs text-red-600">{errors.author.message}</span>
         )}
       </div>
-
-      <FormButton
-        isSubmitting={isSubmitting}
-        text="Adicionar"
-        className="w-fit"
-      />
+      <>
+        <FormButton
+          isSubmitting={isSubmitting}
+          text="Adicionar"
+          className="w-fit"
+        />
+        {errors.content && (
+          <span className="text-xs text-red-600">{errors.content.message}</span>
+        )}
+      </>
     </form>
   )
 }

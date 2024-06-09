@@ -54,10 +54,10 @@ const HomeStatsContainer = () => {
           <HomeStatsCard
             footerAmount={16}
             titleIcon="store"
-            title="subscritos"
+            title="Loja"
             footerIcon="category"
-            footerText="inscritos"
-            description="Inscritos"
+            footerText="Artigos na loja"
+            description="Artigos"
             customStyle="bg-[#505050] w-full"
             amount={products?.products.length.toString()}
           />

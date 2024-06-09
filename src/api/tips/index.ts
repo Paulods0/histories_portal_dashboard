@@ -17,6 +17,14 @@ export type UpdateTip = {
   author?: string
 }
 
+export type UpdatePartner = {
+  id: string
+  title?: string
+  image?: string
+  content?: string
+  author?: string
+}
+
 export type Tip = {
   _id: string
   author: User

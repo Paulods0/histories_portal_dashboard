@@ -190,10 +190,33 @@ export const editTipSchema = z.object({
   image: z.union([z.custom<File>(), z.string()]),
 })
 
+export const addPartnerSchema = z.object({
+  author: z.string().min(1, "Escolha autor"),
+  title: z.string().min(1, "Insira um título"),
+  content: z.string().min(1, "Escreva algum conteúdo"),
+  image: z
+    .custom<File>()
+    .refine((file) => file !== undefined, "Insira uma imagem")
+    .transform((file) => {
+      if (file) {
+        return handleImageUpload(file)
+      }
+    }),
+})
+
+export const editPartnerSchema = z.object({
+  title: z.string(),
+  author: z.string(),
+  content: z.string(),
+  image: z.union([z.custom<File>(), z.string()]),
+})
+
+export type EditPartnerType = z.infer<typeof editPartnerSchema>
 export type EditTipType = z.infer<typeof editTipSchema>
 export type AddTipsType = z.infer<typeof addTipsSchema>
 export type LoginInSchema = z.infer<typeof loginSchema>
 export type UserFormType = z.infer<typeof userFormSchema>
+export type AddPartnerType = z.infer<typeof addPartnerSchema>
 export type PostFormSchemaType = z.infer<typeof postFormSchema>
 export type TourFormSchemaType = z.infer<typeof tourFormSchema>
 export type EditUserFormType = z.infer<typeof editUserFormSchema>
