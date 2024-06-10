@@ -46,7 +46,6 @@ function App() {
           <Route path="parceiros" element={<PartnersPage />} />
           <Route path="usuarios" element={<ManageUserPage />} />
           <Route path="dicas/adicionar" element={<AddTips />} />
-          {/* <Route path="dicas/adicionar" element={<EditPartnerPage />} /> */}
           <Route path="post/:id" element={<PostDetailsPage />} />
           <Route path="inscritos" element={<SubscribersPage />} />
           <Route path="parceiros/:id" element={<EditPartnerPage />} />
