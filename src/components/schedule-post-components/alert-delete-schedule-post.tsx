@@ -11,12 +11,27 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog"
 import { Button } from "../ui/button"
+import { useDeleteSchedulePost } from "@/lib/react-query/mutations/post-mutation"
+import { deleteImageFromFirebase } from "@/utils/helpers"
+import { toast } from "react-toastify"
 
 type Props = {
-  handleDeletePost: () => void
+  postId: string
+  postFile: string
 }
 
-const AlertDeleteSchedulePost: FC<Props> = ({ handleDeletePost }) => {
+const AlertDeleteSchedulePost: FC<Props> = ({ postId, postFile }) => {
+  const { mutate } = useDeleteSchedulePost()
+
+  async function handleDeletePost() {
+    try {
+      await deleteImageFromFirebase(postFile, "schedule-posts")
+      mutate(postId)
+      toast.success("Removido com sucesso")
+    } catch (error: any) {
+      toast.error(error)
+    }
+  }
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>

@@ -84,4 +84,8 @@ export class PostEntity {
   static async deletePost(id: string) {
     await axios.delete(`/post/${id}`)
   }
+
+  static async DeleteSchedulePost(id: string) {
+    await axios.delete(`/schedule-post/${id}`)
+  }
 }

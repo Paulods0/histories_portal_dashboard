@@ -11,8 +11,11 @@ export const useCreatePost = () => {
 }
 
 export const useCreateSchedulePost = () => {
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: PostEntity.createSchedulePost,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["get-schedule-posts"] }),
   })
 }
 
@@ -55,5 +58,14 @@ export const useDeletePost = () => {
     mutationFn: PostEntity.deletePost,
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["get-all-posts"] }),
+  })
+}
+
+export const useDeleteSchedulePost = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: PostEntity.DeleteSchedulePost,
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["get-schedule-posts"] }),
   })
 }

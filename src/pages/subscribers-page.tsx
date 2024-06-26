@@ -16,7 +16,7 @@ const SubscribersPage = () => {
   return (
     <main className="w-full flex flex-col">
       <div className="w-full px-4 lg:px-0 lg:w-[900px] mx-auto flex flex-col mt-12">
-        <h1 className="text-3xl text-left font-bold capitalize">Inscritos na newsletter</h1>
+        <h1 className="text-3xl text-left font-bold capitalize">Inscritos</h1>
         <SsubscribersTable subscribers={subscribers} />
       </div>
     </main>

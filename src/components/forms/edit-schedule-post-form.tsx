@@ -28,6 +28,7 @@ type Props = {
 
 function EditSchedulePostForm({ post }: Props) {
   const { data: users } = useGetAllUsers()
+
   const { mutate } = useUpdateSchedulePost()
   const [newFile, setnewFile] = useState<string | null>(null)
 
@@ -95,10 +96,6 @@ function EditSchedulePostForm({ post }: Props) {
     }
   }
 
-  function handleDeletePost() {
-    console.log("Removido")
-  }
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleSubmitForm)} className="space-y-4">
@@ -144,7 +141,7 @@ function EditSchedulePostForm({ post }: Props) {
             isSubmitting={isSubmitting}
           />
 
-          <AlertDeleteSchedulePost handleDeletePost={handleDeletePost} />
+          <AlertDeleteSchedulePost postFile={post.file} postId={post._id} />
         </div>
       </form>
     </FormProvider>
