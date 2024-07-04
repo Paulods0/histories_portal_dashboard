@@ -4,7 +4,6 @@ import LoaderSpinner from "@/components/global/loader-spinner"
 import { useGetClassifiedPosts } from "@/lib/react-query/queries/post-queries"
 import ClassifiedCard from "@/components/classified-post-components/classified-card"
 import ClassifiedFilter from "@/components/classified-post-components/classified-filter"
-import { useMemo } from "react"
 
 const ClassifiedPostsPage = () => {
   const [filter, setFilter] = useSearchParams({ page: "1", category: "" })
@@ -17,18 +16,8 @@ const ClassifiedPostsPage = () => {
     return <LoaderSpinner size={24} />
   }
 
-  const filteredPosts = useMemo(
-    () =>
-      category === "" || category === "all"
-        ? data?.posts
-        : data?.posts.filter(
-            (posts) => posts.type === category || posts.status === category
-          ),
-    [category]
-  )
-
-  console.log(filteredPosts)
-
+  const filteredPosts = category === "" || category === "all" ? data?.posts : data?.posts.filter((posts) => posts.type === category ||posts.status === category)
+    
   function handlePaginate(newPage: number) {
     setFilter((prev) => {
       prev.set("page", String(newPage))
