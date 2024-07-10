@@ -65,6 +65,7 @@ export const tourFormSchema = z.object({
     .optional(),
   author_notes: z.string().optional(),
   highlighted: z.boolean().default(false),
+  date: z.string().transform((date) => new Date(date).toLocaleDateString()),
 })
 
 export const editTourFormSchema = z.object({
@@ -89,6 +90,7 @@ export const editTourFormSchema = z.object({
   author_notes: z.string().optional(),
   highlighted: z.boolean().optional(),
   author: z.string().optional(),
+  date: z.string().transform((date) => new Date(date).toLocaleDateString()).optional(),
 })
 
 export const editPostFormSchema = z.object({

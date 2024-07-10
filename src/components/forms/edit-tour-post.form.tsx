@@ -27,8 +27,6 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
   const navigate = useNavigate()
   const { mutate } = useUpdatePost()
 
-  console.log(author)
-
   const [imageToShow, setImageToShow] = useState<string | null>(null)
 
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -51,6 +49,7 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
         author: post?.author._id,
         highlighted: post?.highlighted,
         author_notes: post?.author_notes,
+        date: post?.date.split("/").reverse().join("-"),
         coordinates: `${post?.latitude},${post?.longitude}`,
       },
     })
@@ -59,7 +58,12 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
     register,
     handleSubmit,
     formState: { isSubmitting },
+    setValue,
   } = methods
+
+  const handleDate = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue("date", e.target.value)
+  }
 
   const handleSubmitForm = async (data: EditTourFormSchemaType) => {
     try {
@@ -73,6 +77,7 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
         )
         updatedPost = {
           tag: data?.tag,
+          date: data.date,
           content: content,
           title: data.title,
           category: category,
@@ -86,6 +91,7 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
       } else {
         updatedPost = {
           tag: data?.tag,
+          date: data.date,
           content: content,
           title: data.title,
           category: category,
@@ -152,6 +158,12 @@ const EditTourPostForm = ({ post, author, category, content }: Props) => {
         <TextAreaField
           label="Notas do autor(opcional)"
           {...register("author_notes")}
+        />
+        <input
+          type="date"
+          {...register("date")}
+          onChange={handleDate}
+          className="border bg-transparent calendar-input rounded-md p-2 w-full"
         />
       </form>
     </FormProvider>

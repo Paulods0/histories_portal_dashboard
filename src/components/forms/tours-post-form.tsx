@@ -50,20 +50,25 @@ const ToursPostForm = ({ content, authorId, category }: Props) => {
 
   setValue("content", content)
 
+  const handleDate = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue("date", e.target.value)
+  }
+
   const handleSubmitForm = async (data: TourFormSchemaType) => {
     try {
       const geocoord = data.coordinates.split(",")
       const imageURL = await uploadImageToFirebaseStorage(data.image!!, "posts")
       const post: NewPost = {
         tag: data.tags,
+        date: data.date,
         content: content,
-        mainImage: imageURL,
         title: data.title,
         category: category,
-        highlighted: data.highlighted,
-        author_notes: data.author_notes,
+        mainImage: imageURL,
         latitude: geocoord[0],
         longitude: geocoord[1],
+        highlighted: data.highlighted,
+        author_notes: data.author_notes,
         author_id: authorId ? authorId : userId!!,
       }
       mutate(post)
@@ -128,6 +133,12 @@ const ToursPostForm = ({ content, authorId, category }: Props) => {
         <TextAreaField
           label="Notas do autor(opcional)"
           {...register("author_notes")}
+        />
+
+        <input
+          type="date"
+          onChange={handleDate}
+          className="border rounded-md bg-transparent p-2 calendar-input"
         />
       </form>
     </FormProvider>
