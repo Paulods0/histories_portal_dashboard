@@ -22,6 +22,7 @@ export type Category = {
 export type Post = {
   _id: string
   title: string
+  date:string
   mainImage: string
   content: string
   highlighted: boolean

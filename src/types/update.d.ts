@@ -33,6 +33,7 @@ export type UpdatePost = {
   mainImage?: string | false | File | null
   content?: string
   highlighted?: boolean
+  date?: string
   category?: string
   latitude?: string
   longitude?: string

@@ -26,14 +26,6 @@ const PostForm = ({ content, category, authorId }: Props) => {
   const { userId } = useAuthContext()
   const [imageToShow, setImageToShow] = useState<string | null>(null)
 
-  const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const file = e.target.files[0]
-      const imageURL = URL.createObjectURL(file)
-      setImageToShow(imageURL)
-    }
-  }
-
   const postFormProvider: UseFormReturn<PostFormSchemaType> =
     useForm<PostFormSchemaType>({
       resolver: zodResolver(postFormSchema),
@@ -50,6 +42,18 @@ const PostForm = ({ content, category, authorId }: Props) => {
   setValue("content", content)
   setValue("category", category)
 
+  const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const file = e.target.files[0]
+      const imageURL = URL.createObjectURL(file)
+      setImageToShow(imageURL)
+    }
+  }
+
+  const handleDate = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue("date", e.target.value)
+  }
+
   const handleSubmitForm = async (data: PostFormSchemaType) => {
     try {
       const imageURL = await uploadImageToFirebaseStorage(
@@ -57,16 +61,17 @@ const PostForm = ({ content, category, authorId }: Props) => {
         "posts"
       )
       const post: NewPost = {
+        latitude: "",
+        longitude: "",
         tag: data.tags,
+        date: data.date,
         content: content,
-        mainImage: imageURL,
         title: data.title,
         category: category,
+        mainImage: imageURL,
         highlighted: data.hightlight,
         author_notes: data.author_notes,
         author_id: authorId ? authorId : userId!!,
-        longitude: "",
-        latitude: "",
       }
       toast.success("Publicado com sucesso")
       mutate(post)
@@ -133,6 +138,20 @@ const PostForm = ({ content, category, authorId }: Props) => {
           {...register("author_notes")}
           label="Notas do autor (opcional)"
         />
+        <div className="flex flex-col border-none items-start w-full">
+          <label htmlFor="date" className="text-sm font-medium mb-1">
+            Data
+          </label>
+          <input
+            id="date"
+            type="date"
+            onChange={handleDate}
+            className="bg-background outline-none border-2 w-full p-2 rounded-lg text-foreground calendar-input placeholder:text-white"
+          />
+          {errors.date && (
+            <span className="text-red-600 text-sm">{errors.date.message}</span>
+          )}
+        </div>
       </form>
     </FormProvider>
   )

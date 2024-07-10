@@ -121,3 +121,9 @@ iframe {
 .light .quill span {
   color: #000000 !important;
 }
+
+.calendar-input::-webkit-calendar-picker-indicator {
+  background-color: #ccc;
+  padding: 6px;
+  border-radius: 4px;
+}

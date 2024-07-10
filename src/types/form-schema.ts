@@ -21,6 +21,19 @@ export const postFormSchema = z.object({
   content: z.string().min(1, "*Escreva alguma coisa no conteúdo"),
   hightlight: z.boolean().default(false),
   category: z.string().min(1, "*Selecione uma categoria"),
+  date: z
+    .string()
+    .refine(
+      (date) => {
+        const newDate = new Date(date)
+        return !isNaN(newDate.getTime())
+      },
+      { message: "*Insira uma data válida" }
+    )
+    .transform((date) => {
+      const newDate = new Date(date)
+      return newDate.toLocaleDateString()
+    }),
 })
 
 export const scheduleFormSchema = z.object({
@@ -96,6 +109,13 @@ export const editPostFormSchema = z.object({
         }
       }),
     ])
+    .optional(),
+  date: z
+    .string()
+    .transform((date) => {
+      const newDate = new Date(date)
+      return newDate.toLocaleDateString()
+    })
     .optional(),
 })
 

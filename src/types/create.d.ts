@@ -15,6 +15,7 @@ export type NewTourPost = {
 }
 export type NewPost = {
   title: string
+  date: string
   mainImage: string
   content: string
   highlighted: boolean

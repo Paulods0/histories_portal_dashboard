@@ -1,7 +1,7 @@
 import { Post } from "../../types/data"
 import { Link } from "react-router-dom"
-import DeletePostDialog from "./delete-post-dialog"
 import { CiEdit } from "react-icons/ci"
+import DeletePostDialog from "./delete-post-dialog"
 import { useAuthContext } from "@/context/auth-context"
 
 type PostCardProps = {
@@ -25,6 +25,7 @@ const PostCard = ({ post }: PostCardProps) => {
         <h1 className="text-[16px] text-pretty font-semibold line-clamp-1">
           {post.title}
         </h1>
+
         <div className="flex flex-col items-start w-full justify-between mt-2">
           <div className="flex">
             <span className="text-[12px] text-foreground mr-1">Categoria:</span>
@@ -53,6 +54,7 @@ const PostCard = ({ post }: PostCardProps) => {
               </div>
             )}
           </div>
+          <p className="text-xs capitalize">Data de criação: <span>{post.date}</span></p>
         </div>
       </div>
     </div>

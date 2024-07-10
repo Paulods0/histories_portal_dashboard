@@ -22,7 +22,7 @@ const Menu = ({ logout, user, userId }: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none">
-        <Avatar>
+        <Avatar className="size-8">
           <AvatarImage src={user?.image} />
           <AvatarFallback>
             {user?.firstname.charAt(0).toUpperCase()}

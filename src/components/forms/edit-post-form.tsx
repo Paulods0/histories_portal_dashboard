@@ -33,11 +33,13 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
   if (!post) {
     return <LoaderSpinner />
   }
+  const currentDate = post.date.split("/").reverse().join("-")
 
   const methods: UseFormReturn<EditPostFormSchemaType> =
     useForm<EditPostFormSchemaType>({
       resolver: zodResolver(editPostFormSchema),
       defaultValues: {
+        date: currentDate,
         title: post?.title,
         image: post!!.mainImage,
         category: post?.category,
@@ -64,6 +66,10 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
     }
   }
 
+  function handleDate(e: ChangeEvent<HTMLInputElement>) {
+    setValue("date", e.target.value)
+  }
+
   function handleRemoveImage() {
     setImageToShow(null)
     setValue("image", post!!.mainImage)
@@ -82,6 +88,7 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
 
         payload = {
           tag: data.tags,
+          date: data.date,
           author: authorId,
           content: content,
           title: data.title,
@@ -93,6 +100,7 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
       } else {
         payload = {
           tag: data.tags,
+          date: data.date,
           content: content,
           author: authorId,
           title: data.title,
@@ -158,6 +166,13 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
           <InputField label="Tags (opcional)" {...register("tags")} />
 
           <InputCheckbox label="Destacar" {...register("highlighted")} />
+
+          <input
+            type="date"
+            {...register("date")}
+            onChange={handleDate}
+            className="bg-transparent border border-white/25 p-2 rounded-md calendar-input"
+          />
 
           <TextAreaField
             label="Notas do autor (opcional)"
