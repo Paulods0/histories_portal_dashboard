@@ -33,19 +33,18 @@ const EditPostForm = ({ authorId, post, content, category }: Props) => {
   if (!post) {
     return <LoaderSpinner />
   }
-  const currentDate = post.date.split("/").reverse().join("-")
 
   const methods: UseFormReturn<EditPostFormSchemaType> =
     useForm<EditPostFormSchemaType>({
       resolver: zodResolver(editPostFormSchema),
       defaultValues: {
-        date: currentDate,
         title: post?.title,
         image: post!!.mainImage,
         category: post?.category,
         highlighted: post?.highlighted,
         author_notes: post?.author_notes,
         tags: post?.tag ? post.tag.toString() : "",
+        date: post.date.split("/").reverse().join("-"),
       },
     })
 

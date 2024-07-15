@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { CiEdit } from "react-icons/ci"
 import DeletePostDialog from "./delete-post-dialog"
 import { useAuthContext } from "@/context/auth-context"
+import { formatDate } from "@/utils/helpers"
 
 type PostCardProps = {
   post: Post
@@ -10,6 +11,9 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const { user } = useAuthContext()
+
+  const postDate = post.date && post.date
+  const modifiedDate = formatDate(postDate)
 
   return (
     <div className="bg-background h-[270px] w-full flex items-center flex-col border">
@@ -28,15 +32,17 @@ const PostCard = ({ post }: PostCardProps) => {
 
         <div className="flex flex-col items-start w-full justify-between mt-2">
           <div className="flex">
-            <span className="text-[12px] text-foreground mr-1">Categoria:</span>
+            <span className="text-[12px] text-foreground font-semibold mr-1">
+              Categoria:
+            </span>
             <span className="text-[12px] text-foreground capitalize">
               {post.category}
             </span>
           </div>
 
-          <div className="flex items-center w-full text-[12px] justify-between">
+          <div className="flex items-center w-full text-xs justify-between">
             <div className="flex items-center gap-1">
-              <span className="text-GRAY-DARKER">Author: </span>
+              <span className="text-GRAY-DARKER font-semibold">Author: </span>
               <span className="text-GRAY-DARKER">
                 {post.author
                   ? `${post.author.firstname} ${post.author.lastname}`
@@ -54,7 +60,9 @@ const PostCard = ({ post }: PostCardProps) => {
               </div>
             )}
           </div>
-          <p className="text-xs capitalize">Data de criação: <span>{post.date}</span></p>
+          <span className="text-xs font-semibold capitalize">
+            Data de criação: <span className="font-normal">{modifiedDate}</span>
+          </span>
         </div>
       </div>
     </div>

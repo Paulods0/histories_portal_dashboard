@@ -32,8 +32,38 @@ export const postFormSchema = z.object({
     )
     .transform((date) => {
       const newDate = new Date(date)
-      return newDate.toLocaleDateString()
+      const formattedDate = newDate.toLocaleDateString()
+      return formattedDate.split("/").reverse().join("-")
     }),
+})
+
+export const editPostFormSchema = z.object({
+  tags: z
+    .string()
+    .optional()
+    .transform((tag) => (tag ? tag.split(",") : "")),
+  title: z.string().optional(),
+  category: z.string().optional(),
+  highlighted: z.boolean().optional(),
+  author_notes: z.string().optional(),
+  image: z
+    .union([
+      z.string(),
+      z.instanceof(FileList).transform((image) => {
+        if (image.item(0) !== null) {
+          return handleImageUpload(image.item(0)!!)
+        }
+      }),
+    ])
+    .optional(),
+  date: z
+    .string()
+    .transform((date) => {
+      const newDate = new Date(date)
+      const formattedDate = newDate.toLocaleDateString()
+      return formattedDate.split("/").reverse().join("-")
+    })
+    .optional(),
 })
 
 export const scheduleFormSchema = z.object({
@@ -65,7 +95,11 @@ export const tourFormSchema = z.object({
     .optional(),
   author_notes: z.string().optional(),
   highlighted: z.boolean().default(false),
-  date: z.string().transform((date) => new Date(date).toLocaleDateString()),
+  date: z.string().transform((date) => {
+    const newDate = new Date(date).toLocaleDateString()
+    const formattedDate = newDate.split("/").reverse().join("-")
+    return formattedDate
+  }),
 })
 
 export const editTourFormSchema = z.object({
@@ -90,33 +124,12 @@ export const editTourFormSchema = z.object({
   author_notes: z.string().optional(),
   highlighted: z.boolean().optional(),
   author: z.string().optional(),
-  date: z.string().transform((date) => new Date(date).toLocaleDateString()).optional(),
-})
-
-export const editPostFormSchema = z.object({
-  tags: z
-    .string()
-    .optional()
-    .transform((tag) => (tag ? tag.split(",") : "")),
-  title: z.string().optional(),
-  category: z.string().optional(),
-  highlighted: z.boolean().optional(),
-  author_notes: z.string().optional(),
-  image: z
-    .union([
-      z.string(),
-      z.instanceof(FileList).transform((image) => {
-        if (image.item(0) !== null) {
-          return handleImageUpload(image.item(0)!!)
-        }
-      }),
-    ])
-    .optional(),
   date: z
     .string()
     .transform((date) => {
-      const newDate = new Date(date)
-      return newDate.toLocaleDateString()
+      const newDate = new Date(date).toLocaleDateString()
+      const formattedDate = newDate.split("/").reverse().join("-")
+      return formattedDate
     })
     .optional(),
 })

@@ -81,7 +81,7 @@ export async function uploadImageToFirebaseStorage(
 }
 
 export const formatDate = (date: string) => {
-  const reformatedDate = format(date, "dd 'de' LLLL 'de' yyyy", {
+  const reformatedDate = format(new Date(date), "dd 'de' LLLL 'de' yyyy", {
     locale: pt,
   })
 

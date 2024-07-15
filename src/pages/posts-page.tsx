@@ -87,7 +87,7 @@ const PostsPage = () => {
             <h1>Não há posts nada ainda.</h1>
           </main>
         ) : (
-          posts?.posts.map((post) => (
+          posts?.posts?.map((post) => (
             <AdminPostCard key={post._id} post={post} />
           ))
         )}
