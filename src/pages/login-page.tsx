@@ -13,11 +13,7 @@ import { Button } from "@/components/ui/button"
 import LoaderSpinner from "@/components/global/loader-spinner"
 import { LoginInSchema, loginSchema } from "@/types/form-schema"
 
-console.log(
-  import.meta.env.MODE === "production" &&
-    import.meta.env.MODE &&
-    import.meta.env.VITE_RENDER_API
-)
+console.log(import.meta.env.MODE)
 
 const LoginPage = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
